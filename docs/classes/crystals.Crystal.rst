@@ -41,10 +41,16 @@ crystals.Crystal
    
       ~Crystal.builtins
       ~Crystal.chemical_composition
+      ~Crystal.hall_number
+      ~Crystal.hall_symbol
+      ~Crystal.international_full
+      ~Crystal.international_number
+      ~Crystal.international_symbol
       ~Crystal.lattice_parameters
       ~Crystal.lattice_system
       ~Crystal.lattice_vectors
       ~Crystal.periodicity
+      ~Crystal.pointgroup
       ~Crystal.reciprocal
       ~Crystal.reciprocal_vectors
       ~Crystal.volume

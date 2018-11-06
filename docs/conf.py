@@ -20,7 +20,7 @@ author = crystals.__author__
 copyright = '{0}, {1}'.format(year, author)
 version = release = crystals.__version__
 
-pygments_style = 'trac'
+pygments_style = 'sphinx'
 templates_path = ['.']
 extlinks = {
     'issue': ('https://github.com/LaurentRDC/crystals/issues/%s', '#'),
@@ -41,10 +41,15 @@ html_sidebars = {
 html_short_title = '%s-%s' % (project, version)
 
 napoleon_use_ivar = True
+napoleon_google_docstring = False
 napoleon_use_rtype = False
 napoleon_use_param = False
 
 autosummary_generate = True
+
+autodoc_default_flags = ['members']
+autoclass_content = 'both'
+autodoc_member_order = 'groupwise'
 
 def autodoc_skip_member(app, what, name, obj, skip, options):
     exclusions = {'__weakref__', '__doc__', '__module__', '__dict__'}
