@@ -25,12 +25,13 @@ it was made to be integrated into larger projects (like `scikit-ued <https://git
 Take a look at the `documentation <https://crystals.readthedocs.io/>`_ for more information.
 
 .. toctree::
-   :maxdepth: 2
-   index
-   installation
-   guide
-   reference
-   contributing
+    :maxdepth: 2
+    
+    index
+    installation
+    guide
+    reference
+    contributing
 
 Citations
 =========
