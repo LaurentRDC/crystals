@@ -61,6 +61,7 @@ If you find this software useful, please consider citing the following publicati
 
 Underlying algorithms provided by ``spglib`` are described in the following publication:
 
+.. [#] A. Togo and I. Tanaka, *spglib: a software library for crystal symmetry search*. https://arxiv.org/abs/1808.01590 (written at version 1.10.4).
 
 Aknowledgements
 ===============
