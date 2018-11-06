@@ -20,7 +20,7 @@ crystals
 
 ``crystals`` is a library of data structure and algorithms to manipulate abstract crystals. ``crystals`` helps with reading crystallographic 
 files (like .cif and .pdb), provides access to atomic positions, and allows for space-group determination. Although ``crystals`` can be used on its own,
-it was made to be integrated into larger projects (like `scikit-ued <https://github.com/LaurentRDC/scikit-ued>`).
+it was made to be integrated into larger projects (like `scikit-ued <https://github.com/LaurentRDC/scikit-ued>`_).
 
 Take a look at the `documentation <https://crystals.readthedocs.io/>`_ for more information.
 
