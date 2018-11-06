@@ -6,6 +6,9 @@
 User guide
 **********
 
+This page highlights some of the features of ``crystals``. In case anything is unclear, 
+`raising an issue <https://github.com/LaurentRDC/crystals/issues/>` would be appreciated.
+
 Contents
 ========
 
@@ -55,6 +58,7 @@ If you don't have a file on hand, or want to create an idealized crystal, consid
 object by hand.
 
 To do this, you need:
+
 1. iterable of :class:`Atom` objects, with coordinates. These atoms must be the full unit cell;
 2. three lattice vectors;
 
@@ -193,6 +197,10 @@ In the above example, :data:`spg_info` is a dictionary with the following keys:
 
 * ``'hall_number'`` : Hall number (between 1 and 531).
 
+Each of those items are also available directly from the :class:`Crystal` instance. The Hall number of a crystal structure 
+is located in the ``crystal.hall_number`` attribute, the short international symbol is located in the ``crystal.international_symbol`` 
+attribute, and so on.
+
 Scattering utilities
 --------------------
 :class:`Lattice` objects have a few methods that make life easier when dealing with scattering data and modeling.
@@ -249,10 +257,10 @@ The real-space position with respect to a :class:`Crystal` or :class:`Lattice` c
 
 	from crystals import Crystal
 	graphite = Crystal.from_database('C')
-	
-    carbon = list(graphite)[-1]
-    fractional = carbon.coords
-    real = carbon.xyz(lattice = graphite)
+
+	carbon = list(graphite)[-1]
+	fractional = carbon.coords
+	real = carbon.xyz(lattice = graphite)
 
 The distance between two atoms can be calculated by taking their difference::
 

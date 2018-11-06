@@ -2,6 +2,9 @@
 Installation
 ============
 
+Using package managers
+----------------------
+
 ``crystals`` is available on the Python Package Index::
 
     pip install crystals
