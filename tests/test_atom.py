@@ -27,7 +27,7 @@ class TestASEAtom(unittest.TestCase):
         self.atom =  Atom(randint(1, 103), coords = np.random.random((3,)))
     
     def test_back_and_forth(self):
-        """ Test that conversion from skued.Atom and ase.Atom is working """
+        """ Test that conversion from crystals.Atom and ase.Atom is working """
         to_ase = self.atom.ase_atom()
         atom2 = Atom.from_ase(to_ase)
         self.assertEqual(self.atom, atom2)

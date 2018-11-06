@@ -1,6 +1,6 @@
 .. include:: ../references.txt
 
-.. _structure_tutorial:
+.. _user_guide:
 
 **************************
 Modeling atomic structures
@@ -17,25 +17,25 @@ Contents
 
 The :class:`Crystal` Class
 ==========================
-Diffraction experiments rely on the redundancy of crystals to get good experimental signals;
-hence, handling crystal models is the main feature of the :mod:`skued.structure` subpackage.
+
+Handling crystal models is the main feature of the :mod:`crystals` library.
 
 Constructing a :class:`Crystal` object
 --------------------------------------
 Creating a :class:`Crystal` object can be done most easily from a Crystal Information File (CIF, .cif)::
 	
-	from skued import Crystal
+	from crystals import Crystal
 
 	TiSe2 = Crystal.from_cif('tise2.cif')
 
-Scikit-ued also has an internal database of CIF files. Valid names are stored in :attr:`Crystal.builtins` and can be
+:mod:`crystals` also has an internal database of CIF files. Valid names are stored in :attr:`Crystal.builtins` and can be
 constructed like so::
 
 	assert 'Au' in Crystal.builtins
 	gold = Crystal.from_database('Au')
 
 Protein DataBank files are even easier to handle; simply provide the 4-letter identification code
-and the structure file will be taken care of by scikit-ued::
+and the structure file will be taken care of by :mod:`crystals`::
 	
 	hemoglobin = Crystal.from_pdb('1gzx')
 
@@ -59,7 +59,7 @@ To do this, you need:
 As an example, let's create the simplest crystal structure known: 
 `alpha-Polonium (simple cubic) <https://en.wikipedia.org/wiki/Polonium#Solid_state_form>`_::
 	
-	from skued import Crystal, Atom
+	from crystals import Crystal, Atom
 	import numpy as np
 
 	lattice_vectors = 3.35 * np.eye(3)
@@ -75,7 +75,7 @@ Crystal attributes
 ------------------
 The :class:`Crystal` object provides some interfaces for easy structure manipulation. First, a :class:`Crystal` is an iterable::
 
-	from skued import Crystal
+	from crystals import Crystal
 	graphite = Crystal.from_database('C')
 
 	for atm in graphite:	#Loops over atoms in the unit cell
@@ -140,7 +140,7 @@ Lattice vectors and reciprocal space
 Once a :class:`Crystal` object is ready, you can manipulate the lattice parameters via the underlying :class:`Lattice`
 super-class. Let's use the built-in example of graphite::
 
-	from skued import Crystal
+	from crystals import Crystal
 	graphite = Crystal.from_database('C')
 	
 	a1, a2, a3 = graphite.lattice_vectors
@@ -169,7 +169,7 @@ Better control on length tolerances is available via the :func:`lattice_system` 
 Thanks to `spglib <http://atztogo.github.io/spglib/>`_, we can get space-group information 
 from a :class:`Crystal` instance::
 
-	from skued import Crystal
+	from crystals import Crystal
 	
 	gold = Crystal.from_database('Au')
 	spg_info = gold.spacegroup_info()
@@ -194,7 +194,7 @@ Scattering utilities
 
 The conversion between Miller indices and scattering vectors is available:: 
 
-	from skued import Crystal
+	from crystals import Crystal
 	graphite = Crystal.from_database('C')
 
 	# Behavior inherited from Lattice superclass
@@ -204,12 +204,12 @@ The conversion between Miller indices and scattering vectors is available::
 Compatibility with ASE
 ----------------------
 The `Atomic Simulation Environment <https://wiki.fysik.dtu.dk/ase/index.html>`_ is a powerful tool. You can harness its power and convert
-between :class:`ase.Atoms` and :class:`skued.Crystal` at will.
+between :class:`ase.Atoms` and :class:`crystals.Crystal` at will.
 
 To create an :class:`ase.Atoms` object from a :class:`Crystal`, use the :meth:`Crystal.ase_atoms` method::
 
 	from ase.calculators.abinit import Abinit
-	from skued import Crystal
+	from crystals import Crystal
 	
 	gold = Crystal.from_database('Au')
 	ase_gold = gold.ase_atoms(calculator = Abinit(...))
@@ -228,7 +228,7 @@ according to any affine transform.
 
 To create an atom, simply provide its element and coordinates::
 	
-	from skued import Atom
+	from crystals import Atom
 
 	copper = Atom(element = 'Cu', coords = [0,0,0])
 
@@ -242,7 +242,7 @@ Since we are most concerned with atoms in crystals, the coordinates here are ass
 The real-space position with respect to a :class:`Crystal` or :class:`Lattice` can be accessed using the 
 :meth:`xyz` method::
 
-	from skued import Crystal
+	from crystals import Crystal
 	graphite = Crystal.from_database('C')
 	
     carbon = list(graphite)[-1]
@@ -255,4 +255,4 @@ The distance between two atoms can be calculated by taking their difference::
 	silver = Atom('Ag', coords = [1,0,0])
 	dist = silver - copper			# distance in fractional coordinates
 
-:ref:`Return to Top <structure_tutorial>`
+:ref:`Return to Top <user_guide>`

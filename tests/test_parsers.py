@@ -61,7 +61,7 @@ class TestCIFParser(unittest.TestCase):
     """ Test the CIFParser on all CIF files stored herein """
 
     def _cif_files(self):
-        """ Yields cif files included in scikit-ued """
+        """ Yields cif files included in crystals """
         for root, _, files in os.walk(os.path.join('crystals', 'cifs')):
             for name in filter(lambda path: path.endswith('.cif'), files):
                 yield os.path.join(root, name)

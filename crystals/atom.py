@@ -135,7 +135,7 @@ class Atom(object):
         
         Parameters
         ----------
-        lattice : skued.Lattice, optional
+        lattice : Lattice, optional
             Lattice on which the atoms sit. Default is free space.
         kwargs
             Keyword arguments are passed to the ``ase.Atom`` constructor.
