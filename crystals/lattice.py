@@ -7,11 +7,8 @@ from math import cos, isclose, radians, sin, sqrt, tan
 import numpy as np
 from numpy.linalg import norm
 
-from npstreams import cyclic
-
 from .affine import change_basis_mesh, transform
 from .base import Base
-
 
 class LatticeSystem(Enum):
     """
@@ -360,3 +357,16 @@ def _two_equal(iterable, atol):
         if sum(isclose(i, l, abs_tol = atol) for l in iterable) == 2:
             return True
     return False
+
+def cyclic(iterable):
+    """ 
+    Yields cyclic permutations of an iterable.
+
+    Examples
+    --------
+    >>> list(cyclic((1,2,3)))
+    [(1,2,3), (2,3,1), (3,1,2)]
+    """
+    iterable = tuple(iterable)
+    n = len(iterable)
+    yield from (tuple(iterable[i - j] for i in range(n)) for j in range(n))
