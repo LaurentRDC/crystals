@@ -2,26 +2,21 @@
 crystals
 ========
 
-.. start-badges
-
-.. |docs| image:: https://readthedocs.org/projects/crystals/badge/?style=flat
+.. image:: https://readthedocs.org/projects/crystals/badge/?style=flat
     :target: https://readthedocs.org/projects/crystals
     :alt: Documentation Status
 
-.. |appveyor| image:: https://ci.appveyor.com/api/projects/status/github/LaurentRDC/crystals?branch=master&svg=true
+.. image:: https://ci.appveyor.com/api/projects/status/github/LaurentRDC/crystals?branch=master&svg=true
     :alt: AppVeyor Build Status
     :target: https://ci.appveyor.com/project/LaurentRDC/crystals
 
-.. |version| image:: https://img.shields.io/pypi/v/crystals.svg
+.. image:: https://img.shields.io/pypi/v/crystals.svg
     :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/crystals
 
-.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/crystals.svg
-    :alt: Supported versions
+.. image:: https://img.shields.io/pypi/pyversions/crystals.svg
+    :alt: Supported Python versions
     :target: https://pypi.python.org/pypi/crystals
-
-
-.. end-badges
 
 `crystals` is a library of data structure and algorithms to manipulate abstract crystals. `crystals` helps with reading crystallographic 
 files (like .cif and .pdb), provides access to atomic positions, and allows for space-group determination. Take a look at the `documentation <https://crystals.readthedocs.io/>`_
@@ -40,7 +35,7 @@ You can install the latest development version using `pip` as well::
 
     python -m pip install git+git://github.com/LaurentRDC/crystals.git
 
-`crystals` is also available on the Python Package Index:
+`crystals` is also available on the Python Package Index::
 
     pip install crystals
 
