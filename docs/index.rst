@@ -1,6 +1,7 @@
-=====
-Index
-=====
+
+*********************************************
+crystals : data structure for crystallography
+*********************************************
 
 .. image:: https://readthedocs.org/projects/crystals/badge/?version=master
     :target: https://readthedocs.org/projects/crystals
@@ -24,10 +25,12 @@ it was made to be integrated into larger projects (like `scikit-ued <https://git
 
 Take a look at the `documentation <https://crystals.readthedocs.io/>`_ for more information.
 
+Table of content
+================
+
 .. toctree::
     :maxdepth: 2
     
-    index
     installation
     guide
     reference
