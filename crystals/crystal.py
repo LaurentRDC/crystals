@@ -377,6 +377,15 @@ class Crystal(AtomicStructure, Lattice):
         if natoms is not None:
             rep += '\n      ... omitting {:d} atoms ...'.format(len(self) - natoms) 
 
-        rep += '\nLattice parameters: \n    {:.3f}Å, {:.3f}Å, {:.3f}Å, {:.2f}°, {:.2f}°, {:.2f}°'.format(*self.lattice_parameters)
+        # Lattice parameters are split between lengths and angles
+        rep += '\nLattice parameters:' 
+        rep += '\n    a={:.3f}Å, b={:.3f}Å, c={:.3f}Å'.format(*self.lattice_parameters[0:3])
+        rep += '\n    α={:.3f}°, β={:.3f}°, γ={:.3f}°'.format(*self.lattice_parameters[3::])
+
+        # Show stochiometric information
+        rep += '\nChemical composition:'
+        for chem_symbol, composition in self.chemical_composition.items():
+            rep += '\n    {s}: {p:.3f}%'.format(s = chem_symbol, p = 100 * composition)
+
         rep += '\nSource: \n    {} >'.format(self.source or 'N/A')
         return rep

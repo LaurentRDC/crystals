@@ -30,6 +30,8 @@ from .spg_data import HM2Hall
 from .spg_data import Number2Hall
 from .spg_data import SymOpsHall
 
+# Temporary directory in which to cache crystal structure files
+# downloaded from the internet.
 STRUCTURE_CACHE = Path(gettempdir()) / 'crystals_cache'
 
 class ParseError(IOError):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from collections import Counter
+from collections import Counter, OrderedDict
 from itertools import chain
 
 import numpy as np
@@ -75,11 +75,17 @@ class AtomicStructure(Base):
     
     @property
     def chemical_composition(self):
-        """ Chemical composition of this structure as a dictionary. Keys are elemental symbols. """
+        """ 
+        Chemical composition of this structure as an ordered dictionary. Keys are elemental symbols. 
+        Elements are in descending order of prevalence.
+        """
         # We can't use a Counter directly since Counter values are integer by default
         number_atoms = len(self)
         counter = Counter(atm.element for atm in self)
-        return {k:v/number_atoms for k,v in counter.items()}
+        # For display reasons, it makes more sense to sort elements in descending percentage
+        # i.e. more prevalent elemts are inserted in the dictionary first
+        sorted_by_percentage = sorted(counter.items(), key = lambda tup: tup[-1], reverse = True)
+        return OrderedDict( (k,v/number_atoms) for k,v in sorted_by_percentage )
 
     def __contains__(self, item):
         """ Check containership of :class:`Atom` instances or :class:`AtomicStructure` substructures recursively."""
