@@ -2,7 +2,7 @@
 crystals
 ========
 
-.. image:: https://readthedocs.org/projects/crystals/badge/?style=flat
+.. image:: https://readthedocs.org/projects/crystals/badge/?version=master
     :target: https://readthedocs.org/projects/crystals
     :alt: Documentation Status
 
@@ -19,8 +19,10 @@ crystals
     :target: https://pypi.python.org/pypi/crystals
 
 ``crystals`` is a library of data structure and algorithms to manipulate abstract crystals. ``crystals`` helps with reading crystallographic 
-files (like .cif and .pdb), provides access to atomic positions, and allows for space-group determination. Take a look at the `documentation <https://crystals.readthedocs.io/>`_
-for more information.
+files (like .cif and .pdb), provides access to atomic positions, and allows for space-group determination. Although ``crystals`` can be used on its own,
+it was made to be integrated into larger projects (like `scikit-ued <https://github.com/LaurentRDC/scikit-ued>`).
+
+Take a look at the `documentation <https://crystals.readthedocs.io/>`_ for more information.
 
 Installation
 ============
@@ -28,6 +30,9 @@ Installation
 ``crystals`` is available on the Python Package Index::
 
     pip install crystals
+
+From source
+-----------
 
 ``crystals`` can also be installed from source::
 
@@ -50,6 +55,15 @@ Documentation
 =============
 
 The documentation, including a user guide as well as detailed reference, is available here: https://crystals.readthedocs.io/
+
+Development
+===========
+
+Tests can be run with the standard library's `unittest` module:: 
+
+    python -m unittest discover
+
+Some optional tests might be skipped if dependencies are not installed, e.g. `ASE`.
 
 Citations
 =========
@@ -76,15 +90,6 @@ License
 =======
 
 ``crystals`` is made available under the BSD 3-clause license. For more details, see `LICENSE.txt <https://github.com/LaurentRDC/crystals/blob/master/LICENSE.txt>`_.
-
-Development
-===========
-
-Tests can be run with the standard library's `unittest` module:: 
-
-    python -m unittest discover
-
-Some optional tests might be skipped if dependencies are not installed, e.g. `ASE`.
 
 Related projects
 ================

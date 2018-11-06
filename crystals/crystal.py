@@ -351,31 +351,23 @@ class Crystal(AtomicStructure, Lattice):
     
     def __repr__(self):
         """ Verbose string representation of this instance. """
-        return self._to_string(natoms = None)
+        return self._to_string(natoms = len(self))
     
-    def _to_string(self, natoms = None):
+    def _to_string(self, natoms):
         """ Generate a string representation of this Crystal. Only include a maximum of `natoms` if provided. """
-        if natoms is not None:
-            if natoms >= len(self):
-                return self._to_string(natoms = None)
 
         # Note : Crystal subclasses need not override this method
         # since the class name is dynamically determined
         rep = '< {clsname} object with following unit cell:'.format(clsname = self.__class__.__name__)
-
-        # For very large structures, listing all atoms is prohibitive
-        if natoms is None:
-            atoms = self.itersorted()
-        else:
-            atoms = islice(self.itersorted(), natoms)
+        atoms = islice(self.itersorted(), natoms)
 
         # Note that repr(Atom(...)) includes these '< ... >'
         # We remove those for cleaner string representation
-        for atm in atoms:
-            rep += '\n    ' + repr(atm).replace('<', '').replace('>', '').strip()
+        rep += ''.join('\n    ' + repr(atm).replace('<', '').replace('>', '').strip() for atm in atoms)
         
-        if natoms is not None:
-            rep += '\n      ... omitting {:d} atoms ...'.format(len(self) - natoms) 
+        num_omitted_atms = len(self) - natoms
+        if num_omitted_atms > 0:
+            rep += '\n      ... omitting {:d} atoms ...'.format(num_omitted_atms) 
 
         # Lattice parameters are split between lengths and angles
         rep += '\nLattice parameters:' 

@@ -12,7 +12,6 @@ Contents
 * :ref:`Crystal`
 * :ref:`Atom`
 
-
 .. _crystal:
 
 The :class:`Crystal` Class

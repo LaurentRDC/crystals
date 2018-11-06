@@ -8,6 +8,9 @@ Reference/API
 
 .. currentmodule:: crystals
 
+You will find the detailed documentation below. Every exposed data structure and function is listed herein.
+You can also take a look at the short :ref:`user guide <user_guide>` for some usage examples.
+
 Data Structures
 ---------------
 
@@ -45,34 +48,3 @@ To help with fleshing out unit cell atoms from symmetry operators:
 
     symmetry_expansion
     lattice_system
-
-Parsers
--------
-
-Structure parsers are used to build :class:`Crystal` instances, mostly through :class:`Crystal` class methods.
-
-.. autosummary::
-    :toctree: classes/
-    :nosignatures:
-
-    CIFParser
-    CODParser
-    PDBParser
-
-Affine Transforms
------------------
-
-.. autosummary::
-    :toctree: functions/
-    :nosignatures:
-
-    affine_map
-    transform
-    change_of_basis
-    change_basis_mesh
-    is_basis
-    is_rotation_matrix
-    minimum_image_distance
-    rotation_matrix
-    translation_matrix
-    translation_rotation_matrix
