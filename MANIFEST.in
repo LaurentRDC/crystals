@@ -1,0 +1,12 @@
+graft docs
+graft tests
+
+include AUTHORS.rst
+include CHANGELOG.rst
+include CONTRIBUTING.rst
+include LICENSE
+include README.rst
+
+include appveyor.yml
+
+global-exclude *.py[cod] __pycache__ *.so *.dylib
