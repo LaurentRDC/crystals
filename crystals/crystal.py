@@ -282,10 +282,9 @@ class Crystal(AtomicStructure, Lattice):
         return Atoms(symbols = [atm.ase_atom(lattice = self) for atm in iter(self)],
                      cell = np.array(self.lattice_vectors), **kwargs)
     
-    def spacegroup_info(self, symprec = 1e-2, angle_tolerance = -1.0):
+    def symmetry(self, symprec = 1e-2, angle_tolerance = -1.0):
         """ 
-        Returns a dictionary containing space-group information. This information
-        is computed from the crystal unit cell, and is not taken from records if available.
+        Returns a dictionary containing space-group information. This information is computed from the crystal unit cell.
         
         Parameters
         ----------
@@ -344,6 +343,37 @@ class Crystal(AtomicStructure, Lattice):
             return info
         
         return None
+    
+    @property
+    def international_symbol(self):
+        """ International Tables of Crystallography space-group short symbol. """
+        return self.symmetry()['international_symbol']
+
+    @property
+    def international_full(self):
+        """ International Tables of Crystallography space-group full symbo.l """
+        return self.symmetry()['international_full']
+    
+    @property
+    def hall_symbol(self):
+        """ Hall symbol. """
+        return self.symmetry()['hall_symbol']
+    
+    @property
+    def pointgroup(self):
+        """ International Tables of Crystallography point-group. """
+        return self.symmetry()['pointgroup']
+    
+    @property
+    def international_number(self):
+        """ International Tables of Crystallography space-group number (between 1 and 230). """
+        return self.symmetry()['international_number']
+    
+    @property
+    def hall_number(self):
+        """ Hall number (between 1 and 531). """
+        return self.symmetry()['hall_number']
+
 
     def __str__(self):
         """ String representation of this instance. Atoms may be omitted. """

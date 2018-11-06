@@ -2,9 +2,9 @@
 
 .. _user_guide:
 
-**************************
-Modeling atomic structures
-**************************
+**********
+User guide
+**********
 
 Contents
 ========
@@ -17,7 +17,10 @@ Contents
 The :class:`Crystal` Class
 ==========================
 
-Handling crystal models is the main feature of the :mod:`crystals` library.
+Handling crystal models is the main feature of the :mod:`crystals` library. This is done through the :class:`Crystal` class, a representation of a crystal including 
+unit cell atoms, lattice parameters, and other goodies.
+
+Since working with :class:`Crystal`s is so important, there are many ways to construct them.
 
 Constructing a :class:`Crystal` object
 --------------------------------------
@@ -30,10 +33,10 @@ Creating a :class:`Crystal` object can be done most easily from a Crystal Inform
 :mod:`crystals` also has an internal database of CIF files. Valid names are stored in :attr:`Crystal.builtins` and can be
 constructed like so::
 
-	assert 'Au' in Crystal.builtins
+	'Au' in Crystal.builtins	        # True
 	gold = Crystal.from_database('Au')
 
-Protein DataBank files are even easier to handle; simply provide the 4-letter identification code
+`RCSB Protein DataBank <http://www.rcsb.org/>`_ files are even easier to handle; simply provide the 4-letter identification code
 and the structure file will be taken care of by :mod:`crystals`::
 	
 	hemoglobin = Crystal.from_pdb('1gzx')
@@ -71,7 +74,7 @@ In the case where atoms are given as an asymmetric unit cell and a set of symmet
 The generated set of atoms can be passed to the constructor of :class:`Crystal`.
 
 Crystal attributes
-------------------
+==================
 The :class:`Crystal` object provides some interfaces for easy structure manipulation. First, a :class:`Crystal` is an iterable::
 
 	from crystals import Crystal
@@ -88,7 +91,7 @@ The :func:`len` of a :class:`Crystal` is the unit cell size (in number of atoms)
 The :class:`Crystal` class is a set-like container; checking containership (with the builtin ``in`` statement) is very fast::
 
 	graphite = Crystal.from_database('C')
-	carbon = next(iter(graphite))
+	carbon = next(iter(graphite))			# Pick any atom from the crystal
 
 	assert carbon in graphite 
 
@@ -109,7 +112,7 @@ from the :attr:`source` attribute::
 
 	lsmo = Crystal.from_database('LSMO')
 	print(str(lsmo))	# Short string representation
-	print(repr(lsmo))   # Complete string representation
+	print(repr(lsmo))   # Complete string representation. Be careful...
 
 :class:`Crystal` instances can be converted to NumPy arrays as well::
 
@@ -135,15 +138,19 @@ from the :attr:`source` attribute::
     +--------------------------------------+
 
 Lattice vectors and reciprocal space
--------------------------------------
-Once a :class:`Crystal` object is ready, you can manipulate the lattice parameters via the underlying :class:`Lattice`
+====================================
+Once a :class:`Crystal` object is ready, you can manipulate the lattice parameters via the :class:`Lattice`
 super-class. Let's use the built-in example of graphite::
 
 	from crystals import Crystal
+	import numpy as np
+
 	graphite = Crystal.from_database('C')
 	
 	a1, a2, a3 = graphite.lattice_vectors
 	b1, b2, b3 = graphite.reciprocal_vectors
+
+	print(np.dot(a1, b1)) # 2 pi
 
 The standard `three lengths and angles` description of a lattice is also accessible::
 
@@ -165,13 +172,12 @@ The `lattice system <https://en.wikipedia.org/wiki/Bravais_lattice#Bravais_latti
 
 Better control on length tolerances is available via the :func:`lattice_system` function.
 
-Thanks to `spglib <http://atztogo.github.io/spglib/>`_, we can get space-group information 
-from a :class:`Crystal` instance::
+Thanks to `spglib <http://atztogo.github.io/spglib/>`_, we can get space-group information from a :class:`Crystal` instance::
 
 	from crystals import Crystal
 	
 	gold = Crystal.from_database('Au')
-	spg_info = gold.spacegroup_info()
+	spg_info = gold.symmetry()
 
 In the above example, :data:`spg_info` is a dictionary with the following keys:
 

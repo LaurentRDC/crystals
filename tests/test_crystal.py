@@ -64,10 +64,10 @@ class TestAseAtoms(unittest.TestCase):
 
 class TestSpglibMethods(unittest.TestCase):
     
-    def test_spacegroup_info_graphite(self):
-        """ Test that Crystal.spacegroup_info() works correctly for graphite """
+    def test_symmetry_graphite(self):
+        """ Test that Crystal.symmetry() works correctly for graphite """
         c = Crystal.from_database('C')
-        info = c.spacegroup_info()
+        info = c.symmetry()
         
         supposed = {'international_number': 194, 
                     'hall_number': 488,

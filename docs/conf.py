@@ -13,7 +13,7 @@ extensions = [
     'sphinx.ext.mathjax']
 
 source_suffix = '.rst'
-master_doc = 'index'
+master_doc = 'readme'
 project = 'crystals'
 year = datetime.now().year
 author = crystals.__author__

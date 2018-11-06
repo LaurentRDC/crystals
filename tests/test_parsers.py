@@ -100,7 +100,7 @@ class TestCIFParser(unittest.TestCase):
                     from_parser = Hall2Number[p.hall_symbol()]
                     
                     crystal = Crystal.from_cif(name)
-                    from_spglib = crystal.spacegroup_info()['international_number']
+                    from_spglib = crystal.international_number
                     self.assertEqual(from_parser, from_spglib)
     
     def test_silicon(self):

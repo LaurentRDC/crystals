@@ -27,7 +27,7 @@ crystals.Crystal
       ~Crystal.miller_indices
       ~Crystal.primitive
       ~Crystal.scattering_vector
-      ~Crystal.spacegroup_info
+      ~Crystal.symmetry
       ~Crystal.transform
       ~Crystal.write_xyz
    
