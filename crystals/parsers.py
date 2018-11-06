@@ -89,7 +89,7 @@ class AbstractStructureParser(AbstractContextManager):
 
 class PDBParser(AbstractStructureParser):
     """
-    Collection of methods that parses PDB files. This object should be used as a context manager.
+    Collection of methods that parses Protein DataBank (PDB) files. This object should be used as a context manager.
     
     Parameters
     ----------
@@ -156,7 +156,7 @@ class PDBParser(AbstractStructureParser):
 
         # Skip download if the file already exists
         if (not overwrite) and (final_file.exists()):
-                return final_file
+            return final_file
 
         urlretrieve(url, filename)
 
@@ -324,8 +324,8 @@ class CIFParser(AbstractStructureParser):
         blocks = (self.file[key] for key in self.file.keys())
         for block in blocks:
             try:
-                a, _ = get_number_with_esd(block["_cell_length_a"])
-            except:
+                _, _ = get_number_with_esd(block["_cell_length_a"])
+            except KeyError:
                 continue
             else:
                 return block

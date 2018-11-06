@@ -70,7 +70,7 @@ class TestCIFParser(unittest.TestCase):
         """ Test the CIFParser on all CIF files stored herein to check build errors"""
         for name in self._cif_files():
             with self.subTest(name.split('\\')[-1]):
-                c = Crystal.from_cif(name)
+                Crystal.from_cif(name)
 
     def test_fractional_atoms(self):
         """ Test the CIFParser returns fractional atomic coordinates. """
