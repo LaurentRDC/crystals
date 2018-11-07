@@ -21,11 +21,11 @@ from CifFile import ReadCif
 from CifFile import get_number_with_esd
 from numpy.linalg import inv
 
-from . import Atom
-from . import Lattice
-from . import frac_coords
 from .affine import affine_map
 from .affine import transform
+from .atom import Atom
+from .atom import frac_coords
+from .lattice import Lattice
 from .spg_data import HM2Hall
 from .spg_data import Number2Hall
 from .spg_data import SymOpsHall

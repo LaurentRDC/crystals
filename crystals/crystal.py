@@ -13,12 +13,10 @@ from spglib import get_error_message
 from spglib import get_spacegroup_type
 from spglib import get_symmetry_dataset
 
-from . import Atom
-from . import AtomicStructure
-from . import CIFParser
-from . import Lattice
-from . import PDBParser
 from .affine import affine_map
+from .atom import Atom
+from .base import AtomicStructure
+from .lattice import Lattice
 from .parsers import CIFParser
 from .parsers import CODParser
 from .parsers import PDBParser
@@ -120,8 +118,9 @@ class Crystal(AtomicStructure, Lattice):
             Name of tne databse entry. Available items can be retrieved from `Crystal.builtins`
         """
         if name not in cls.builtins:
-            raise ValueError('Entry {} is not available in the database. See \
-                              Crystal.builtins for valid entries.'.format(name))
+            raise ValueError(
+                'Entry {} is not available in the database. See `Crystal.builtins` for valid entries.'.format(name)
+                )
         
         path = Path(__file__).parent / 'cifs' / (name + '.cif')
         return cls.from_cif(path)

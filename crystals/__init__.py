@@ -7,9 +7,22 @@ __email__ = 'laurent.renedecotret@mail.mcgill.ca'
 __license__ = 'BSD3'
 __version__ = '0.2.0'
     
-from .atom import Atom, real_coords, frac_coords
-from .atom_data import ELEM_TO_MAGMOM, ELEM_TO_MASS, ELEM_TO_NAME, ELEM_TO_NUM, NUM_TO_ELEM
-from .base import AtomicStructure, Base
-from .lattice import Lattice, LatticeSystem, lattice_system
-from .parsers import CIFParser, PDBParser, CODParser, ParseError
-from .crystal import Crystal, symmetry_expansion
+from .atom import Atom
+from .atom import frac_coords
+from .atom import real_coords
+from .atom_data import ELEM_TO_MAGMOM
+from .atom_data import ELEM_TO_MASS
+from .atom_data import ELEM_TO_NAME
+from .atom_data import ELEM_TO_NUM
+from .atom_data import NUM_TO_ELEM
+from .base import AtomicStructure
+from .base import Base
+from .crystal import Crystal
+from .crystal import symmetry_expansion
+from .lattice import Lattice
+from .lattice import LatticeSystem
+from .lattice import lattice_system
+from .parsers import CIFParser
+from .parsers import CODParser
+from .parsers import ParseError
+from .parsers import PDBParser

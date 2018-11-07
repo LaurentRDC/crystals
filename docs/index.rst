@@ -23,8 +23,6 @@ crystals : data structure for crystallography
 files (like .cif and .pdb), provides access to atomic positions, and allows for space-group determination. Although ``crystals`` can be used on its own,
 it was made to be integrated into larger projects (like `scikit-ued <https://github.com/LaurentRDC/scikit-ued>`_).
 
-Take a look at the `documentation <https://crystals.readthedocs.io/>`_ for more information.
-
 Table of content
 ================
 
@@ -36,22 +34,24 @@ Table of content
     reference
     contributing
 
+Aknowledgements
+===============
+
+This package depends on the work of some amazing people. Of note are the `spglib contributors <https://github.com/atztogo/spglib>`_
+
 Citations
 =========
 
 If you find this software useful, please consider citing the following publication:
 
 .. [#] L. P. René de Cotret, M. R. Otto, M. J. Stern. and B. J. Siwick, *An open-source software ecosystem for the interactive 
-       exploration of ultrafast electron scattering data*, Advanced Structural and Chemical Imaging **4**:11 (2018) DOI: 10.1186/s40679-018-0060-y
+       exploration of ultrafast electron scattering data*, Advanced Structural and Chemical Imaging **4**:11 (2018) 
+       `DOI: 10.1186/s40679-018-0060-y <https://doi.org/10.1186/s40679-018-0060-y>`_
 
 Underlying algorithms provided by ``spglib`` are described in the following publication:
 
 .. [#] A. Togo and I. Tanaka, *spglib: a software library for crystal symmetry search*. https://arxiv.org/abs/1808.01590 (written at version 1.10.4).
 
-Aknowledgements
-===============
-
-This package depends on the work of some amazing people. Of note are the `spglib contributors <https://github.com/atztogo/spglib>`_
 
 Support / Report Issues
 =======================
