@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from collections import Counter, OrderedDict
+from collections import Counter
+from collections import OrderedDict
 from itertools import chain
 
 import numpy as np
@@ -43,9 +44,9 @@ class AtomicStructure(Base):
         a secondary structure in a protein.
     """
 
-    def __init__(self, atoms = tuple(), substructures = tuple(), **kwargs):
-        self.atoms = frozenset(atoms)
-        self.substructures = frozenset(substructures)
+    def __init__(self, atoms = None, substructures = None, **kwargs):
+        self.atoms = frozenset(atoms or {})
+        self.substructures = frozenset(substructures or {})
         super().__init__(**kwargs)
     
     def __iter__(self):

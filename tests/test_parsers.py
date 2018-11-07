@@ -52,7 +52,7 @@ class TestPDBParser(unittest.TestCase):
     
     def test_default_download_dir(self):
         """ Test that the file is saved in the correct temporary directory by default """
-        filename = PDBParser.retrieve_pdb_file('1fbb')
+        filename = PDBParser.download_pdb_file('1fbb')
         
         self.assertTrue(filename.exists())
         self.assertEqual(filename.parent, STRUCTURE_CACHE)
