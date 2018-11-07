@@ -24,6 +24,47 @@ it was made to be integrated into larger projects (like `scikit-ued <https://git
 
 Take a look at the `documentation <https://crystals.readthedocs.io/>`_ for more information.
 
+Usage example
+=============
+
+``crystals`` is all about constructing crystals from files (either CIF, PDB, etc.) and getting information about the resulting object. 
+Here's a quick example of building a crystal from the internal database::
+
+    >>> from crystals import Crystal
+    >>>
+    >>> vo2 = Crystal.from_database('vo2-m1')
+    >>> print(vo2)	   # Short string representation
+    < Crystal object with following unit cell:
+        Atom O  @ (0.90, 0.79, 0.80)
+        Atom O  @ (0.90, 0.71, 0.30)
+        Atom O  @ (0.61, 0.31, 0.71)
+        Atom O  @ (0.39, 0.69, 0.29)
+        Atom O  @ (0.61, 0.19, 0.21)
+        Atom O  @ (0.10, 0.29, 0.70)
+        Atom O  @ (0.10, 0.21, 0.20)
+        Atom O  @ (0.39, 0.81, 0.79)
+        Atom V  @ (0.76, 0.03, 0.97)
+        Atom V  @ (0.76, 0.48, 0.47)
+        ... omitting 2 atoms ...
+    Lattice parameters:
+        a=5.743Å, b=4.517Å, c=5.375Å
+        α=90.000°, β=122.600°, γ=90.000°
+    Chemical composition:
+        O: 66.667%
+        V: 33.333%
+    Source:
+        (...omitted...)\crystals\cifs\vo2-m1.cif >
+
+Symmetry information is also readily available::
+
+    >>> print(vo2.symmetry())
+    {'international_symbol': 'P2_1/c', 
+     'hall_symbol': '-P 2ybc', 
+     'international_number': 14, 
+     'hall_number': 81, 
+     'international_full': 'P 1 2_1/c 1', 
+     'pointgroup': 'C2h'}
+
 Installation
 ============
 
@@ -81,6 +122,7 @@ Aknowledgements
 ===============
 
 This package depends on the work of some amazing people. Of note are the `spglib contributors <https://github.com/atztogo/spglib>`_
+
 Support / Report Issues
 =======================
 
