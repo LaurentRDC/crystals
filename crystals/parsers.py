@@ -108,7 +108,7 @@ class PDBParser(AbstractStructureParser):
         if download_dir is None:
             download_dir = STRUCTURE_CACHE
 
-        filename = self.retrieve_pdb_file(pdb_code = ID, 
+        filename = self.download_pdb_file(pdb_code = ID, 
                                           download_dir = download_dir, 
                                           overwrite = overwrite)
         self._handle = open(filename, 'r')
@@ -117,7 +117,7 @@ class PDBParser(AbstractStructureParser):
         self._handle.close()
 
     @staticmethod
-    def retrieve_pdb_file(pdb_code, download_dir = None, server = 'ftp://ftp.wwpdb.org', overwrite = False):
+    def download_pdb_file(pdb_code, download_dir = None, server = 'ftp://ftp.wwpdb.org', overwrite = False):
         """ 
         Retrieves a PDB structure file from the PDB server and
         stores it in a local file tree.
@@ -261,11 +261,6 @@ class CIFParser(AbstractStructureParser):
     ----------
     filename : str or path-like
         Location of the CIF file.
-    
-    References
-    ----------
-    .. [#] Torbjorn Bjorkman, "CIF2Cell: Generating geometries for electronic structure programs", 
-           Computer Physics Communications 182, 1183-1186 (2011) doi: 10.1016/j.cpc.2011.01.013
     """
     def __init__(self, filename, **kwargs):
         # ReadCIF would get confused between local files and URLs
