@@ -27,7 +27,13 @@ Take a look at the `documentation <https://crystals.readthedocs.io/>`_ for more 
 Usage example
 =============
 
-``crystals`` is all about constructing crystals from files (either CIF, PDB, etc.) and getting information about the resulting object. 
+``crystals`` is all about constructing crystals and getting information about the resulting object. Crystals can be built from a variety of sources:
+
+* From files on disk, such as Crystallography Information Files (CIF);
+* From the internal database of over 90 structure files (mostly elemental crystals);
+* From online databases, such as the `RCSB Protein DataBank <http://www.rcsb.org/>`_ or the 
+  `Crystallography Open Database <http://www.crystallography.net/cod/>`_.
+
 Here's a quick example of building a crystal from the internal database::
 
     >>> from crystals import Crystal
