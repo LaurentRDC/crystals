@@ -549,4 +549,4 @@ class CODParser(CIFParser):
         if (not path.is_file()) or overwrite:
             urlretrieve(url, path)
         
-        return super().__init__(filename = path, **kwargs)
+        super().__init__(filename = path, **kwargs)
