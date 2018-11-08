@@ -67,8 +67,7 @@ class Atom(object):
     magmom : float, optional
         Magnetic moment. If None (default), the ground-state magnetic moment is used.
     """
-    __slots__ = ('element', 'coords', 'displacement', 'magmom', 
-                 '_a', '_b', '_c', '_d')
+    __slots__ = ('element', 'coords', 'displacement', 'magmom')
 
     def __init__(self, element, coords, displacement = (0,0,0), magmom = None, **kwargs): 
         if isinstance(element, int):

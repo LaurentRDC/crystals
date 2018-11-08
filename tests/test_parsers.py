@@ -3,7 +3,8 @@ import os
 import socket
 import tempfile
 import unittest
-from collections import Counter, namedtuple
+from collections import Counter
+from collections import namedtuple
 from contextlib import suppress
 from pathlib import Path
 from warnings import catch_warnings
