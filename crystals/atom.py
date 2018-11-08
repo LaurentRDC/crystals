@@ -79,8 +79,8 @@ class Atom(object):
             magmom = ELEM_TO_MAGMOM[element]
         
         self.element = element
-        self.coords = np.array(coords, dtype = np.float)
-        self.displacement = np.array(displacement, dtype = np.float)
+        self.coords = np.asfarray(coords)
+        self.displacement = np.asfarray(displacement)
         self.magmom = magmom
         
     def __repr__(self):
@@ -205,3 +205,10 @@ class Atom(object):
         """
         for matrix in matrices:
             self.coords = transform(matrix, self.coords)
+
+    def __array__(self, *args, **kwargs):
+        """ Returns an array [Z, x, y, z] """
+        arr = np.empty(shape = (4,), *args, **kwargs)
+        arr[0] = self.atomic_number
+        arr[1::] = self.coords
+        return arr

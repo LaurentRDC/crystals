@@ -7,7 +7,9 @@ from itertools import islice
 
 import numpy as np
 
-from crystals import Atom, AtomicStructure, Crystal
+from crystals import Atom
+from crystals import AtomicStructure
+from crystals import Crystal
 
 
 class TestAtomicStructure(unittest.TestCase):

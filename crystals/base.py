@@ -138,6 +138,5 @@ class AtomicStructure(Base):
         arr = np.empty(shape = (len(self), 4), *args, **kwargs)
         atoms = self.itersorted(key = lambda atm: atm.atomic_number)
         for row, atm in enumerate(atoms):
-            arr[row, 0] = atm.atomic_number
-            arr[row, 1:] = atm.coords
+            arr[row, :] = np.array(atm, *args, **kwargs)
         return arr

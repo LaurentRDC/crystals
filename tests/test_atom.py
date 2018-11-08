@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 import unittest
 from copy import deepcopy
-from random import choice, randint, random, seed
+from random import choice
+from random import randint
+from random import random
+from random import seed
 
 import numpy as np
 
-from crystals import Atom, Lattice
+from crystals import Atom
+from crystals import Lattice
 from crystals.affine import rotation_matrix
 
 seed(23)
@@ -72,6 +76,14 @@ class TestAtom(unittest.TestCase):
         # No assert sequence almost equal
         for x1, x2 in zip(tuple(before), tuple(after)):
             self.assertAlmostEqual(x1, x2)
+    
+    def test_atom_array(self):
+        """ Test that numpy.array(Atom(...)) works as expected """
+        arr = np.array(self.atom)
+        self.assertTupleEqual(arr.shape, (4,))
+        self.assertEqual(arr[0], self.atom.atomic_number)
+        self.assertTrue(np.allclose(arr[1::], self.atom.coords))
+
 
 if __name__ == '__main__':
     unittest.main()
