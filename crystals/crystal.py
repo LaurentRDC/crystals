@@ -96,11 +96,6 @@ class Crystal(AtomicStructure, Lattice):
         ----------
         path : path-like
             File path
-        
-        References
-        ----------
-        .. [#] Torbjorn Bjorkman, "CIF2Cell: Generating geometries for electronic structure programs", 
-               Computer Physics Communications 182, 1183-1186 (2011). doi: 10.1016/j.cpc.2011.01.013
         """
         with CIFParser(filename = path, **kwargs) as parser:
             return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
