@@ -15,7 +15,7 @@ environment:
       TEST_CMD: "python -m unittest discover --verbose"
       NUMPY_VERSION: "1.14"
       CONDA_CHANNELS: "conda-forge"
-      CONDA_DEPENDENCIES: "numpy spglib pycifrw ase"
+      CONDA_DEPENDENCIES: "numpy spglib pycifrw ase biopython"
       PIP_DEPENDENCIES: ""
 
   matrix:

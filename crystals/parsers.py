@@ -203,18 +203,23 @@ class PDBParser(AbstractStructureParser):
     
     def atoms(self):
         """
-        Returns a list of atoms associated with a PDB structure. These atoms form the asymmetric unit cell.
+        Returns a list of atoms associated with a PDB structure in fractional coordinates. 
+        These atoms form the asymmetric unit cell.
 
         Yields
         ------
         atom: Atom
         """
-        self._handle.seek(0)
+        # Lattice vectors have to be determined first because
+        # the file pointer is moved
+        lattice_vectors = self.lattice_vectors()
 
-        for line in filter(lambda l: l.startswith( ('ATOM', 'HEMATM') ), self._handle):
+        self._handle.seek(0)
+        for line in filter(lambda l: l.startswith( ('ATOM', 'HETATM') ), self._handle):
             x, y, z = float(line[30:38]), float(line[38:46]), float(line[46:54])
-            element = str(line[76:78]).replace(' ','')
-            yield Atom(element = element, coords = frac_coords(np.array([x,y,z]), self.lattice_vectors()))
+            element = str(line[76:78]).replace(' ','').title()
+            fractional_coordinates = frac_coords(np.array([x,y,z]), lattice_vectors)
+            yield Atom(element = element, coords = fractional_coordinates)
     
     def symmetry_operators(self):
         """
