@@ -110,7 +110,7 @@ class Crystal(AtomicStructure, Lattice):
         Parameters
         ----------
         name : path-like
-            Name of tne databse entry. Available items can be retrieved from `Crystal.builtins`
+            Name of the database entry. Available items can be retrieved from `Crystal.builtins`
         """
         if name not in cls.builtins:
             raise ValueError(
