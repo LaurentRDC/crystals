@@ -88,7 +88,7 @@ class Crystal(AtomicStructure, Lattice):
     
     @classmethod
     @lru_cache(maxsize = len(builtins), typed = True) # saves a lot of time in tests
-    def from_cif(cls, path):
+    def from_cif(cls, path, **kwargs):
         """
         Returns a Crystal object created from a CIF 1.0, 1.1 or 2.0 file.
 
@@ -102,13 +102,13 @@ class Crystal(AtomicStructure, Lattice):
         .. [#] Torbjorn Bjorkman, "CIF2Cell: Generating geometries for electronic structure programs", 
                Computer Physics Communications 182, 1183-1186 (2011). doi: 10.1016/j.cpc.2011.01.013
         """
-        with CIFParser(filename = path) as parser:
+        with CIFParser(filename = path, **kwargs) as parser:
             return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
                        lattice_vectors = parser.lattice_vectors(),
                        source = str(path))
     
     @classmethod
-    def from_database(cls, name):
+    def from_database(cls, name, **kwargs):
         """ 
         Returns a Crystal object create from the internal CIF database.
 
@@ -123,10 +123,10 @@ class Crystal(AtomicStructure, Lattice):
                 )
         
         path = Path(__file__).parent / 'cifs' / (name + '.cif')
-        return cls.from_cif(path)
+        return cls.from_cif(path, **kwargs)
     
     @classmethod
-    def from_cod(cls, num, revision = None, download_dir = None, overwrite = False):
+    def from_cod(cls, num, revision = None, download_dir = None, overwrite = False, **kwargs):
         """ 
         Returns a Crystal object built from the Crystallography Open Database. 
 
@@ -142,13 +142,13 @@ class Crystal(AtomicStructure, Lattice):
             Whether or not to overwrite files in cache if they exist. If no revision 
             number is provided, files will always be overwritten. 
         """
-        with CODParser(num, revision, download_dir, overwrite) as parser:
+        with CODParser(num, revision, download_dir, overwrite, **kwargs) as parser:
             return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
                        lattice_vectors = parser.lattice_vectors(),
                        source = 'COD num:{n} rev:{r}'.format(n = num, r = revision))
 
     @classmethod
-    def from_pdb(cls, ID, download_dir = None, overwrite = False):
+    def from_pdb(cls, ID, download_dir = None, overwrite = False, **kwargs):
         """
         Returns a Crystal object created from a Protein DataBank entry.
 
@@ -163,7 +163,7 @@ class Crystal(AtomicStructure, Lattice):
             Whether or not to overwrite files in cache if they exist. If no revision 
             number is provided, files will always be overwritten. 
         """
-        with PDBParser(ID = ID, download_dir = download_dir) as parser:
+        with PDBParser(ID = ID, download_dir = download_dir, **kwargs) as parser:
             return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
                        lattice_vectors = parser.lattice_vectors(),
                        source = parser.filename)

@@ -7,6 +7,7 @@ from collections import Counter
 from collections import namedtuple
 from contextlib import suppress
 from pathlib import Path
+from tempfile import gettempdir
 from warnings import catch_warnings
 from warnings import filterwarnings
 
@@ -79,7 +80,7 @@ class TestPDBParserAgainstBioPython(unittest.TestCase):
     test_ids = ('1fbb', '1fat', '1gzx')
 
     def setUp(self):
-        self.pdb_list = biopdb.PDBList()
+        self.pdb_list = biopdb.PDBList(verbose=False, obsolete_pdb=gettempdir())
         self.biopdb_parser = biopdb.PDBParser()
 
     def test_chemical_composition(self):
