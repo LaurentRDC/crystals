@@ -18,6 +18,10 @@ crystals
     :alt: Supported Python versions
     :target: https://pypi.python.org/pypi/crystals
 
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :alt: Code formatting style
+    :target: https://github.com/ambv/black
+
 ``crystals`` is a library of data structure and algorithms to manipulate abstract crystals in a Pythonic way. ``crystals`` helps with reading crystallographic 
 files (like .cif and .pdb), provides access to atomic positions, scattering utilities, and allows for symmetry determination. Although ``crystals`` can be used on its own,
 it was made to be integrated into larger projects (like `scikit-ued <https://github.com/LaurentRDC/scikit-ued>`_).

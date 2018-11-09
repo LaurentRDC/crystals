@@ -2,11 +2,11 @@
 """
 This package allows for manipulation and modelling of atomic structures in crystalline form.
 """
-__author__ = 'Laurent P. René de Cotret'
-__email__ = 'laurent.renedecotret@mail.mcgill.ca'
-__license__ = 'BSD3'
-__version__ = '1.0.0dev'
-    
+__author__ = "Laurent P. René de Cotret"
+__email__ = "laurent.renedecotret@mail.mcgill.ca"
+__license__ = "BSD3"
+__version__ = "1.0.0dev"
+
 from .atom import Atom
 from .atom import frac_coords
 from .atom import real_coords

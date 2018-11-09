@@ -21,7 +21,8 @@ from .parsers import CIFParser
 from .parsers import CODParser
 from .parsers import PDBParser
 
-CIF_ENTRIES = frozenset( (Path(__file__).parent / 'cifs').glob('*.cif') )
+CIF_ENTRIES = frozenset((Path(__file__).parent / "cifs").glob("*.cif"))
+
 
 def symmetry_expansion(atoms, symmetry_operators):
     """
@@ -51,6 +52,7 @@ def symmetry_expansion(atoms, symmetry_operators):
             new.coords[:] = np.mod(new.coords, 1)
             uniques.add(new)
     yield from uniques
+
 
 class Crystal(AtomicStructure, Lattice):
     """
@@ -82,12 +84,12 @@ class Crystal(AtomicStructure, Lattice):
 
     builtins = frozenset(map(lambda fn: fn.stem, CIF_ENTRIES))
 
-    def __init__(self, unitcell, lattice_vectors, source = None, **kwargs):
-        super().__init__(atoms = unitcell, lattice_vectors = lattice_vectors, **kwargs)
+    def __init__(self, unitcell, lattice_vectors, source=None, **kwargs):
+        super().__init__(atoms=unitcell, lattice_vectors=lattice_vectors, **kwargs)
         self.source = source
-    
+
     @classmethod
-    @lru_cache(maxsize = len(builtins), typed = True) # saves a lot of time in tests
+    @lru_cache(maxsize=len(builtins), typed=True)  # saves a lot of time in tests
     def from_cif(cls, path, **kwargs):
         """
         Returns a Crystal object created from a CIF 1.0, 1.1 or 2.0 file.
@@ -97,11 +99,15 @@ class Crystal(AtomicStructure, Lattice):
         path : path-like
             File path
         """
-        with CIFParser(filename = path, **kwargs) as parser:
-            return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
-                       lattice_vectors = parser.lattice_vectors(),
-                       source = str(path))
-    
+        with CIFParser(filename=path, **kwargs) as parser:
+            return cls(
+                unitcell=symmetry_expansion(
+                    parser.atoms(), parser.symmetry_operators()
+                ),
+                lattice_vectors=parser.lattice_vectors(),
+                source=str(path),
+            )
+
     @classmethod
     def from_database(cls, name, **kwargs):
         """ 
@@ -114,14 +120,16 @@ class Crystal(AtomicStructure, Lattice):
         """
         if name not in cls.builtins:
             raise ValueError(
-                'Entry {} is not available in the database. See `Crystal.builtins` for valid entries.'.format(name)
+                "Entry {} is not available in the database. See `Crystal.builtins` for valid entries.".format(
+                    name
                 )
-        
-        path = Path(__file__).parent / 'cifs' / (name + '.cif')
+            )
+
+        path = Path(__file__).parent / "cifs" / (name + ".cif")
         return cls.from_cif(path, **kwargs)
-    
+
     @classmethod
-    def from_cod(cls, num, revision = None, download_dir = None, overwrite = False, **kwargs):
+    def from_cod(cls, num, revision=None, download_dir=None, overwrite=False, **kwargs):
         """ 
         Returns a Crystal object built from the Crystallography Open Database. 
 
@@ -138,12 +146,16 @@ class Crystal(AtomicStructure, Lattice):
             number is provided, files will always be overwritten. 
         """
         with CODParser(num, revision, download_dir, overwrite, **kwargs) as parser:
-            return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
-                       lattice_vectors = parser.lattice_vectors(),
-                       source = 'COD num:{n} rev:{r}'.format(n = num, r = revision))
+            return cls(
+                unitcell=symmetry_expansion(
+                    parser.atoms(), parser.symmetry_operators()
+                ),
+                lattice_vectors=parser.lattice_vectors(),
+                source="COD num:{n} rev:{r}".format(n=num, r=revision),
+            )
 
     @classmethod
-    def from_pdb(cls, ID, download_dir = None, overwrite = False, **kwargs):
+    def from_pdb(cls, ID, download_dir=None, overwrite=False, **kwargs):
         """
         Returns a Crystal object created from a Protein DataBank entry.
 
@@ -158,11 +170,15 @@ class Crystal(AtomicStructure, Lattice):
             Whether or not to overwrite files in cache if they exist. If no revision 
             number is provided, files will always be overwritten. 
         """
-        with PDBParser(ID = ID, download_dir = download_dir, **kwargs) as parser:
-            return cls(unitcell = symmetry_expansion(parser.atoms(), parser.symmetry_operators()),
-                       lattice_vectors = parser.lattice_vectors(),
-                       source = parser.filename)
-    
+        with PDBParser(ID=ID, download_dir=download_dir, **kwargs) as parser:
+            return cls(
+                unitcell=symmetry_expansion(
+                    parser.atoms(), parser.symmetry_operators()
+                ),
+                lattice_vectors=parser.lattice_vectors(),
+                source=parser.filename,
+            )
+
     @classmethod
     def from_ase(cls, atoms):
         """
@@ -174,12 +190,14 @@ class Crystal(AtomicStructure, Lattice):
             Atoms group.
         """
         lattice_vectors = atoms.get_cell()
-        
-        return cls(unitcell = [Atom.from_ase(atm) for atm in atoms], 
-                   lattice_vectors = lattice_vectors)
-    
+
+        return cls(
+            unitcell=[Atom.from_ase(atm) for atm in atoms],
+            lattice_vectors=lattice_vectors,
+        )
+
     # TODO: test against known XYZ file
-    def write_xyz(self, fname, comment = None):
+    def write_xyz(self, fname, comment=None):
         """
         Generate an atomic coordinates .xyz file from a crystal structure.
 
@@ -193,29 +211,29 @@ class Crystal(AtomicStructure, Lattice):
         """
         # Format is specified here:
         #   http://openbabel.org/wiki/XYZ_%28format%29
-        comment = comment or ''
-        atom_format_str = '  {:<2}       {:10.5f}       {:10.5f}       {:10.5f}'
+        comment = comment or ""
+        atom_format_str = "  {:<2}       {:10.5f}       {:10.5f}       {:10.5f}"
 
-        with open(fname, 'wt', encoding = 'ascii') as file:
+        with open(fname, "wt", encoding="ascii") as file:
             # First two lines are:
             #   1. Number of atoms described in the file
             #   2. Optional comment
-            file.write(str(len(self)) + '\n')
-            file.write(comment + '\n')
+            file.write(str(len(self)) + "\n")
+            file.write(comment + "\n")
 
             # Write atomic data row-by-row
             # For easier human readability, atoms are sorted
             # by element
             for atom in self.itersorted():
                 row = atom_format_str.format(atom.element, *atom.xyz(self))
-                file.write(row + '\n')
+                file.write(row + "\n")
 
     def _spglib_cell(self):
         """ Returns an array in spglib's cell format. """
         arr = np.asarray(self)
         return np.array(self.lattice_vectors), arr[:, 1:], arr[:, 0]
 
-    def primitive(self, symprec = 1e-2):
+    def primitive(self, symprec=1e-2):
         """ 
         Returns a Crystal object in the primitive unit cell.
         
@@ -238,20 +256,21 @@ class Crystal(AtomicStructure, Lattice):
         -----
         Optional atomic properties (e.g magnetic moment) might be lost in the reduction.
         """
-        search = find_primitive(self._spglib_cell(), 
-                                symprec = symprec)
+        search = find_primitive(self._spglib_cell(), symprec=symprec)
         if search is None:
-            raise RuntimeError('Primitive cell could not be found.')
+            raise RuntimeError("Primitive cell could not be found.")
 
         lattice_vectors, scaled_positions, numbers = search
-        if numbers.size == len(self):   # Then there's no point in creating a new crystal
+        if numbers.size == len(self):  # Then there's no point in creating a new crystal
             return self
 
-        atoms = [Atom(int(Z), coords = coords) for Z, coords in zip(numbers, scaled_positions)]
+        atoms = [
+            Atom(int(Z), coords=coords) for Z, coords in zip(numbers, scaled_positions)
+        ]
 
-        return Crystal(unitcell = atoms, 
-                       lattice_vectors = lattice_vectors, 
-                       source = self.source)
+        return Crystal(
+            unitcell=atoms, lattice_vectors=lattice_vectors, source=self.source
+        )
 
     def ase_atoms(self, **kwargs):
         """ 
@@ -272,13 +291,17 @@ class Crystal(AtomicStructure, Lattice):
         ImportError : If ASE is not installed
         """
         from ase import Atoms
-        
-        return Atoms(symbols = [atm.ase_atom(lattice = self) for atm in iter(self)],
-                     cell = np.array(self.lattice_vectors), **kwargs)
-    
-    def symmetry(self, symprec = 1e-2, angle_tolerance = -1.0):
+
+        return Atoms(
+            symbols=[atm.ase_atom(lattice=self) for atm in iter(self)],
+            cell=np.array(self.lattice_vectors),
+            **kwargs
+        )
+
+    def symmetry(self, symprec=1e-2, angle_tolerance=-1.0):
         """ 
-        Returns a dictionary containing space-group information. This information is computed from the crystal unit cell.
+        Returns a dictionary containing space-group information. This information 
+        is computed from the crystal unit cell.
         
         Parameters
         ----------
@@ -293,15 +316,19 @@ class Crystal(AtomicStructure, Lattice):
         info : dict or None
             Dictionary of space-group information. The following keys are available:
 
-            * ``'international_symbol'``: International Tables of Crystallography space-group symbol (short);
+            * ``'international_symbol'``: International Tables of Crystallography 
+              space-group symbol (short);
 
-            * ``'international_full'``: International Tables of Crystallography space-group full symbol;
+            * ``'international_full'``: International Tables of 
+              Crystallography space-group full symbol;
 
             * ``'hall_symbol'`` : Hall symbol;
 
-            * ``'pointgroup'`` : International Tables of Crystallography point-group;
+            * ``'pointgroup'`` : International Tables of 
+              Crystallography point-group;
 
-            * ``'international_number'`` : International Tables of Crystallography space-group number (between 1 and 230);
+            * ``'international_number'`` : International Tables of 
+              Crystallography space-group number (between 1 and 230);
 
             * ``'hall_number'`` : Hall number (between 1 and 531).
 
@@ -316,92 +343,107 @@ class Crystal(AtomicStructure, Lattice):
         Note that crystals generated from the Protein Data Bank are often incomplete; 
         in such cases the space-group information will be incorrect.
         """
-        dataset = get_symmetry_dataset(cell = self._spglib_cell(),
-                                       symprec = symprec, 
-                                       angle_tolerance = angle_tolerance)
+        dataset = get_symmetry_dataset(
+            cell=self._spglib_cell(), symprec=symprec, angle_tolerance=angle_tolerance
+        )
 
-        if dataset: 
-            spg_type = get_spacegroup_type(dataset['hall_number'])
+        if dataset:
+            spg_type = get_spacegroup_type(dataset["hall_number"])
 
-            info = {'international_symbol': dataset['international'],
-                    'hall_symbol'         : dataset['hall'],
-                    'international_number': dataset['number'],
-                    'hall_number'         : dataset['hall_number'],
-                    'international_full'  : spg_type['international_full'],
-                    'pointgroup'          : spg_type['pointgroup_international']} 
+            info = {
+                "international_symbol": dataset["international"],
+                "hall_symbol": dataset["hall"],
+                "international_number": dataset["number"],
+                "hall_number": dataset["hall_number"],
+                "international_full": spg_type["international_full"],
+                "pointgroup": spg_type["pointgroup_international"],
+            }
 
             err_msg = get_error_message()
-            if (err_msg != 'no error'):
-                raise RuntimeError('Symmetry-determination has returned the following error: {}'.format(err_msg))
-            
+            if err_msg != "no error":
+                raise RuntimeError(
+                    "Symmetry-determination has returned the following error: {}".format(
+                        err_msg
+                    )
+                )
+
             return info
-        
+
         return None
-    
+
     @property
     def international_symbol(self):
         """ International Tables of Crystallography space-group short symbol. """
-        return self.symmetry()['international_symbol']
+        return self.symmetry()["international_symbol"]
 
     @property
     def international_full(self):
         """ International Tables of Crystallography space-group full symbo.l """
-        return self.symmetry()['international_full']
-    
+        return self.symmetry()["international_full"]
+
     @property
     def hall_symbol(self):
         """ Hall symbol. """
-        return self.symmetry()['hall_symbol']
-    
+        return self.symmetry()["hall_symbol"]
+
     @property
     def pointgroup(self):
         """ International Tables of Crystallography point-group. """
-        return self.symmetry()['pointgroup']
-    
+        return self.symmetry()["pointgroup"]
+
     @property
     def international_number(self):
         """ International Tables of Crystallography space-group number (between 1 and 230). """
-        return self.symmetry()['international_number']
-    
+        return self.symmetry()["international_number"]
+
     @property
     def hall_number(self):
         """ Hall number (between 1 and 531). """
-        return self.symmetry()['hall_number']
-
+        return self.symmetry()["hall_number"]
 
     def __str__(self):
         """ String representation of this instance. Atoms may be omitted. """
-        return self._to_string(natoms = 10)
-    
+        return self._to_string(natoms=10)
+
     def __repr__(self):
         """ Verbose string representation of this instance. """
-        return self._to_string(natoms = len(self))
-    
+        return self._to_string(natoms=len(self))
+
     def _to_string(self, natoms):
-        """ Generate a string representation of this Crystal. Only include a maximum of `natoms` if provided. """
+        """ Generate a string representation of this Crystal. Only include
+         a maximum of `natoms` if provided. """
 
         # Note : Crystal subclasses need not override this method
         # since the class name is dynamically determined
-        rep = '< {clsname} object with following unit cell:'.format(clsname = self.__class__.__name__)
+        rep = "< {clsname} object with following unit cell:".format(
+            clsname=self.__class__.__name__
+        )
         atoms = islice(self.itersorted(), natoms)
 
         # Note that repr(Atom(...)) includes these '< ... >'
         # We remove those for cleaner string representation
-        rep += ''.join('\n    ' + repr(atm).replace('<', '').replace('>', '').strip() for atm in atoms)
-        
+        rep += "".join(
+            "\n    " + repr(atm).replace("<", "").replace(">", "").strip()
+            for atm in atoms
+        )
+
         num_omitted_atms = len(self) - natoms
         if num_omitted_atms > 0:
-            rep += '\n      ... omitting {:d} atoms ...'.format(num_omitted_atms) 
+            rep += "\n      ... omitting {:d} atoms ...".format(num_omitted_atms)
 
         # Lattice parameters are split between lengths and angles
-        rep += '\nLattice parameters:' 
-        rep += '\n    a={:.3f}Å, b={:.3f}Å, c={:.3f}Å'.format(*self.lattice_parameters[0:3])
-        rep += '\n    α={:.3f}°, β={:.3f}°, γ={:.3f}°'.format(*self.lattice_parameters[3::])
+        rep += "\nLattice parameters:"
+        rep += "\n    a={:.3f}Å, b={:.3f}Å, c={:.3f}Å".format(
+            *self.lattice_parameters[0:3]
+        )
+        rep += "\n    α={:.3f}°, β={:.3f}°, γ={:.3f}°".format(
+            *self.lattice_parameters[3::]
+        )
 
         # Show stochiometric information
-        rep += '\nChemical composition:'
+        rep += "\nChemical composition:"
         for chem_symbol, composition in self.chemical_composition.items():
-            rep += '\n    {s}: {p:.3f}%'.format(s = chem_symbol, p = 100 * composition)
+            rep += "\n    {s}: {p:.3f}%".format(s=chem_symbol, p=100 * composition)
 
-        rep += '\nSource: \n    {} >'.format(self.source or 'N/A')
+        rep += "\nSource: \n    {} >".format(self.source or "N/A")
         return rep

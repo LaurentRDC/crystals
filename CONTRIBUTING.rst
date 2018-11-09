@@ -49,9 +49,11 @@ To set up `crystals` for local development:
 
    Now you can make your changes locally.
 
-4. When you're done making changes, run all the checks, doc builder and spell checker with the `unittest` standard module::
+4. When you're done making changes, build the package components as follows::
 
-    python -m unittest discover
+    python -m unittest discover  # run all tests
+    black .\crystals             # run code formatter
+    python setup.py build_sphinx # build documentation
 
 5. Commit your changes and push your branch to GitHub::
 
