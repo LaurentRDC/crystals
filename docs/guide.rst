@@ -27,9 +27,31 @@ Creating a :class:`Crystal` object can be done most easily from a Crystal Inform
 :mod:`crystals` also has an internal database of CIF files. Valid names are stored in :attr:`Crystal.builtins` and can be
 constructed like so::
 
+    >>> Crystal.builtins
+    frozenset({'Ac',
+               'Ag',
+               'Al',
+               (...omitted...)
+               'alpha-Mn',
+               'b-Pu',
+               'diamond',
+               'gamma-Pu'
+               })
     >>> 'Au' in Crystal.builtins
     True
-    >>> gold = Crystal.from_database('Au')
+    >>> Crystal.from_database('Au')
+    < Crystal object with following unit cell:
+        Atom Au @ (0.00, 0.00, 0.00)
+        Atom Au @ (0.00, 0.50, 0.50)
+        Atom Au @ (0.50, 0.00, 0.50)
+        Atom Au @ (0.50, 0.50, 0.00)
+    Lattice parameters:
+        a=4.078Å, b=4.078Å, c=4.078Å
+        α=90.000°, β=90.000°, γ=90.000°
+    Chemical composition:
+        Au: 100.000%
+    Source:
+        (...omitted...)crystals\cifs\Au.cif >
 
 `RCSB Protein DataBank <http://www.rcsb.org/>`_ files are even easier to handle; simply provide the 4-letter identification code
 and the structure file will be taken care of by :mod:`crystals`::
