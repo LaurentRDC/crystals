@@ -229,10 +229,19 @@ class PDBParser(AbstractStructureParser):
 
         self._handle.seek(0)
         for line in filter(lambda l: l.startswith(("ATOM", "HETATM")), self._handle):
-            x, y, z = float(line[30:38]), float(line[38:46]), float(line[46:54])
             element = str(line[76:78]).replace(" ", "").title()
+
+            x, y, z = float(line[30:38]), float(line[38:46]), float(line[46:54])
             fractional_coordinates = frac_coords(np.array([x, y, z]), lattice_vectors)
-            yield Atom(element=element, coords=fractional_coordinates)
+
+            try:
+                occupancy = float(line[54:60])
+            except ValueError:
+                occupancy = None
+
+            yield Atom(
+                element=element, coords=fractional_coordinates, occupancy=occupancy
+            )
 
     def symmetry_operators(self):
         """

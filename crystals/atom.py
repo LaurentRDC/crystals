@@ -14,45 +14,6 @@ from .atom_data import NUM_TO_ELEM
 from .lattice import Lattice
 
 
-def real_coords(frac_coords, lattice_vectors):
-    """
-    Calculates the real-space coordinates of the atom from fractional coordinates and lattice vectors.
-    
-    Parameters
-    ----------
-    frac_coords : array-like, shape (3,)
-        Fractional coordinates
-    lattice_vectors : list of ndarrays, shape (3,)
-        Lattice vectors of the crystal.
-        
-    Returns
-    -------
-    coords : ndarray, shape (3,)
-    """
-    COB = change_of_basis(np.array(lattice_vectors), np.eye(3))
-    return transform(COB, frac_coords)
-
-
-def frac_coords(real_coords, lattice_vectors):
-    """
-    Calculates and sets the real-space coordinates of the atom from fractional coordinates and lattice vectors.
-    Only valid for inorganic compounds.
-    
-    Parameters
-    ----------
-    real_coords : array-like, shape (3,)
-        Real-space coordinates
-    lattice_vectors : list of ndarrays, shape (3,)
-        Lattice vectors of the crystal.
-        
-    Returns
-    -------
-    coords : ndarray, shape (3,)
-    """
-    COB = change_of_basis(np.eye(3), np.array(lattice_vectors))
-    return np.mod(transform(COB, real_coords), 1)
-
-
 # TODO: store atomic data as class attributes?
 class Atom(object):
     """
@@ -68,11 +29,15 @@ class Atom(object):
         Atomic maximum displacement [Angs].
     magmom : float, optional
         Magnetic moment. If None (default), the ground-state magnetic moment is used.
+    occupancy : float, optional
+        Fractional occupancy. If None (default), occupancy is set to 1.0.
     """
 
-    __slots__ = ("element", "coords", "displacement", "magmom")
+    __slots__ = ("element", "coords", "displacement", "magmom", "occupancy")
 
-    def __init__(self, element, coords, displacement=(0, 0, 0), magmom=None, **kwargs):
+    def __init__(
+        self, element, coords, displacement=None, magmom=None, occupancy=1.0, **kwargs
+    ):
         if isinstance(element, int):
             element = NUM_TO_ELEM[element]
         elif element not in ELEM_TO_NUM:
@@ -81,10 +46,11 @@ class Atom(object):
         if magmom is None:
             magmom = ELEM_TO_MAGMOM[element]
 
-        self.element = element
+        self.element = element.title()
         self.coords = np.asfarray(coords)
-        self.displacement = np.asfarray(displacement)
+        self.displacement = np.asfarray(displacement or (0, 0, 0))
         self.magmom = magmom
+        self.occupancy = occupancy
 
     def __repr__(self):
         return "< Atom {:<2} @ ({:.2f}, {:.2f}, {:.2f}) >".format(
@@ -234,3 +200,42 @@ class Atom(object):
         arr[0] = self.atomic_number
         arr[1::] = self.coords
         return arr
+
+
+def real_coords(frac_coords, lattice_vectors):
+    """
+    Calculates the real-space coordinates of the atom from fractional coordinates and lattice vectors.
+    
+    Parameters
+    ----------
+    frac_coords : array-like, shape (3,)
+        Fractional coordinates
+    lattice_vectors : list of ndarrays, shape (3,)
+        Lattice vectors of the crystal.
+        
+    Returns
+    -------
+    coords : ndarray, shape (3,)
+    """
+    COB = change_of_basis(np.array(lattice_vectors), np.eye(3))
+    return transform(COB, frac_coords)
+
+
+def frac_coords(real_coords, lattice_vectors):
+    """
+    Calculates and sets the real-space coordinates of the atom from fractional coordinates and lattice vectors.
+    Only valid for inorganic compounds.
+    
+    Parameters
+    ----------
+    real_coords : array-like, shape (3,)
+        Real-space coordinates
+    lattice_vectors : list of ndarrays, shape (3,)
+        Lattice vectors of the crystal.
+        
+    Returns
+    -------
+    coords : ndarray, shape (3,)
+    """
+    COB = change_of_basis(np.eye(3), np.array(lattice_vectors))
+    return np.mod(transform(COB, real_coords), 1)
