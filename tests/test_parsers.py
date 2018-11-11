@@ -146,7 +146,10 @@ class TestPDBParserAgainstBioPython(unittest.TestCase):
                             bio_pdb_generic_atoms = set()
                             for atm in biopdb_atoms:
                                 coords = np.round(
-                                    frac_coords(atm.coord_fractional, parser.lattice_vectors()), 3
+                                    frac_coords(
+                                        atm.coord_fractional, parser.lattice_vectors()
+                                    ),
+                                    3,
                                 )
                                 elem = atm.element.title()
                                 bio_pdb_generic_atoms.add(

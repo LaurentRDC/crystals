@@ -35,10 +35,24 @@ class Atom(object):
         Fractional occupancy. If None (default), occupancy is set to 1.0.
     """
 
-    __slots__ = ("element", "coords_fractional", "displacement", "magmom", "occupancy", "lattice")
+    __slots__ = (
+        "element",
+        "coords_fractional",
+        "displacement",
+        "magmom",
+        "occupancy",
+        "lattice",
+    )
 
     def __init__(
-        self, element, coords, lattice=None, displacement=None, magmom=None, occupancy=1.0, **kwargs
+        self,
+        element,
+        coords,
+        lattice=None,
+        displacement=None,
+        magmom=None,
+        occupancy=1.0,
+        **kwargs
     ):
         if isinstance(element, int):
             element = NUM_TO_ELEM[element]
@@ -50,6 +64,7 @@ class Atom(object):
 
         self.element = element.title()
         self.coords_fractional = np.asfarray(coords)
+        self.lattice = lattice
         self.displacement = np.asfarray(displacement or (0, 0, 0))
         self.magmom = magmom
         self.occupancy = occupancy
@@ -109,14 +124,12 @@ class Atom(object):
     def mass(self):
         return ELEM_TO_MASS[self.element]
 
-    def ase_atom(self, lattice=None, **kwargs):
+    def ase_atom(self, **kwargs):
         """
         Returns an ``ase.Atom`` object. 
         
         Parameters
         ----------
-        lattice : Lattice, optional
-            Lattice on which the atoms sit. Default is free space.
         kwargs
             Keyword arguments are passed to the ``ase.Atom`` constructor.
         
@@ -130,33 +143,31 @@ class Atom(object):
         """
         import ase
 
-        if lattice is None:
-            lattice = Lattice(np.eye(3))
-
         return ase.Atom(
             symbol=self.element,
-            position=self.coords_cartesian(lattice),
+            position=self.coords_cartesian,
             magmom=self.magmom,
             mass=self.mass,
             **kwargs
         )
 
-    @lru_cache()
-    def coords_cartesian(self, lattice):
+    @property
+    def coords_cartesian(self):
         """ 
-        Real-space position of the atom on a lattice.
-
-        Parameters
-        ----------
-        lattice : Lattice or iterable
-            Lattice or Crystal instance in which the atom is located.
+        Real-space position of the atom on the lattice.
                     
         Returns
         -------
         pos : `~numpy.ndarray`, shape (3,)
             Atomic position
+        
+        Raises
+        ------
+        RuntimeError : if this atom is not place on a lattice
         """
-        return real_coords(self.coords_fractional, lattice.lattice_vectors)
+        if not self.lattice:
+            return real_coords(self.coords_fractional, np.eye(3))
+        return real_coords(self.coords_fractional, self.lattice.lattice_vectors)
 
     def debye_waller_factor(self, G, out=None):
         """

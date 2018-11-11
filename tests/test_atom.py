@@ -85,11 +85,11 @@ class TestAtom(unittest.TestCase):
         self.assertTupleEqual(arr.shape, (4,))
         self.assertEqual(arr[0], self.atom.atomic_number)
         self.assertTrue(np.allclose(arr[1::], self.atom.coords_fractional))
-    
+
     def test_distance(self):
         """ Test the distance between atoms """
-        atm1 = Atom("He", [0,0,0])
-        atm2 = Atom("He", [1,0,0])
+        atm1 = Atom("He", [0, 0, 0])
+        atm2 = Atom("He", [1, 0, 0])
         self.assertEqual(atm1 - atm2, 1)
 
 
