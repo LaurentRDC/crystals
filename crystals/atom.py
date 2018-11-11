@@ -25,6 +25,8 @@ class Atom(object):
         Chemical element symbol or atomic number.
     coords : array-like, shape (3,)
         Coordinates of the atom in fractional form.
+    lattice : Lattice or array-like, shape (3,3)
+        Lattice on which the atom is positioned.
     displacement : array-like or None, optional
         Atomic maximum displacement [Angs].
     magmom : float, optional
@@ -33,10 +35,10 @@ class Atom(object):
         Fractional occupancy. If None (default), occupancy is set to 1.0.
     """
 
-    __slots__ = ("element", "coords_fractional", "displacement", "magmom", "occupancy")
+    __slots__ = ("element", "coords_fractional", "displacement", "magmom", "occupancy", "lattice")
 
     def __init__(
-        self, element, coords, displacement=None, magmom=None, occupancy=1.0, **kwargs
+        self, element, coords, lattice=None, displacement=None, magmom=None, occupancy=1.0, **kwargs
     ):
         if isinstance(element, int):
             element = NUM_TO_ELEM[element]
@@ -59,7 +61,7 @@ class Atom(object):
 
     # TODO: add `distance_from` function for atoms on a lattice
     def __sub__(self, other):
-        return np.linalg.norm(self.coords - other.coords)
+        return np.linalg.norm(self.coords_fractional - other.coords_fractional)
 
     def __eq__(self, other):
         return (
