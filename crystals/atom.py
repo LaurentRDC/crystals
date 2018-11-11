@@ -126,12 +126,12 @@ class Atom(object):
         ------
         ImportError : If ASE is not installed
         """
-        from ase import Atom  # pylint: disable import-error
+        import ase
 
         if lattice is None:
             lattice = Lattice(np.eye(3))
 
-        return Atom(
+        return ase.Atom(
             symbol=self.element,
             position=self.xyz(lattice),
             magmom=self.magmom,
