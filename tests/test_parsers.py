@@ -54,8 +54,8 @@ class TestPDBParser(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             with PDBParser("1fbb", download_dir=temp_dir) as parser:
                 for atm in parser.atoms():
-                    self.assertLessEqual(atm.coords.max(), 1)
-                    self.assertGreaterEqual(atm.coords.min(), 0)
+                    self.assertLessEqual(atm.coords_fractional.max(), 1)
+                    self.assertGreaterEqual(atm.coords_fractional.min(), 0)
 
     def test_symmetry_operators(self):
         """ Test that the non-translation part of the symmetry_operators is an invertible
@@ -146,7 +146,7 @@ class TestPDBParserAgainstBioPython(unittest.TestCase):
                             bio_pdb_generic_atoms = set()
                             for atm in biopdb_atoms:
                                 coords = np.round(
-                                    frac_coords(atm.coord, parser.lattice_vectors()), 3
+                                    frac_coords(atm.coord_fractional, parser.lattice_vectors()), 3
                                 )
                                 elem = atm.element.title()
                                 bio_pdb_generic_atoms.add(
@@ -155,7 +155,7 @@ class TestPDBParserAgainstBioPython(unittest.TestCase):
 
                             crystals_generic_atoms = set()
                             for atm in crystals_atoms:
-                                coords = np.round(atm.coords, 3)
+                                coords = np.round(atm.coords_fractional, 3)
                                 crystals_generic_atoms.add(
                                     GenericAtom(atm.element, tuple(coords))
                                 )
@@ -185,8 +185,8 @@ class TestCIFParser(unittest.TestCase):
             with self.subTest(name.split("\\")[-1]):
                 with CIFParser(name) as p:
                     for atm in p.atoms():
-                        self.assertLessEqual(atm.coords.max(), 1)
-                        self.assertGreaterEqual(atm.coords.min(), 0)
+                        self.assertLessEqual(atm.coords_fractional.max(), 1)
+                        self.assertGreaterEqual(atm.coords_fractional.min(), 0)
 
     def test_symmetry_operators(self):
         """ Test that the non-translation part of the symmetry_operators is an invertible

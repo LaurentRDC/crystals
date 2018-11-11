@@ -55,25 +55,25 @@ class TestAtom(unittest.TestCase):
         self.assertEqual(self.atom, self.atom)
         self.assertEqual(self.atom, other)
 
-        other.coords = self.atom.coords + 1
+        other.coords_fractional = self.atom.coords_fractional + 1
         self.assertNotEqual(self.atom, other)
 
     def test_trivial_transform(self):
         """ Test Atom.transform() with the identity """
-        before = np.array(self.atom.coords, copy=True)
+        before = np.array(self.atom.coords_fractional, copy=True)
         self.atom.transform(np.eye(3))
-        after = np.array(self.atom.coords, copy=True)
+        after = np.array(self.atom.coords_fractional, copy=True)
 
         self.assertSequenceEqual(tuple(before), tuple(after))
 
     def test_transform_back_and_forth(self):
         """ Test Atom.transform() with a random transformation back and forth """
-        before = np.array(self.atom.coords, copy=True)
+        before = np.array(self.atom.coords_fractional, copy=True)
 
         transf = random_transform()
         self.atom.transform(transf)
         self.atom.transform(np.linalg.inv(transf))
-        after = np.array(self.atom.coords, copy=True)
+        after = np.array(self.atom.coords_fractional, copy=True)
 
         # No assert sequence almost equal
         for x1, x2 in zip(tuple(before), tuple(after)):
@@ -84,7 +84,7 @@ class TestAtom(unittest.TestCase):
         arr = np.array(self.atom)
         self.assertTupleEqual(arr.shape, (4,))
         self.assertEqual(arr[0], self.atom.atomic_number)
-        self.assertTrue(np.allclose(arr[1::], self.atom.coords))
+        self.assertTrue(np.allclose(arr[1::], self.atom.coords_fractional))
 
 
 if __name__ == "__main__":

@@ -319,8 +319,8 @@ The real-space position with respect to a :class:`Crystal` or :class:`Lattice` c
     >>> graphite = Crystal.from_database('C')
     >>> 
     >>> carbon = list(graphite)[-1]
-    >>> fractional = carbon.coords
-    >>> real = carbon.xyz(lattice = graphite)
+    >>> fractional = carbon.coords_fractional
+    >>> real = carbon.coords_cartesian(lattice = graphite)
 
 The distance between two atoms can be calculated by taking their difference::
 

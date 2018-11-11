@@ -33,7 +33,7 @@ class Atom(object):
         Fractional occupancy. If None (default), occupancy is set to 1.0.
     """
 
-    __slots__ = ("element", "coords", "displacement", "magmom", "occupancy")
+    __slots__ = ("element", "coords_fractional", "displacement", "magmom", "occupancy")
 
     def __init__(
         self, element, coords, displacement=None, magmom=None, occupancy=1.0, **kwargs
@@ -47,14 +47,14 @@ class Atom(object):
             magmom = ELEM_TO_MAGMOM[element]
 
         self.element = element.title()
-        self.coords = np.asfarray(coords)
+        self.coords_fractional = np.asfarray(coords)
         self.displacement = np.asfarray(displacement or (0, 0, 0))
         self.magmom = magmom
         self.occupancy = occupancy
 
     def __repr__(self):
         return "< Atom {:<2} @ ({:.2f}, {:.2f}, {:.2f}) >".format(
-            self.element, *tuple(self.coords)
+            self.element, *tuple(self.coords_fractional)
         )
 
     # TODO: add `distance_from` function for atoms on a lattice
@@ -66,7 +66,7 @@ class Atom(object):
             isinstance(other, self.__class__)
             and (self.element == other.element)
             and (self.magmom == other.magmom)
-            and np.allclose(self.coords, other.coords, atol=1e-3)
+            and np.allclose(self.coords_fractional, other.coords_fractional, atol=1e-3)
             and np.allclose(self.displacement, other.displacement, atol=1e-3)
         )
 
@@ -75,7 +75,7 @@ class Atom(object):
             (
                 self.element,
                 self.magmom,
-                tuple(np.round(self.coords, 3)),
+                tuple(np.round(self.coords_fractional, 3)),
                 tuple(np.round(self.displacement, 3)),
             )
         )
@@ -133,16 +133,16 @@ class Atom(object):
 
         return ase.Atom(
             symbol=self.element,
-            position=self.xyz(lattice),
+            position=self.coords_cartesian(lattice),
             magmom=self.magmom,
             mass=self.mass,
             **kwargs
         )
 
     @lru_cache()
-    def xyz(self, lattice):
+    def coords_cartesian(self, lattice):
         """ 
-        Real-space position of the atom
+        Real-space position of the atom on a lattice.
 
         Parameters
         ----------
@@ -154,7 +154,7 @@ class Atom(object):
         pos : `~numpy.ndarray`, shape (3,)
             Atomic position
         """
-        return real_coords(self.coords, lattice.lattice_vectors)
+        return real_coords(self.coords_fractional, lattice.lattice_vectors)
 
     def debye_waller_factor(self, G, out=None):
         """
@@ -192,13 +192,13 @@ class Atom(object):
             Transformation matrices.
         """
         for matrix in matrices:
-            self.coords = transform(matrix, self.coords)
+            self.coords_fractional = transform(matrix, self.coords_fractional)
 
     def __array__(self, *args, **kwargs):
         """ Returns an array [Z, x, y, z] """
         arr = np.empty(shape=(4,), *args, **kwargs)
         arr[0] = self.atomic_number
-        arr[1::] = self.coords
+        arr[1::] = self.coords_fractional
         return arr
 
 

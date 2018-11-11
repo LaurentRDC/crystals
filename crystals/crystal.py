@@ -49,7 +49,7 @@ def symmetry_expansion(atoms, symmetry_operators):
         for sym_op in symmetry_operators:
             new = copy(atm)
             new.transform(sym_op)
-            new.coords[:] = np.mod(new.coords, 1)
+            new.coords_fractional[:] = np.mod(new.coords_fractional, 1)
             uniques.add(new)
     yield from uniques
 
