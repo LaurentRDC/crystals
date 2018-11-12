@@ -14,8 +14,6 @@ crystals.Atom
    .. autosummary::
    
       ~Atom.__init__
-      ~Atom.ase_atom
-      ~Atom.debye_waller_factor
       ~Atom.from_ase
       ~Atom.transform
    
@@ -28,11 +26,13 @@ crystals.Atom
    .. autosummary::
    
       ~Atom.atomic_number
-      ~Atom.coords
+      ~Atom.coords_cartesian
+      ~Atom.coords_fractional
       ~Atom.displacement
       ~Atom.element
+      ~Atom.lattice
       ~Atom.magmom
       ~Atom.mass
-      ~Atom.xyz
+      ~Atom.occupancy
    
    

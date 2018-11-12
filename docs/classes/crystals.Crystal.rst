@@ -14,7 +14,6 @@ crystals.Crystal
    .. autosummary::
    
       ~Crystal.__init__
-      ~Crystal.ase_atoms
       ~Crystal.frac_mesh
       ~Crystal.from_ase
       ~Crystal.from_cif

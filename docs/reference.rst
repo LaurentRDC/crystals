@@ -48,3 +48,12 @@ To help with fleshing out unit cell atoms from symmetry operators:
 
     symmetry_expansion
     lattice_system
+
+Conversion between ``Crystal`` and other packages
+
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    ase_atoms
+    Crystal.from_ase

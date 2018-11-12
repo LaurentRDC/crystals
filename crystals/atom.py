@@ -76,6 +76,7 @@ class Atom(object):
 
     # TODO: add `distance_from` function for atoms on a lattice
     def __sub__(self, other):
+        """ Distance between two atoms in **fractional** coordinates. """
         return np.linalg.norm(self.coords_fractional - other.coords_fractional)
 
     def __eq__(self, other):
@@ -123,33 +124,6 @@ class Atom(object):
     @property
     def mass(self):
         return ELEM_TO_MASS[self.element]
-
-    def ase_atom(self, **kwargs):
-        """
-        Returns an ``ase.Atom`` object. 
-        
-        Parameters
-        ----------
-        kwargs
-            Keyword arguments are passed to the ``ase.Atom`` constructor.
-        
-        Returns
-        -------
-        atom: ase.Atom
-
-        Raises
-        ------
-        ImportError : If ASE is not installed
-        """
-        import ase
-
-        return ase.Atom(
-            symbol=self.element,
-            position=self.coords_cartesian,
-            magmom=self.magmom,
-            mass=self.mass,
-            **kwargs
-        )
 
     @property
     def coords_cartesian(self):

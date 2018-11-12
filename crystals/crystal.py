@@ -275,32 +275,6 @@ class Crystal(AtomicStructure, Lattice):
             unitcell=atoms, lattice_vectors=lattice_vectors, source=self.source
         )
 
-    def ase_atoms(self, **kwargs):
-        """ 
-        Create an ASE Atoms object from a Crystal. 
-        
-        Parameters
-        ----------
-        kwargs
-            Keyword arguments are passed to ase.Atoms constructor.
-        
-        Returns
-        -------
-        atoms : ase.Atoms
-            Group of atoms ready for ASE's routines.
-        
-        Raises
-        ------
-        ImportError : If ASE is not installed
-        """
-        from ase import Atoms
-
-        return Atoms(
-            symbols=[atm.ase_atom() for atm in iter(self)],
-            cell=np.array(self.lattice_vectors),
-            **kwargs
-        )
-
     def symmetry(self, symprec=1e-2, angle_tolerance=-1.0):
         """ 
         Returns a dictionary containing space-group information. This information 

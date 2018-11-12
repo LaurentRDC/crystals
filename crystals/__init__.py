@@ -17,6 +17,7 @@ from .atom_data import ELEM_TO_NUM
 from .atom_data import NUM_TO_ELEM
 from .base import AtomicStructure
 from .base import Base
+from .conversion import ase_atoms
 from .crystal import Crystal
 from .crystal import symmetry_expansion
 from .lattice import Lattice

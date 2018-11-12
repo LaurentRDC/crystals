@@ -284,10 +284,10 @@ between :class:`ase.Atoms` and :class:`crystals.Crystal` at will.
 To create an :class:`ase.Atoms` object from a :class:`Crystal`, use the :meth:`Crystal.ase_atoms` method::
 
     >>> from ase.calculators.abinit import Abinit
-    >>> from crystals import Crystal
+    >>> from crystals import Crystal, ase_atoms
     >>>
     >>> gold = Crystal.from_database('Au')
-    >>> ase_gold = gold.ase_atoms(calculator = Abinit(...))
+    >>> ase_gold = ase_atoms(gold, calculator = Abinit(...))
 
 All keywords of the :class:`ase.Atoms` constructor are supported. To get back to a :class:`Crystal` instance::
 
@@ -312,15 +312,15 @@ constructor.
 :class:`Atom` instances are hashable; they can be used as ``dict`` keys or stored in a ``set``.
 
 Since we are most concerned with atoms in crystals, the coordinates here are assumed to be fractional.
-The real-space position with respect to a :class:`Crystal` or :class:`Lattice` can be accessed using the 
-:meth:`xyz` method::
+If the atom was created as part of a structure, the real-space position with respect to its parent (:class:`Crystal` 
+or :class:`Lattice) can be accessed using the :meth:`Atom.coords_cartesian` method::
 
     >>> from crystals import Crystal
     >>> graphite = Crystal.from_database('C')
     >>> 
     >>> carbon = list(graphite)[-1]
     >>> fractional = carbon.coords_fractional
-    >>> real = carbon.coords_cartesian(lattice = graphite)
+    >>> real = carbon.coords_cartesian
 
 The distance between two atoms can be calculated by taking their difference::
 

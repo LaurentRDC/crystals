@@ -6,11 +6,8 @@ import unittest
 from contextlib import suppress
 from copy import copy
 from copy import deepcopy
-from itertools import permutations
 from math import radians
 from pathlib import Path
-from random import choice
-from random import seed
 
 import numpy as np
 
@@ -19,15 +16,6 @@ from crystals import Crystal
 from crystals import Lattice
 from crystals.affine import rotation_matrix
 from crystals.affine import transform
-
-# seed(23)
-
-try:
-    import ase
-except ImportError:
-    ASE = False
-else:
-    ASE = True
 
 
 def connection_available():
@@ -40,28 +28,6 @@ def connection_available():
         else:
             return True
     return False
-
-
-@unittest.skipIf(not ASE, "ASE not importable")
-class TestAseAtoms(unittest.TestCase):
-    def setUp(self):
-        name = choice(list(Crystal.builtins))
-        self.crystal = Crystal.from_database(name)
-
-    def test_construction(self):
-        """ Test that ase_atoms returns without error """
-        to_ase = self.crystal.ase_atoms()
-        self.assertEqual(len(self.crystal), len(to_ase))
-
-    def test_back_and_forth(self):
-        """ Test conversion to and from ase Atoms """
-        to_ase = self.crystal.ase_atoms()
-        crystal2 = Crystal.from_ase(to_ase)
-
-        # ase has different handling of coordinates which can lead to
-        # rounding beyond 1e-3. Therefore, we cannot compare directly sets
-        # self.assertSetEqual(set(self.crystal), set(crystal2))
-        self.assertEqual(len(self.crystal), len(crystal2))
 
 
 class TestSpglibMethods(unittest.TestCase):

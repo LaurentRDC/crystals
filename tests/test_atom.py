@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
 from copy import deepcopy
-from random import choice
 from random import randint
 from random import random
 from random import seed
@@ -15,28 +14,9 @@ from crystals.affine import rotation_matrix
 seed(23)
 np.random.seed(23)
 
-try:
-    import ase
-
-    ASE = True
-except ImportError:
-    ASE = False
-
 
 def random_transform():
     return rotation_matrix(random(), axis=np.random.random((3,)))
-
-
-@unittest.skipIf(not ASE, "ASE not installed or importable")
-class TestASEAtom(unittest.TestCase):
-    def setUp(self):
-        self.atom = Atom(randint(1, 103), coords=np.random.random((3,)))
-
-    def test_back_and_forth(self):
-        """ Test that conversion from crystals.Atom and ase.Atom is working """
-        to_ase = self.atom.ase_atom()
-        atom2 = Atom.from_ase(to_ase)
-        self.assertEqual(self.atom, atom2)
 
 
 class TestAtom(unittest.TestCase):
