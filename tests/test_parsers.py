@@ -86,7 +86,7 @@ class TestPDBParserAgainstBioPython(unittest.TestCase):
         self.biopdb_parser = biopdb.PDBParser()
 
     def test_chemical_composition(self):
-        """ Test crystals.PDBParser returns the chemical compisition as BIO.PDB.PDBParser implementation,
+        """ Test crystals.PDBParser returns the same chemical composition as BIO.PDB.PDBParser implementation,
         i.e. the same elements in the right proportions. """
         with catch_warnings():
             filterwarnings(
