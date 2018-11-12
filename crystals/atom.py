@@ -64,7 +64,7 @@ class Atom(object):
 
         self.element = element.title()
         self.coords_fractional = np.asfarray(coords)
-        self.lattice = lattice
+        self.lattice = lattice or Lattice(np.eye(3))
         self.displacement = np.asfarray(displacement or (0, 0, 0))
         self.magmom = magmom
         self.occupancy = occupancy
@@ -168,32 +168,6 @@ class Atom(object):
         if not self.lattice:
             return real_coords(self.coords_fractional, np.eye(3))
         return real_coords(self.coords_fractional, self.lattice.lattice_vectors)
-
-    def debye_waller_factor(self, G, out=None):
-        """
-        Debye-Waller factor, calculated with the average of the 
-        sinusoid displacement over a full cycle.
-
-        Parameters
-        ----------
-        G : ndarrays, ndim 3
-        
-        out : ndarray or None, optional
-            NumPy ufunc parameter for avoiding unnecessary copies.
-
-        Returns
-        -------
-        out : ndarray
-        """
-        Gx, Gy, Gz = G
-        dot = (
-            self.displacement[0] * Gx
-            + self.displacement[1] * Gy
-            + self.displacement[2] * Gz
-        )
-        return np.exp(
-            -0.5 * dot ** 2, out=out
-        )  # Factor of 1/2 from average of u = sin(wt)
 
     def transform(self, *matrices):
         """
