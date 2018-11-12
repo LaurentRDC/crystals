@@ -296,7 +296,7 @@ class Crystal(AtomicStructure, Lattice):
         from ase import Atoms
 
         return Atoms(
-            symbols=[atm.ase_atom(lattice=self) for atm in iter(self)],
+            symbols=[atm.ase_atom() for atm in iter(self)],
             cell=np.array(self.lattice_vectors),
             **kwargs
         )
