@@ -143,6 +143,46 @@ class Atom(object):
             return real_coords(self.coords_fractional, np.eye(3))
         return real_coords(self.coords_fractional, self.lattice.lattice_vectors)
 
+    def distance_fractional(self, atm):
+        """
+        Calculate the distance between atoms in fractional coordinates.
+
+        Parameters
+        ----------
+        atm : ``crystals.Atom`` instance
+        
+        Returns
+        -------
+        dist : float
+            Distance in fractional coordinates
+        """
+        return np.linalg.norm(self.coords_fractional - atm.coords_fractional)
+
+    def distance_cartesian(self, atm):
+        """
+        Calculate the distance between atoms in cartesian coordinates.
+        If the parent lattices are different, an error is raised.
+
+        Parameters
+        ----------
+        atm : ``crystals.Atom`` instance
+        
+        Returns
+        -------
+        dist : float
+            Distance in Angstroms.
+        
+        Raises
+        ------
+        RuntimeError : if atoms are not defined on the same lattice.
+        """
+        if self.lattice != atm.lattice:
+            raise RuntimeError(
+                "Cartesian distance is undefined if atoms are sitting on different lattices."
+            )
+
+        return np.linalg.norm(self.coords_cartesian - atm.coords_cartesian)
+
     def transform(self, *matrices):
         """
         Transforms the real space coordinates according to a matrix.

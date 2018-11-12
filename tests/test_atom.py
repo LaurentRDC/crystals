@@ -70,7 +70,8 @@ class TestAtom(unittest.TestCase):
         """ Test the distance between atoms """
         atm1 = Atom("He", [0, 0, 0])
         atm2 = Atom("He", [1, 0, 0])
-        self.assertEqual(atm1 - atm2, 1)
+        self.assertEqual(atm1.distance_fractional(atm2), 1)
+        self.assertEqual(atm1.distance_fractional(atm2), atm2.distance_fractional(atm1))
 
 
 if __name__ == "__main__":

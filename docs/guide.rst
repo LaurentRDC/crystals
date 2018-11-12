@@ -322,12 +322,43 @@ or :class:`Lattice) can be accessed using the :meth:`Atom.coords_cartesian` meth
     >>> fractional = carbon.coords_fractional
     >>> real = carbon.coords_cartesian
 
+Atomic distances
+----------------
+
 The distance between two atoms can be calculated by taking their difference::
 
     >>> copper = Atom('Cu', coords = [0,0,0])
     >>> silver = Atom('Ag', coords = [1,0,0])
-    >>> dist = silver - copper			# distance in fractional coordinates
-    >>> dist
+    >>> silver.distance_fractional(copper)			# distance in fractional coordinates
     1.0
+
+The cartesian distance between two atoms sitting *on the same lattice* is also possible:
+
+    >>> from crystals import Crystal
+    >>> graphite = Crystal.from_database('C')
+    >>> 
+    >>> carbon1, carbon2, *_ = tuple(graphite)
+    >>> carbon1.coords_cartesian
+    array([0.000, 0.000, 5.033])
+    >>> carbon2.coords_cartesian
+    array([1.232, 0.711, 5.033])
+    >>> carbon1.distance_cartesian(carbon2)
+    1.4225981762919013
+
+If atoms are not sitting on the same lattice, calculating the distance should not be defined. In this case, an exception is raised:
+
+>>> from crystals import Crystal
+>>> gold = Crystal.from_database('Au')
+>>> silver = Crystal.from_database('Ag')
+>>>
+>>> gold1, *_ = tuple(gold)
+>>> silver1, *_ = tuple(silver)
+>>>
+>>> gold1.distance_cartesian(silver1)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "(...omitted...)\crystals\atom.py", line 181, in distance_cartesian
+    "Cartesian distance is undefined if atoms are sitting on different lattices."
+RuntimeError: Cartesian distance is undefined if atoms are sitting on different lattices.
 
 :ref:`Return to Top <user_guide>`
