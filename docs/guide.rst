@@ -319,8 +319,10 @@ or :class:`Lattice`) can be accessed using the :meth:`Atom.coords_cartesian` met
     >>> graphite = Crystal.from_database('C')
     >>> 
     >>> carbon = list(graphite)[-1]
-    >>> fractional = carbon.coords_fractional
-    >>> real = carbon.coords_cartesian
+    >>> carbon.coords_fractional
+    array([0.  , 0.  , 0.75])
+    >>> carbon.coords_cartesian
+    array([0.  , 0.  , 5.033])
 
 Atomic distances
 ----------------
