@@ -313,7 +313,7 @@ constructor.
 
 Since we are most concerned with atoms in crystals, the coordinates here are assumed to be fractional.
 If the atom was created as part of a structure, the real-space position with respect to its parent (:class:`Crystal` 
-or :class:`Lattice) can be accessed using the :meth:`Atom.coords_cartesian` method::
+or :class:`Lattice`) can be accessed using the :meth:`Atom.coords_cartesian` method::
 
     >>> from crystals import Crystal
     >>> graphite = Crystal.from_database('C')
