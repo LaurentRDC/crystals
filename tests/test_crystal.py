@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from contextlib import suppress
 from copy import copy
-from copy import deepcopy
+from copy import copy
 from math import radians
 from pathlib import Path
 
@@ -87,7 +87,7 @@ class TestCrystalRotations(unittest.TestCase):
         """ Tests that Crystal.__eq__ is working properly """
         self.assertEqual(self.crystal, self.crystal)
 
-        cryst2 = deepcopy(self.crystal)
+        cryst2 = copy(self.crystal)
         cryst2.transform(
             2 * np.eye(3)
         )  # This stretches lattice vectors, symmetry operators
@@ -99,7 +99,7 @@ class TestCrystalRotations(unittest.TestCase):
 
     def test_trivial_rotation(self):
         """ Test rotation by 360 deg around all axes. """
-        unrotated = deepcopy(self.crystal)
+        unrotated = copy(self.crystal)
         r = rotation_matrix(radians(360), [0, 0, 1])
         self.crystal.transform(r)
 
@@ -107,21 +107,21 @@ class TestCrystalRotations(unittest.TestCase):
 
     def test_identity_transform(self):
         """ Tests the trivial identity transform """
-        transf = deepcopy(self.crystal)
+        transf = copy(self.crystal)
         transf.transform(np.eye(3))
         self.assertEqual(self.crystal, transf)
 
     def test_one_axis_rotation(self):
         """ Tests the crystal orientation after rotations. """
-        unrotated = deepcopy(self.crystal)
+        unrotated = copy(self.crystal)
         self.crystal.transform(rotation_matrix(radians(37), [0, 1, 0]))
         self.assertNotEqual(unrotated, self.crystal)
         self.crystal.transform(rotation_matrix(radians(-37), [0, 1, 0]))
         self.assertEqual(unrotated, self.crystal)
 
     def test_wraparound_rotation(self):
-        cryst1 = deepcopy(self.crystal)
-        cryst2 = deepcopy(self.crystal)
+        cryst1 = copy(self.crystal)
+        cryst2 = copy(self.crystal)
 
         cryst1.transform(rotation_matrix(radians(22.3), [0, 0, 1]))
         cryst2.transform(rotation_matrix(radians(22.3 - 360), [0, 0, 1]))

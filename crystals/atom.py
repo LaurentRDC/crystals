@@ -13,7 +13,6 @@ from .atom_data import ELEM_TO_NUM
 from .atom_data import NUM_TO_ELEM
 from .lattice import Lattice
 
-
 # TODO: store atomic data as class attributes?
 class Atom(object):
     """
@@ -74,17 +73,13 @@ class Atom(object):
             self.element, *tuple(self.coords_fractional)
         )
 
-    # TODO: add `distance_from` function for atoms on a lattice
-    def __sub__(self, other):
-        """ Distance between two atoms in **fractional** coordinates. """
-        return np.linalg.norm(self.coords_fractional - other.coords_fractional)
-
     def __eq__(self, other):
         return (
             isinstance(other, self.__class__)
             and (self.element == other.element)
             and (self.magmom == other.magmom)
             and np.allclose(self.coords_fractional, other.coords_fractional, atol=1e-3)
+            and np.allclose(self.coords_cartesian, other.coords_cartesian, atol=1e-3)
             and np.allclose(self.displacement, other.displacement, atol=1e-3)
         )
 
@@ -94,6 +89,9 @@ class Atom(object):
                 self.element,
                 self.magmom,
                 tuple(np.round(self.coords_fractional, 3)),
+                tuple(
+                    np.round(self.coords_cartesian, 3)
+                ),  # effect of lattice is encoded in cartesian coordinates
                 tuple(np.round(self.displacement, 3)),
             )
         )
@@ -139,49 +137,7 @@ class Atom(object):
         ------
         RuntimeError : if this atom is not place on a lattice
         """
-        if not self.lattice:
-            return real_coords(self.coords_fractional, np.eye(3))
         return real_coords(self.coords_fractional, self.lattice.lattice_vectors)
-
-    def distance_fractional(self, atm):
-        """
-        Calculate the distance between atoms in fractional coordinates.
-
-        Parameters
-        ----------
-        atm : ``crystals.Atom`` instance
-        
-        Returns
-        -------
-        dist : float
-            Distance in fractional coordinates
-        """
-        return np.linalg.norm(self.coords_fractional - atm.coords_fractional)
-
-    def distance_cartesian(self, atm):
-        """
-        Calculate the distance between atoms in cartesian coordinates.
-        If the parent lattices are different, an error is raised.
-
-        Parameters
-        ----------
-        atm : ``crystals.Atom`` instance
-        
-        Returns
-        -------
-        dist : float
-            Distance in Angstroms.
-        
-        Raises
-        ------
-        RuntimeError : if atoms are not defined on the same lattice.
-        """
-        if self.lattice != atm.lattice:
-            raise RuntimeError(
-                "Cartesian distance is undefined if atoms are sitting on different lattices."
-            )
-
-        return np.linalg.norm(self.coords_cartesian - atm.coords_cartesian)
 
     def transform(self, *matrices):
         """
@@ -240,3 +196,53 @@ def frac_coords(real_coords, lattice_vectors):
     """
     COB = change_of_basis(np.eye(3), np.array(lattice_vectors))
     return np.mod(transform(COB, real_coords), 1)
+
+
+def distance_fractional(atm1, atm2):
+    """ 
+    Calculate the distance between two atoms in fractional coordinates.
+    
+    Parameters
+    ----------
+    atm1, atm2 : ``crystals.Atom``
+
+    Returns
+    -------
+    dist : float
+        Fractional distance between atoms.
+    
+    Raises
+    ------
+    RuntimeError : if atoms are not associated with the same lattice.
+    """
+    if atm1.lattice != atm2.lattice:
+        raise RuntimeError(
+            "Distance is undefined if atoms are sitting on different lattices."
+        )
+
+    return np.linalg.norm(atm1.coords_fractional - atm2.coords_fractional)
+
+
+def distance_cartesian(atm1, atm2):
+    """ 
+    Calculate the distance between two atoms in cartesian coordinates.
+    
+    Parameters
+    ----------
+    atm1, atm2 : ``crystals.Atom``
+
+    Returns
+    -------
+    dist : float
+        Cartesian distance between atoms in Angstroms..
+    
+    Raises
+    ------
+    RuntimeError : if atoms are not associated with the same lattice.
+    """
+    if atm1.lattice != atm2.lattice:
+        raise RuntimeError(
+            "Distance is undefined if atoms are sitting on different lattices."
+        )
+
+    return np.linalg.norm(atm1.coords_cartesian - atm2.coords_cartesian)

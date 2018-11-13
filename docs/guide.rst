@@ -325,25 +325,20 @@ or :class:`Lattice) can be accessed using the :meth:`Atom.coords_cartesian` meth
 Atomic distances
 ----------------
 
-The distance between two atoms can be calculated by taking their difference::
+The fractional/cartesian distance between two atoms sitting *on the same lattice* is possible:
 
-    >>> copper = Atom('Cu', coords = [0,0,0])
-    >>> silver = Atom('Ag', coords = [1,0,0])
-    >>> silver.distance_fractional(copper)			# distance in fractional coordinates
-    1.0
-
-The cartesian distance between two atoms sitting *on the same lattice* is also possible:
-
-    >>> from crystals import Crystal
+    >>> from crystals import Crystal, distance_fractional, distance_cartesian
     >>> graphite = Crystal.from_database('C')
     >>> 
     >>> carbon1, carbon2, *_ = tuple(graphite)
-    >>> carbon1.coords_cartesian
-    array([0.000, 0.000, 5.033])
-    >>> carbon2.coords_cartesian
-    array([1.232, 0.711, 5.033])
-    >>> carbon1.distance_cartesian(carbon2)
-    1.4225981762919013
+    >>> carbon1
+    < Atom C  @ (0.00, 0.00, 0.25) >
+    >>> carbon2
+    < Atom C  @ (0.67, 0.33, 0.75) >
+    >>> distance_fractional(carbon1, carbon2)
+    0.8975324197487241
+    >>> distance_cartesian(carbon1, carbon2)    # in Angstroms
+    3.6446077732986644
 
 If atoms are not sitting on the same lattice, calculating the distance should not be defined. In this case, an exception is raised:
 
@@ -354,11 +349,11 @@ If atoms are not sitting on the same lattice, calculating the distance should no
 >>> gold1, *_ = tuple(gold)
 >>> silver1, *_ = tuple(silver)
 >>>
->>> gold1.distance_cartesian(silver1)
+>>> distance_cartesian(gold1, silver1)
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
   File "(...omitted...)\crystals\atom.py", line 181, in distance_cartesian
     "Cartesian distance is undefined if atoms are sitting on different lattices."
-RuntimeError: Cartesian distance is undefined if atoms are sitting on different lattices.
+RuntimeError: Distance is undefined if atoms are sitting on different lattices.
 
 :ref:`Return to Top <user_guide>`

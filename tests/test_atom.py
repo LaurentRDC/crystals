@@ -8,6 +8,8 @@ from random import seed
 import numpy as np
 
 from crystals import Atom
+from crystals import distance_fractional
+from crystals import distance_cartesian
 from crystals import Lattice
 from crystals.affine import rotation_matrix
 
@@ -66,12 +68,42 @@ class TestAtom(unittest.TestCase):
         self.assertEqual(arr[0], self.atom.atomic_number)
         self.assertTrue(np.allclose(arr[1::], self.atom.coords_fractional))
 
-    def test_distance(self):
-        """ Test the distance between atoms """
+
+class TestAtomicDistances(unittest.TestCase):
+    def test_distance_fractional(self):
+        """ Test the fractional distance between atoms """
         atm1 = Atom("He", [0, 0, 0])
         atm2 = Atom("He", [1, 0, 0])
-        self.assertEqual(atm1.distance_fractional(atm2), 1)
-        self.assertEqual(atm1.distance_fractional(atm2), atm2.distance_fractional(atm1))
+        self.assertEqual(distance_fractional(atm1, atm2), 1)
+        self.assertEqual(
+            distance_fractional(atm1, atm2), distance_fractional(atm2, atm1)
+        )
+
+    def test_distance_cartesian(self):
+        """ Test the cartesian distance between atom """
+        lattice = Lattice(4 * np.eye(3))  # Cubic lattice side length 4 angs
+
+        atm1 = Atom("He", [0, 0, 0], lattice=lattice)
+        atm2 = Atom("He", [1, 0, 0], lattice=lattice)
+
+        self.assertEqual(distance_cartesian(atm1, atm2), 4.0)
+
+    def test_distance_different_lattice(self):
+        """ Test that fractional and cartesian distances 
+        between atoms in different lattices raises an error. """
+        lattice1 = Lattice(np.eye(3))
+        lattice2 = Lattice(2 * np.eye(3))
+
+        atm1 = Atom("He", [0, 0, 0], lattice=lattice1)
+        atm2 = Atom("He", [1, 0, 0], lattice=lattice2)
+
+        with self.subTest("Fractional distance"):
+            with self.assertRaises(RuntimeError):
+                distance_fractional(atm1, atm2)
+
+        with self.subTest("Cartesian distance"):
+            with self.assertRaises(RuntimeError):
+                distance_cartesian(atm1, atm2)
 
 
 if __name__ == "__main__":

@@ -85,10 +85,11 @@ class Crystal(AtomicStructure, Lattice):
     builtins = frozenset(map(lambda fn: fn.stem, CIF_ENTRIES))
 
     def __init__(self, unitcell, lattice_vectors, source=None, **kwargs):
-        unitcell = list(unitcell)
-        for atom in unitcell:
-            atom.lattice = self
         super().__init__(atoms=unitcell, lattice_vectors=lattice_vectors, **kwargs)
+
+        for atom in iter(self):
+            atom.lattice = self
+
         self.source = source
 
     @classmethod

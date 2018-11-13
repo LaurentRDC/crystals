@@ -49,6 +49,13 @@ To help with fleshing out unit cell atoms from symmetry operators:
     symmetry_expansion
     lattice_system
 
+.. autosummary::
+    :toctree: functions/
+    :nosignatures:
+
+    distance_fractional
+    distance_cartesian
+    
 Conversion between ``Crystal`` and other packages
 
 .. autosummary::
