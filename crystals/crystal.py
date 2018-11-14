@@ -200,38 +200,6 @@ class Crystal(AtomicStructure, Lattice):
             lattice_vectors=lattice_vectors,
         )
 
-    # TODO: test against known XYZ file
-    def write_xyz(self, fname, comment=None):
-        """
-        Generate an atomic coordinates .xyz file from a crystal structure.
-
-        Parameters
-        ----------
-        fname : path-like
-            The XYZ file will be written to this file. If the file already exists,
-            it will be overwritten.
-        comment : str or None, optional
-            Comment to include at the second line of ``fname``.
-        """
-        # Format is specified here:
-        #   http://openbabel.org/wiki/XYZ_%28format%29
-        comment = comment or ""
-        atom_format_str = "  {:<2}       {:10.5f}       {:10.5f}       {:10.5f}"
-
-        with open(fname, "wt", encoding="ascii") as file:
-            # First two lines are:
-            #   1. Number of atoms described in the file
-            #   2. Optional comment
-            file.write(str(len(self)) + "\n")
-            file.write(comment + "\n")
-
-            # Write atomic data row-by-row
-            # For easier human readability, atoms are sorted
-            # by element
-            for atom in self.itersorted():
-                row = atom_format_str.format(atom.element, *atom.xyz(self))
-                file.write(row + "\n")
-
     def _spglib_cell(self):
         """ Returns an array in spglib's cell format. """
         arr = np.asarray(self)

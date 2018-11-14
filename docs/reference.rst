@@ -64,3 +64,4 @@ Conversion between ``Crystal`` and other packages
 
     ase_atoms
     Crystal.from_ase
+    write_xyz
