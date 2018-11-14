@@ -13,12 +13,11 @@ URL = "http://crystals.readthedocs.io"
 DOWNLOAD_URL = "http://github.com/LaurentRDC/crystals"
 AUTHOR = "Laurent P. René de Cotret"
 AUTHOR_EMAIL = "laurent.renedecotret@mail.mcgill.ca"
-BASE_PACKAGE = "crystals"
 
 CIF_FILES = chain.from_iterable([glob("crystals\\cifs\\*.cif")])
 
 base_path = Path(__file__).parent
-with open(base_path / BASE_PACKAGE / "__init__.py") as f:
+with open(base_path / PACKAGE_NAME / "__init__.py") as f:
     module_content = f.read()
     VERSION = (
         re.compile(r".*__version__ = \"(.*?)\"", re.S).match(module_content).group(1)
@@ -47,13 +46,13 @@ if __name__ == "__main__":
         maintainer=AUTHOR,
         maintainer_email=AUTHOR_EMAIL,
         install_requires=REQUIREMENTS,
-        keywords=["crystallography"],
+        keywords=["crystallography", "material science", "structural biology"],
         project_urls={
             "Documentation": "https://crystals.readthedocs.io/",
             "Source": "https://github.com/LaurentRDC/crystals",
         },
         python_requires=">=3.6",
-        packages=find_packages(PACKAGE_NAME),
+        packages=find_packages(),
         data_files=[("crystals\\cifs", CIF_FILES)],
         include_package_data=True,
         zip_safe=False,

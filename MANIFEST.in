@@ -1,12 +1,11 @@
-graft docs
-graft tests
-
 include AUTHORS.rst
 include CHANGELOG.rst
 include CONTRIBUTING.rst
 include LICENSE
 include README.rst
+include requirements.txt 
+include dev-requirements.txt
 
-include appveyor.yml
+recursive-include crystals/cifs *.cif
 
 global-exclude *.py[cod] __pycache__ *.so *.dylib
