@@ -16,8 +16,9 @@ environment:
       NUMPY_VERSION: "1.14"
       CONDA_CHANNELS: "conda-forge"
       # ase and biopython are only required for tests
+      # black is for code formatting
       CONDA_DEPENDENCIES: "numpy spglib pycifrw ase biopython"
-      PIP_DEPENDENCIES: ""
+      PIP_DEPENDENCIES: "black"
 
   matrix:
 
@@ -57,5 +58,6 @@ build: false
 
 test_script:
   - "%CMD_IN_ENV% %TEST_CMD%"
+  - black .\crystals --check
 
 on_success:
