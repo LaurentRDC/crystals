@@ -223,7 +223,7 @@ class Lattice(Base):
 
     def mesh(self, *xi, indexing="xy"):
         """
-        Real-space coordinate arrays from fractional coordinate vectors.
+        Cartesian coordinate arrays from fractional coordinate vectors.
 
         Parameters
         ----------
@@ -237,7 +237,7 @@ class Lattice(Base):
         Returns
         -------
         out1, out2, out3 : `~numpy.ndarray`
-            Real-space oordinate arrays.
+            Real-space (cartesian) coordinate arrays.
         
         Raises
         ------
