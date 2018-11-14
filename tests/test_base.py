@@ -41,9 +41,26 @@ class TestAtomicStructure(unittest.TestCase):
         """ Test that AtomicStructure.chemical_composition always adds up to 1 """
         # Faster to create a large atomic structure from a Crystal object
         # Testing for 10 crystal structures only
-        for name in islice(Crystal.builtins, 10):
-            structure = AtomicStructure(atoms=Crystal.from_database(name))
-            self.assertAlmostEqual(sum(structure.chemical_composition.values()), 1)
+        for name in Crystal.builtins:
+            with self.subTest("Chemical composition: " + name):
+                structure = AtomicStructure(atoms=Crystal.from_database(name))
+                self.assertAlmostEqual(sum(structure.chemical_composition.values()), 1)
+
+    def test_chemical_formula(self):
+        """ Test that AtomicStructure.chemical_formula is working as expected. """
+        self.assertEqual(self.structure.chemical_formula, "Ag2U")
+
+    def test_chemical_formula_hill_notation(self):
+        """ Test that the Hill notation, where elements are alphabetically ordered except C and H, which are first. """
+        structure = AtomicStructure(
+            atoms=[
+                Atom("Ag", [0, 1, 0]),
+                Atom("C", [0, 0, 0]),
+                Atom("H", [0, 1, 0]),
+                Atom("U", [1, 1, 1]),
+            ]
+        )
+        self.assertEqual(structure.chemical_formula, "CHAgU")
 
     def test_length(self):
         """ Test the __len__ methods """

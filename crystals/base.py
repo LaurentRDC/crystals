@@ -4,6 +4,8 @@ from collections import Counter
 from collections import OrderedDict
 from itertools import chain
 
+from functools import reduce
+from math import gcd
 import numpy as np
 
 
@@ -91,6 +93,41 @@ class AtomicStructure(Base):
             counter.items(), key=lambda tup: tup[-1], reverse=True
         )
         return OrderedDict((k, v / number_atoms) for k, v in sorted_by_percentage)
+
+    @property
+    def chemical_formula(self):
+        """ 
+        Empirical chemical formula for this structure based on the chemical symbols. The string is returned 
+        in Hill notation: symbols are alphabetically ordered except for carbon (C) and hydrogen (H), which are put first. 
+        """
+        symbols_count = Counter(atm.element for atm in self)
+
+        # Special case: only one distinct element
+        if len(symbols_count) == 1:
+            return next(iter(symbols_count.keys()))
+
+        # Calculate greatest common divisor for all elements
+        # Note that we are guaranteed to have at least two distinct elements
+        counts = list(symbols_count.values())
+        common_divisor = reduce(gcd, counts[1:], counts[0])
+        symbols_count_empirical = {
+            k: int(v / common_divisor) for k, v in symbols_count.items()
+        }
+
+        # Build a list of elements and their counts
+        # We put carbon and hydrogen first because convention
+        elements = []
+        for elem in ("C", "H"):
+            if elem in symbols_count_empirical:
+                elements.append((elem, symbols_count_empirical.pop(elem)))
+
+        # Then, elements are in alphabetical number
+        elements.extend(
+            [(e, symbols_count_empirical[e]) for e in sorted(symbols_count_empirical)]
+        )
+        return "".join(
+            f"{symbol}{count}" if count > 1 else symbol for symbol, count in elements
+        )
 
     def __contains__(self, item):
         """ Check containership of :class:`Atom` instances or :class:`AtomicStructure` substructures recursively."""
