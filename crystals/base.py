@@ -154,6 +154,7 @@ class AtomicStructure(Base):
             return (
                 set(self.atoms) == set(other.atoms)
                 and set(self.substructures) == set(other.substructures)
+                # Subclasses (like Crystal via Lattice) might have extra requirements for equality
                 and super().__eq__(other)
             )
         return NotImplemented

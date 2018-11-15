@@ -114,9 +114,13 @@ class TestCrystalRotations(unittest.TestCase):
     def test_one_axis_rotation(self):
         """ Tests the crystal orientation after rotations. """
         unrotated = copy(self.crystal)
-        self.crystal.transform(rotation_matrix(radians(37), [0, 1, 0]))
+        transf = rotation_matrix(radians(37), [0, 1, 0])
+        inv = np.linalg.inv(transf)
+
+        self.crystal.transform(transf)
         self.assertNotEqual(unrotated, self.crystal)
-        self.crystal.transform(rotation_matrix(radians(-37), [0, 1, 0]))
+
+        self.crystal.transform(inv)
         self.assertEqual(unrotated, self.crystal)
 
     def test_wraparound_rotation(self):

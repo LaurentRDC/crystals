@@ -59,9 +59,7 @@ class Lattice(Base):
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            return np.allclose(
-                self.lattice_vectors, other.lattice_vectors
-            ) and super().__eq__(other)
+            return np.allclose(self.lattice_vectors, other.lattice_vectors, atol=1e-3)
         return NotImplemented
 
     def __array__(self, *args, **kwargs):

@@ -22,6 +22,7 @@ from .base import Base
 from .conversion import ase_atoms
 from .conversion import write_xyz
 from .crystal import Crystal
+from .crystal import Supercell
 from .crystal import symmetry_expansion
 from .lattice import Lattice
 from .lattice import LatticeSystem

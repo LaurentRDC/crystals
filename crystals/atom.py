@@ -64,7 +64,9 @@ class Atom(object):
         self.element = element.title()
         self.coords_fractional = np.asfarray(coords)
         self.lattice = lattice or Lattice(np.eye(3))
-        self.displacement = np.asfarray(displacement or (0, 0, 0))
+        self.displacement = np.asfarray(
+            displacement if displacement is not None else (0, 0, 0)
+        )
         self.magmom = magmom
         self.occupancy = occupancy
 
@@ -74,14 +76,22 @@ class Atom(object):
         )
 
     def __eq__(self, other):
-        return (
-            isinstance(other, self.__class__)
-            and (self.element == other.element)
-            and (self.magmom == other.magmom)
-            and np.allclose(self.coords_fractional, other.coords_fractional, atol=1e-3)
-            and np.allclose(self.coords_cartesian, other.coords_cartesian, atol=1e-3)
-            and np.allclose(self.displacement, other.displacement, atol=1e-3)
-        )
+        if type(other) is type(self):
+            return (
+                (self.element == other.element)
+                and (self.magmom == other.magmom)
+                and np.allclose(
+                    self.coords_fractional, other.coords_fractional, atol=1e-3
+                )
+                # Lattice information is encoded in coords_cartesian
+                # We don't compare lattice directly because that might cause a recursive check if
+                # self.lattice is something else, like Supercell or Crystal
+                and np.allclose(
+                    self.coords_cartesian, other.coords_cartesian, atol=1e-3
+                )
+                and np.allclose(self.displacement, other.displacement, atol=1e-3)
+            )
+        return NotImplemented
 
     def __hash__(self):
         return hash(
@@ -89,9 +99,7 @@ class Atom(object):
                 self.element,
                 self.magmom,
                 tuple(np.round(self.coords_fractional, 3)),
-                tuple(
-                    np.round(self.coords_cartesian, 3)
-                ),  # effect of lattice is encoded in cartesian coordinates
+                hash(self.lattice),
                 tuple(np.round(self.displacement, 3)),
             )
         )

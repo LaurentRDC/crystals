@@ -3,6 +3,7 @@ from copy import deepcopy as copy
 from functools import lru_cache
 from glob import glob
 from itertools import islice
+from itertools import product
 from os import mkdir
 from pathlib import Path
 from urllib.request import urlretrieve
@@ -87,7 +88,7 @@ class Crystal(AtomicStructure, Lattice):
     def __init__(self, unitcell, lattice_vectors, source=None, **kwargs):
         super().__init__(atoms=unitcell, lattice_vectors=lattice_vectors, **kwargs)
 
-        for atom in iter(self):
+        for atom in super().__iter__():
             atom.lattice = self
 
         self.source = source
@@ -184,7 +185,7 @@ class Crystal(AtomicStructure, Lattice):
             )
 
     @classmethod
-    def from_ase(cls, atoms):
+    def from_ase(cls, atoms, **kwargs):
         """
         Returns a Crystal object created from an ASE Atoms object.
         
@@ -198,6 +199,7 @@ class Crystal(AtomicStructure, Lattice):
         return cls(
             unitcell=[Atom.from_ase(atm) for atm in atoms],
             lattice_vectors=lattice_vectors,
+            **kwargs,
         )
 
     def _spglib_cell(self):
@@ -242,6 +244,28 @@ class Crystal(AtomicStructure, Lattice):
 
         return Crystal(
             unitcell=atoms, lattice_vectors=lattice_vectors, source=self.source
+        )
+
+    def supercell(self, n1, n2, n3):
+        """
+        Create a supercell from this crystal, i.e. an atomic structure where the crystal unit cell
+        is duplicated along lattice vectors.
+
+        Parameters
+        ----------
+        n1, n2, n3 : int
+            Repeat along the `a1`, `a2`, and `a3` lattice vectors.
+        
+        Returns
+        -------
+        cell : AtomicStructure
+            Iterable of `crystals.Atom` objects following the supercell dimensions.
+        """
+        return Supercell(
+            unitcell=iter(self),
+            lattice_vectors=self.lattice_vectors,
+            source=self.source,
+            dimensions=(n1, n2, n3),
         )
 
     def symmetry(self, symprec=1e-2, angle_tolerance=-1.0):
@@ -393,3 +417,68 @@ class Crystal(AtomicStructure, Lattice):
 
         rep += "\nSource: \n    {} >".format(self.source or "N/A")
         return rep
+
+
+class Supercell(Crystal):
+    """
+    The :class:`Supercell` class is a set-like container that represents a supercell of crystalline structures.
+
+    It is recommended that you instantiate a :class:`Supercell` by first creating a :class:`Crystal` and then
+    making use of the :meth:`Crystal.supercell` method. 
+
+    Parameters
+    ----------
+    unitcell : iterable of ``Atom``
+        Unit cell atoms. It is assumed that the atoms are in fractional coordinates.
+    lattice_vectors : iterable of array_like
+        Lattice vectors. If ``lattice_vectors`` is provided as a 3x3 array, it 
+        is assumed that each lattice vector is a row.
+    dimensions : 3-tuple of ints
+        Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
+        ``dimensions = (1, 1, 1) represents the trivial supercell. ``
+    """
+
+    def __init__(self, unitcell, lattice_vectors, dimensions, **kwargs):
+        super().__init__(unitcell=unitcell, lattice_vectors=lattice_vectors, **kwargs)
+        self.dimensions = tuple(dimensions)
+
+    def __iter__(self):
+        n1, n2, n3 = self.dimensions
+
+        for atm in super().__iter__():
+            for factors in product(range(0, n1), range(0, n2), range(0, n3)):
+                offset = np.asarray(factors)
+                yield Atom(
+                    element=atm.element,
+                    coords=atm.coords_fractional + offset,
+                    lattice=self,
+                    displacement=atm.displacement,
+                    magmom=atm.magmom,
+                    occupancy=atm.occupancy,
+                )
+
+    def __len__(self):
+        # Length definition inherited from AtomicStructure does not hold in this case
+        # because self.atoms points to the unit cell length
+        n1, n2, n3 = self.dimensions
+        return n1 * n2 * n3 * super().__len__()
+
+    def _to_string(self, *args, **kwargs):
+        s = super()._to_string(*args, **kwargs)
+
+        # Last 4 lines are chemical composition and source file
+        # we add supercell dimensions just before this
+        lines = s.split("\n")
+        header, footer = "\n".join(lines[::-4]), "\n".join(lines[-4::])
+
+        n1, n2, n3 = self.dimensions
+        return header + f"\nSupercell dimensions:\n    {n1} x {n2} x {n3}\n" + footer
+
+    @property
+    def crystal(self):
+        """ Get the crystal underlying this supercell """
+        return Crystal(
+            unitcell=self.atoms,
+            lattice_vectors=self.lattice_vectors,
+            source=self.source,
+        )
