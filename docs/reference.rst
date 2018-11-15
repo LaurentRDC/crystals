@@ -21,6 +21,7 @@ Structure manipulation is done through the following classes:
     :nosignatures:
 
     Crystal
+    Supercell
     Atom
 
 Bases classes
