@@ -89,7 +89,7 @@ class Crystal(AtomicStructure, Lattice):
         super().__init__(atoms=unitcell, lattice_vectors=lattice_vectors, **kwargs)
 
         for atom in super().__iter__():
-            atom.lattice = self
+            atom.lattice = Lattice(self.lattice_vectors)
 
         self.source = source
 
@@ -478,7 +478,7 @@ class Supercell(Crystal):
     def crystal(self):
         """ Get the crystal underlying this supercell """
         return Crystal(
-            unitcell=self.atoms,
-            lattice_vectors=self.lattice_vectors,
+            unitcell=super().__iter__(),
+            lattice_vectors=super().lattice_vectors,
             source=self.source,
         )

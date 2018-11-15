@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-
-from crystals import Crystal, Supercell
+import numpy as np
+from crystals import Crystal, Supercell, Atom
 
 
 class TestSupercell(unittest.TestCase):
@@ -13,14 +13,14 @@ class TestSupercell(unittest.TestCase):
 
         self.assertEqual(len(s), 8 * len(c))
 
-    @unittest.skip("Not ready for primetime")
     def test_conversion_to_crystal(self):
         """ Test conversion of crystal to supercell, back to crystal """
-        c = Crystal.from_database("C")
+        c = Crystal(unitcell=[Atom('Ag', [0,0,0])], lattice_vectors=2*np.eye(3))
         s = c.supercell(2, 2, 2)
-        c2 = s.crystal
 
-        self.assertEqual(s.crystal, c)
+        self.assertEqual(
+            c, s.crystal
+        )
 
 
 if __name__ == "__main__":

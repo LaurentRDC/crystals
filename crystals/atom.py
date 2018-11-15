@@ -99,7 +99,7 @@ class Atom(object):
                 self.element,
                 self.magmom,
                 tuple(np.round(self.coords_fractional, 3)),
-                hash(self.lattice),
+                tuple(np.round(self.coords_cartesian, 3)),
                 tuple(np.round(self.displacement, 3)),
             )
         )
