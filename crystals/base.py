@@ -147,7 +147,7 @@ class AtomicStructure(Base):
         return len(self.atoms) + sum(len(struct) for struct in self.substructures)
 
     def __hash__(self):
-        return hash((self.atoms, self.substructures)) | super().__hash__()
+        return hash((self.atoms, self.substructures, super().__hash__()))
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
