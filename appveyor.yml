@@ -13,7 +13,7 @@ environment:
                         # of 32 bit and 64 bit builds are needed, move this
                         # to the matrix section.
       TEST_CMD: "python -m unittest discover --verbose"
-      FORMAT_CMD: "black .\\crystals"
+      FORMAT_CMD: "black .\\crystals --check --v"
       NUMPY_VERSION: "stable"
       CONDA_CHANNELS: "conda-forge"
       # ase and biopython are only required for tests
