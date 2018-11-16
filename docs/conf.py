@@ -10,7 +10,8 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
-    'sphinx.ext.mathjax']
+    'sphinx.ext.mathjax',
+    'sphinx.ext.intersphinx']
 
 source_suffix = '.rst'
 master_doc = 'index'

@@ -116,6 +116,7 @@ class Crystal(AtomicStructure, Lattice):
                 ),
                 lattice_vectors=parser.lattice_vectors(),
                 source=str(path),
+                **kwargs,
             )
 
     @classmethod
@@ -155,13 +156,14 @@ class Crystal(AtomicStructure, Lattice):
             Whether or not to overwrite files in cache if they exist. If no revision 
             number is provided, files will always be overwritten. 
         """
-        with CODParser(num, revision, download_dir, overwrite, **kwargs) as parser:
+        with CODParser(num, revision, download_dir, overwrite) as parser:
             return cls(
                 unitcell=symmetry_expansion(
                     parser.atoms(), parser.symmetry_operators()
                 ),
                 lattice_vectors=parser.lattice_vectors(),
                 source="COD num:{n} rev:{r}".format(n=num, r=revision),
+                **kwargs,
             )
 
     @classmethod
@@ -180,13 +182,14 @@ class Crystal(AtomicStructure, Lattice):
             Whether or not to overwrite files in cache if they exist. If no revision 
             number is provided, files will always be overwritten. 
         """
-        with PDBParser(ID=ID, download_dir=download_dir, **kwargs) as parser:
+        with PDBParser(ID=ID, download_dir=download_dir) as parser:
             return cls(
                 unitcell=symmetry_expansion(
                     parser.atoms(), parser.symmetry_operators()
                 ),
                 lattice_vectors=parser.lattice_vectors(),
                 source=parser.filename,
+                **kwargs,
             )
 
     @classmethod
@@ -262,7 +265,8 @@ class Crystal(AtomicStructure, Lattice):
         Parameters
         ----------
         n1, n2, n3 : int
-            Repeat along the `a1`, `a2`, and `a3` lattice vectors.
+            Repeat along the `a1`, `a2`, and `a3` lattice vectors. For example, 
+            ``(1, 1, 1)`` represents the trivial supercell.
         
         Returns
         -------
@@ -431,8 +435,20 @@ class Supercell(Crystal):
     """
     The :class:`Supercell` class is a set-like container that represents a supercell of crystalline structures.
 
-    It is recommended that you instantiate a :class:`Supercell` by first creating a :class:`Crystal` and then
-    making use of the :meth:`Crystal.supercell` method. 
+    It is recommended that you do not instantiate a :class:`Supercell` by hand. You can make use of the 
+    ``Crystal.supercell`` method, or take advantages of the following constructors:
+
+    * ``Supercell.from_cif``: create an instance from a CIF file;
+    
+    * ``Supercell.from_pdb``: create an instance from a Protein Data Bank entry;
+    
+    * ``Supercell.from_database``: create an instance from the internal database of CIF files;
+    
+    * ``Supercell.from_cod``: create an instance from a Crystallography Open Database entry.
+
+    * ``Supercell.from_ase``: create an instance from an ``ase.Atoms`` instance.
+
+    These constructors mirror the equivalent ``Crystal`` constructores.
 
     To iterate over all atoms in the supercell, use this object as an iterable. To iterable over atoms
     in the unit cell only, iterate over the the ``unitcell`` attribute.
@@ -446,7 +462,7 @@ class Supercell(Crystal):
         is assumed that each lattice vector is a row.
     dimensions : 3-tuple of ints
         Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
-        ``dimensions = (1, 1, 1) represents the trivial supercell. ``
+        ``(1, 1, 1)`` represents the trivial supercell.
     """
 
     def __init__(self, unitcell, lattice_vectors, dimensions, **kwargs):
@@ -475,6 +491,110 @@ class Supercell(Crystal):
         n1, n2, n3 = self.dimensions
         return n1 * n2 * n3 * super().__len__()
 
+    @classmethod
+    def from_cif(cls, path, dimensions, **kwargs):
+        """
+        Returns a Supercell object created from a CIF 1.0, 1.1 or 2.0 file.
+
+        Parameters
+        ----------
+        path : path-like
+            File path
+        dimensions : 3-tuple of ints
+            Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
+            ``(1, 1, 1)`` represents the trivial supercell.
+        """
+        return Crystal.from_cif(path, **kwargs).supercell(*dimensions)
+
+    @classmethod
+    def from_database(cls, name, dimensions, **kwargs):
+        """ 
+        Returns a Supercell object create from the internal CIF database.
+
+        Parameters
+        ----------
+        name : path-like
+            Name of the database entry. Available items can be retrieved from `Supercell.builtins`
+        dimensions : 3-tuple of ints
+            Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
+            ``(1, 1, 1)`` represents the trivial supercell.
+        """
+        return Crystal.from_database(name, **kwargs).supercell(*dimensions)
+
+    @classmethod
+    def from_cod(
+        cls,
+        num,
+        dimensions,
+        revision=None,
+        download_dir=None,
+        overwrite=False,
+        **kwargs,
+    ):
+        """ 
+        Returns a Supercell object built from the Crystallography Open Database. 
+
+        Parameters
+        ----------
+        num : int
+            COD identification number.
+        dimensions : 3-tuple of ints
+            Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
+            ``(1, 1, 1)`` represents the trivial supercell.
+        revision : int or None, optional
+            Revision number. If None (default), the latest revision is used.
+        download_dir : path-like object, optional
+            Directory where to save the CIF file. Default is a local folder in the current directory
+        overwrite : bool, optional
+            Whether or not to overwrite files in cache if they exist. If no revision 
+            number is provided, files will always be overwritten. 
+        """
+        return Crystal.from_cod(
+            num=num,
+            revision=revision,
+            download_dir=download_dir,
+            overwrite=overwrite,
+            **kwargs,
+        ).supercell(*dimensions)
+
+    @classmethod
+    def from_pdb(cls, ID, dimensions, download_dir=None, overwrite=False, **kwargs):
+        """
+        Returns a Supercell object created from a Protein DataBank entry.
+
+        Parameters
+        ----------
+        ID : str
+            Protein DataBank identification. The correct .pdb file will be downloaded,
+            cached and parsed.
+        dimensions : 3-tuple of ints
+            Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
+            ``(1, 1, 1)`` represents the trivial supercell.
+        download_dir : path-like object, optional
+            Directory where to save the PDB file.
+        overwrite : bool, optional
+            Whether or not to overwrite files in cache if they exist. If no revision 
+            number is provided, files will always be overwritten. 
+        """
+        return Crystal.from_pdb(
+            ID=ID, download_dir=download_dir, overwrite=overwrite, **kwargs
+        ).supercell(*dimensions)
+
+    @classmethod
+    def from_ase(cls, atoms, dimensions, **kwargs):
+        """
+        Returns a Supercell object created from an ASE Atoms object.
+        
+        Parameters
+        ----------
+        atoms : ase.Atoms
+            Atoms group.
+        dimensions : 3-tuple of ints
+            Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
+            ``(1, 1, 1)`` represents the trivial supercell.
+        """
+        return Crystal.from_ase(atoms, **kwargs).supercell(*dimensions)
+
     @property
     def unitcell(self):
         """ Atoms forming the crystal unit cell. """
@@ -487,7 +607,7 @@ class Supercell(Crystal):
         # Last 4 lines are chemical composition and source file
         # we add supercell dimensions just before this
         lines = s.split("\n")
-        header, footer = "\n".join(lines[::-4]), "\n".join(lines[-4::])
+        header, footer = "\n".join(lines[0:-4]), "\n".join(lines[-4::])
 
         n1, n2, n3 = self.dimensions
         return header + f"\nSupercell dimensions:\n    {n1} x {n2} x {n3}\n" + footer
