@@ -276,6 +276,38 @@ The conversion between Miller indices and scattering vectors is available::
     >>> graphite.miller_indices(*G)
     (array([1.]), array([0.]), array([0.]))
 
+Creating a supercell
+====================
+For various reasons, creating a supercell from a crystal might be desirable. The process is very easy. 
+Let's imagine we want to create a 2x2x2 supercell of graphite::
+
+    >>> from crystals import Crystal
+    >>> graphite = Crystal.from_database('C')
+    >>>
+    >>> for atm in graphite: # Iterate over the unitcell
+    ...     print(atm)
+    ...
+    < Atom C  @ (0.00, 0.00, 0.25) >
+    < Atom C  @ (0.67, 0.33, 0.75) >
+    < Atom C  @ (0.00, 0.00, 0.75) >
+    < Atom C  @ (0.33, 0.67, 0.25) >
+    >>>
+    >>> for atm in graphite.supercell(2,2,2):   # Iterate over the supercell
+    ...    print(atm)
+    ...
+    < Atom C  @ (0.67, 0.33, 0.75) >
+    < Atom C  @ (0.67, 0.33, 1.75) >
+    < Atom C  @ (0.67, 1.33, 0.75) >
+    < Atom C  @ (0.67, 1.33, 1.75) >
+    (... omitting 24 atoms ...)
+    < Atom C  @ (1.00, 0.00, 0.75) >
+    < Atom C  @ (1.00, 0.00, 1.75) >
+    < Atom C  @ (1.00, 1.00, 0.75) >
+    < Atom C  @ (1.00, 1.00, 1.75) >
+
+A :class:`Supercell` is different than a :class:`Crystal` in only a few ways. Iterating over a :class:`Supercell` yields more atoms, 
+but otherwise you can still determine symmetry, retrieve lattice vectors, get chemical composition, etc.
+
 Compatibility with ASE
 ======================
 The `Atomic Simulation Environment <https://wiki.fysik.dtu.dk/ase/index.html>`_ is a powerful tool. You can harness its power and convert

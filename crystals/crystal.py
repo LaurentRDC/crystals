@@ -92,6 +92,11 @@ class Crystal(AtomicStructure, Lattice):
             atom.lattice = Lattice(self.lattice_vectors)
 
         self.source = source
+    
+    @property
+    def unitcell(self):
+        """ Atoms forming the crystal unit cell. """
+        return self.__iter__()
 
     @classmethod
     @lru_cache(maxsize=len(builtins), typed=True)  # saves a lot of time in tests
@@ -204,8 +209,11 @@ class Crystal(AtomicStructure, Lattice):
 
     def _spglib_cell(self):
         """ Returns an array in spglib's cell format. """
-        arr = np.asarray(self)
-        return np.array(self.lattice_vectors), arr[:, 1:], arr[:, 0]
+        # To get symmetry information, we only give spglib the unit cell atoms
+        # This way, all spglib-related methods (like symmetry()) will act on the unit cell only.
+        # This distinction is important for Crystal subclasses, like Supercell.
+        unitcell = np.stack([np.asarray(atm) for atm in self.unitcell])
+        return np.array(self.lattice_vectors), unitcell[:, 1:], unitcell[:, 0]
 
     def primitive(self, symprec=1e-2):
         """ 
@@ -426,6 +434,9 @@ class Supercell(Crystal):
     It is recommended that you instantiate a :class:`Supercell` by first creating a :class:`Crystal` and then
     making use of the :meth:`Crystal.supercell` method. 
 
+    To iterate over all atoms in the supercell, use this object as an iterable. To iterable over atoms
+    in the unit cell only, iterate over the the ``unitcell`` attribute.
+
     Parameters
     ----------
     unitcell : iterable of ``Atom``
@@ -443,6 +454,7 @@ class Supercell(Crystal):
         self.dimensions = tuple(dimensions)
 
     def __iter__(self):
+        """ Iterable over all atoms in the supercell """
         n1, n2, n3 = self.dimensions
 
         for atm in super().__iter__():
@@ -462,9 +474,15 @@ class Supercell(Crystal):
         # because self.atoms points to the unit cell length
         n1, n2, n3 = self.dimensions
         return n1 * n2 * n3 * super().__len__()
+    
+    @property
+    def unitcell(self):
+        """ Atoms forming the crystal unit cell. """
+        return super().__iter__()
 
-    def _to_string(self, *args, **kwargs):
-        s = super()._to_string(*args, **kwargs)
+    def _to_string(self, natoms, **kwargs):
+        """ Readable string representation of this object. """
+        s = super()._to_string(natoms, **kwargs)
 
         # Last 4 lines are chemical composition and source file
         # we add supercell dimensions just before this
@@ -478,7 +496,7 @@ class Supercell(Crystal):
     def crystal(self):
         """ Get the crystal underlying this supercell """
         return Crystal(
-            unitcell=super().__iter__(),
-            lattice_vectors=super().lattice_vectors,
+            unitcell=self.unitcell,
+            lattice_vectors=self.lattice_vectors,
             source=self.source,
         )
