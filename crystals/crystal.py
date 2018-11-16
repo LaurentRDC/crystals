@@ -92,7 +92,7 @@ class Crystal(AtomicStructure, Lattice):
             atom.lattice = Lattice(self.lattice_vectors)
 
         self.source = source
-    
+
     @property
     def unitcell(self):
         """ Atoms forming the crystal unit cell. """
@@ -474,7 +474,7 @@ class Supercell(Crystal):
         # because self.atoms points to the unit cell length
         n1, n2, n3 = self.dimensions
         return n1 * n2 * n3 * super().__len__()
-    
+
     @property
     def unitcell(self):
         """ Atoms forming the crystal unit cell. """

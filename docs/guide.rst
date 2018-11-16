@@ -7,7 +7,7 @@ User guide
 **********
 
 This page highlights some of the features of ``crystals``. In case anything is unclear, 
-`raising an issue <https://github.com/LaurentRDC/crystals/issues/>` would be appreciated.
+`raising an issue <https://github.com/LaurentRDC/crystals/issues/>`_ would be appreciated.
 
 The :class:`Crystal` class
 ==========================
