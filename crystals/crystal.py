@@ -438,7 +438,8 @@ class Crystal(AtomicStructure, Lattice):
 
 class Supercell(Crystal):
     """
-    The :class:`Supercell` class is a set-like container that represents a supercell of crystalline structures.
+    The :class:`Supercell` class is a set-like container that represents a 
+    supercell of crystalline structures.
 
     It is recommended that you do not instantiate a :class:`Supercell` by hand. You can make use of the 
     ``Crystal.supercell`` method, or take advantages of the following constructors:
@@ -455,8 +456,9 @@ class Supercell(Crystal):
 
     These constructors mirror the equivalent ``Crystal`` constructores.
 
-    To iterate over all atoms in the supercell, use this object as an iterable. To iterable over atoms
-    in the unit cell only, iterate over the the ``unitcell`` attribute.
+    To iterate over all atoms in the supercell, use this object as an iterable. 
+    To iterate over atoms in the unit cell only, iterate over the the ``unitcell`` attribute.
+    To recover the underlying crystal, use the ``Supercell.crystal`` method.
 
     Parameters
     ----------
@@ -509,7 +511,9 @@ class Supercell(Crystal):
             Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
             ``(1, 1, 1)`` represents the trivial supercell.
         """
-        return Crystal.from_cif(path, **kwargs).supercell(*dimensions)
+        # We're only 'overriding' this method to update the doctstring
+        # Otherwise, there is no change.
+        return super().from_cif(path, dimensions=dimensions, **kwargs)
 
     @classmethod
     def from_database(cls, name, dimensions, **kwargs):
@@ -524,7 +528,9 @@ class Supercell(Crystal):
             Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
             ``(1, 1, 1)`` represents the trivial supercell.
         """
-        return Crystal.from_database(name, **kwargs).supercell(*dimensions)
+        # We're only 'overriding' this method to update the doctstring
+        # Otherwise, there is no change.
+        return super().from_database(name, dimensions=dimensions, **kwargs)
 
     @classmethod
     def from_cod(
@@ -554,13 +560,15 @@ class Supercell(Crystal):
             Whether or not to overwrite files in cache if they exist. If no revision 
             number is provided, files will always be overwritten. 
         """
-        return Crystal.from_cod(
+        # We're only 'overriding' this method to update the doctstring
+        # Otherwise, there is no change.
+        return super().from_cod(
             num=num,
             revision=revision,
             download_dir=download_dir,
             overwrite=overwrite,
-            **kwargs,
-        ).supercell(*dimensions)
+            dimensions=dimensions,
+        )
 
     @classmethod
     def from_pdb(cls, ID, dimensions, download_dir=None, overwrite=False, **kwargs):
@@ -581,9 +589,15 @@ class Supercell(Crystal):
             Whether or not to overwrite files in cache if they exist. If no revision 
             number is provided, files will always be overwritten. 
         """
-        return Crystal.from_pdb(
-            ID=ID, download_dir=download_dir, overwrite=overwrite, **kwargs
-        ).supercell(*dimensions)
+        # We're only 'overriding' this method to update the doctstring
+        # Otherwise, there is no change.
+        return super().from_pdb(
+            ID=ID,
+            download_dir=download_dir,
+            overwrite=overwrite,
+            dimensions=dimensions,
+            **kwargs,
+        )
 
     @classmethod
     def from_ase(cls, atoms, dimensions, **kwargs):
@@ -598,12 +612,40 @@ class Supercell(Crystal):
             Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
             ``(1, 1, 1)`` represents the trivial supercell.
         """
-        return Crystal.from_ase(atoms, **kwargs).supercell(*dimensions)
+        # We're only 'overriding' this method to update the doctstring
+        # Otherwise, there is no change.
+        return super().from_ase(atoms, dimensions=dimensions, **kwargs)
 
     @property
     def unitcell(self):
-        """ Atoms forming the crystal unit cell. """
+        """ Atoms forming the underlying crystal unit cell. """
         return super().__iter__()
+
+    def primitive(self, symprec=1e-2):
+        """ 
+        Returns a Supercell object with the same dimensions, but defined on 
+        the primitive unit cell.
+        
+        Parameters
+        ----------
+        symprec : float, optional
+            Symmetry-search distance tolerance in Cartesian coordinates [Angstroms].
+
+        Returns
+        -------
+        primitive : Supercell
+            Supercell defined on a primitive cell.
+
+        Raises
+        ------
+        RuntimeError : If primitive cell could not be found.
+        
+        Notes
+        -----
+        Optional atomic properties (e.g magnetic moment) might be lost in the reduction.
+        """
+        primitive_crystal = super().primitive(symprec=symprec)
+        return primitive_crystal.supercell(*self.dimensions)
 
     def _to_string(self, natoms, **kwargs):
         """ Readable string representation of this object. """
