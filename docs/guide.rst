@@ -57,6 +57,30 @@ constructed like so::
 and the structure file will be taken care of by :mod:`crystals`::
     
     >>> hemoglobin = Crystal.from_pdb('1gzx')
+    >>> print(hemoglobin)
+    < Crystal object with following unit cell:
+        Atom C  @ (0.85, 0.79, 0.96)
+        Atom C  @ (0.86, 0.85, 0.94)
+        Atom C  @ (0.92, 0.99, 0.63)
+        Atom C  @ (0.38, 0.68, 0.09)
+        Atom C  @ (0.14, 0.62, 0.88)
+        Atom C  @ (0.53, 0.84, 0.07)
+        Atom C  @ (0.11, 0.77, 0.40)
+        Atom C  @ (0.70, 0.23, 0.66)
+        Atom C  @ (0.60, 0.10, 0.83)
+        Atom C  @ (0.92, 0.10, 0.49)
+        ... omitting 19066 atoms ...
+    Lattice parameters:
+        a=97.050Å, b=99.500Å, c=66.110Å
+        α=90.000°, β=90.000°, γ=90.000°
+    Chemical composition:
+        C: 61.942%
+        O: 21.367%
+        N: 16.356%
+        S: 0.252%
+        Fe: 0.084%
+    Source:
+        (...omitted...)\crystals_cache\pdb1gzx.ent >
 
 Another convenient way to construct a :class:`Crystal` is through the `Crystallography Open Database <http://www.crystallography.net/cod/>`_::
 
