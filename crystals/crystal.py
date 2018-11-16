@@ -103,13 +103,14 @@ class Crystal(AtomicStructure, Lattice):
     def from_cif(cls, path, **kwargs):
         """
         Returns a Crystal object created from a CIF 1.0, 1.1 or 2.0 file.
+        Keyword arguments are passed to the constructor.
 
         Parameters
         ----------
         path : path-like
             File path
         """
-        with CIFParser(filename=path, **kwargs) as parser:
+        with CIFParser(filename=path) as parser:
             return cls(
                 unitcell=symmetry_expansion(
                     parser.atoms(), parser.symmetry_operators()
@@ -123,6 +124,7 @@ class Crystal(AtomicStructure, Lattice):
     def from_database(cls, name, **kwargs):
         """ 
         Returns a Crystal object create from the internal CIF database.
+        Keyword arguments are passed to the constructor.
 
         Parameters
         ----------
@@ -143,6 +145,7 @@ class Crystal(AtomicStructure, Lattice):
     def from_cod(cls, num, revision=None, download_dir=None, overwrite=False, **kwargs):
         """ 
         Returns a Crystal object built from the Crystallography Open Database. 
+        Keyword arguments are passed to the constructor.
 
         Parameters
         ----------
@@ -170,6 +173,7 @@ class Crystal(AtomicStructure, Lattice):
     def from_pdb(cls, ID, download_dir=None, overwrite=False, **kwargs):
         """
         Returns a Crystal object created from a Protein DataBank entry.
+        Keyword arguments are passed to the constructor.
 
         Parameters
         ----------
@@ -196,6 +200,7 @@ class Crystal(AtomicStructure, Lattice):
     def from_ase(cls, atoms, **kwargs):
         """
         Returns a Crystal object created from an ASE Atoms object.
+        Keyword arguments are passed to the constructor.
         
         Parameters
         ----------
