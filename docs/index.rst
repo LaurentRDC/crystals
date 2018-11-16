@@ -35,7 +35,7 @@ Table of content
     
     installation
     guide
-    reference
+    api/reference
     contributing
 
 Usage example
