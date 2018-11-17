@@ -14,6 +14,7 @@ from crystals import Crystal
 
 np.random.seed(23)
 
+
 class TestAtomicStructure(unittest.TestCase):
     def setUp(self):
         self.substructure = AtomicStructure(atoms=[Atom("U", [0, 0, 0])])
@@ -26,7 +27,7 @@ class TestAtomicStructure(unittest.TestCase):
         """ Test iteration of AtomicStructure yields from orphan atoms and substructure atoms alike """
         elements = [atm.element for atm in self.structure]
         self.assertTrue(len(elements), 3)
-    
+
     def test_trivial_transformation(self):
         """ Test that the identity transformation of an AtomicStructure works as expected. """
         transformed = self.structure.transform(np.eye(3))
@@ -37,7 +38,7 @@ class TestAtomicStructure(unittest.TestCase):
 
     def test_transformations_inversions(self):
         """ Test that symmetry operations work as expected when inverted. """
-        operator = np.random.random(size=(3,3))
+        operator = np.random.random(size=(3, 3))
         inv_op = np.linalg.inv(operator)
 
         transformed1 = self.structure.transform(operator)
@@ -46,15 +47,13 @@ class TestAtomicStructure(unittest.TestCase):
         # transformed2 structure should be different, but equal, to original structure
         self.assertIsNot(transformed2, self.structure)
         self.assertEqual(transformed2, self.structure)
-    
+
     def test_transformations_correctness(self):
         """ Test that AtomicStructure.transform() works as expected. """
-        operator = 2*np.eye(3)
+        operator = 2 * np.eye(3)
         transformed = self.structure.transform(operator)
 
-        expected_atoms = [deepcopy(atm) for atm in self.structure]
-        for atm in expected_atoms:
-            atm.transform(operator)
+        expected_atoms = [atm.transform(operator) for atm in self.structure]
 
         for atm in expected_atoms:
             self.assertIn(atm, transformed)

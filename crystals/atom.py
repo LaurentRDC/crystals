@@ -151,15 +151,31 @@ class Atom(object):
 
     def transform(self, *matrices):
         """
-        Transforms the fractional coordinates according to a matrix.
+        Return an Atom with fractional coordinates transformed according to symmetry operators.
         
         Parameters
         ----------
         matrices : ndarrays, shape {(3,3), (4,4)}
             Transformation matrices.
+        
+        Returns
+        -------
+        atm : Atom
+            Transformed atom. The original atom is left unchanged.
         """
+        coords_fractional = np.array(self.coords_fractional, copy=True)
+
         for matrix in matrices:
-            self.coords_fractional = transform(matrix, self.coords_fractional)
+            coords_fractional = transform(matrix, coords_fractional)
+
+        return Atom(
+            element=self.element,
+            coords=coords_fractional,
+            lattice=self.lattice,
+            displacement=self.displacement,
+            magmom=self.magmom,
+            occupancy=self.occupancy,
+        )
 
     def __array__(self, *args, **kwargs):
         """ Returns an array [Z, x, y, z] """

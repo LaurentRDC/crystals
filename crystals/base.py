@@ -28,6 +28,7 @@ class Base:
     def __hash__(self):
         return 0
 
+
 class AtomicStructure(Base):
     """
     Base class for atomic structures. These structures can be made
@@ -129,7 +130,7 @@ class AtomicStructure(Base):
         return "".join(
             f"{symbol}{count}" if count > 1 else symbol for symbol, count in elements
         )
-    
+
     def transform(self, *operators):
         """
         Return a transformed AtomicStructure based on symmetry operators.
@@ -147,19 +148,16 @@ class AtomicStructure(Base):
         transformed_atoms = set()
         for atom in self.atoms:
             for operator in operators:
-                new = copy(atom)
-                new.transform(operator)
-                transformed_atoms.add(new)
+                transformed_atoms.add(atom.transform(operator))
 
         # Substructures are recursively transformed
         transformed_substructures = set()
         for substructure in self.substructures:
-            transformed_substructures.add(
-                substructure.transform(*operators)
-            )
-        
-        return AtomicStructure(atoms=transformed_atoms, substructures=transformed_substructures)
+            transformed_substructures.add(substructure.transform(*operators))
 
+        return AtomicStructure(
+            atoms=transformed_atoms, substructures=transformed_substructures
+        )
 
     def __contains__(self, item):
         """ Check containership of :class:`Atom` instances or :class:`AtomicStructure` substructures recursively."""

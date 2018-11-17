@@ -42,24 +42,20 @@ class TestAtom(unittest.TestCase):
 
     def test_trivial_transform(self):
         """ Test Atom.transform() with the identity """
-        before = np.array(self.atom.coords_fractional, copy=True)
-        self.atom.transform(np.eye(3))
-        after = np.array(self.atom.coords_fractional, copy=True)
+        transformed = self.atom.transform(np.eye(3))
 
-        self.assertSequenceEqual(tuple(before), tuple(after))
+        self.assertIsNot(transformed, self.atom)
+        self.assertEqual(transformed, self.atom)
 
     def test_transform_back_and_forth(self):
         """ Test Atom.transform() with a random transformation back and forth """
-        before = np.array(self.atom.coords_fractional, copy=True)
 
         transf = random_transform()
-        self.atom.transform(transf)
-        self.atom.transform(np.linalg.inv(transf))
-        after = np.array(self.atom.coords_fractional, copy=True)
+        transformed1 = self.atom.transform(transf)
+        transformed2 = transformed1.transform(np.linalg.inv(transf))
 
-        # No assert sequence almost equal
-        for x1, x2 in zip(tuple(before), tuple(after)):
-            self.assertAlmostEqual(x1, x2)
+        self.assertIsNot(transformed2, self.atom)
+        self.assertEqual(transformed2, self.atom)
 
     def test_atom_array(self):
         """ Test that numpy.array(Atom(...)) works as expected """

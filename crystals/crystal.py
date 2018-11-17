@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from copy import deepcopy as copy
 from functools import lru_cache
 from glob import glob
 from itertools import islice, product
@@ -47,8 +46,7 @@ def symmetry_expansion(atoms, symmetry_operators):
 
     for atm in atoms:
         for sym_op in symmetry_operators:
-            new = copy(atm)
-            new.transform(sym_op)
+            new = atm.transform(sym_op)
             new.coords_fractional[:] = np.mod(new.coords_fractional, 1)
             uniques.add(new)
     yield from uniques

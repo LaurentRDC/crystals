@@ -73,6 +73,7 @@ class TestCrystalSpecialMethods(unittest.TestCase):
                 else:
                     self.assertNotEqual(repr(c), str(c))
 
+
 class TestCrystalConstructors(unittest.TestCase):
     def test_builtins(self):
         """ Test that all names in Crystal.builtins build without errors,
