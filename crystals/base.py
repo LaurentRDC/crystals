@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from collections import Counter
-from collections import OrderedDict
-from itertools import chain
-
+from collections import Counter, OrderedDict
 from functools import reduce
+from itertools import chain
 from math import gcd
+
 import numpy as np
 
 

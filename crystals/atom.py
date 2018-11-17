@@ -4,14 +4,11 @@ from functools import lru_cache
 
 import numpy as np
 
-from .affine import change_of_basis
-from .affine import transform
-from .atom_data import ELEM_TO_MAGMOM
-from .atom_data import ELEM_TO_MASS
-from .atom_data import ELEM_TO_NAME
-from .atom_data import ELEM_TO_NUM
-from .atom_data import NUM_TO_ELEM
+from .affine import change_of_basis, transform
+from .atom_data import (ELEM_TO_MAGMOM, ELEM_TO_MASS, ELEM_TO_NAME,
+                        ELEM_TO_NUM, NUM_TO_ELEM)
 from .lattice import Lattice
+
 
 # TODO: store atomic data as class attributes?
 class Atom(object):

@@ -5,8 +5,8 @@ Conversion between ``crystals`` data structures and other modules.
 import numpy as np
 
 from .atom import Atom
-from .lattice import Lattice
 from .crystal import Crystal
+from .lattice import Lattice
 
 try:
     import ase

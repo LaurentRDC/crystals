@@ -2,25 +2,20 @@
 from copy import deepcopy as copy
 from functools import lru_cache
 from glob import glob
-from itertools import islice
-from itertools import product
+from itertools import islice, product
 from os import mkdir
 from pathlib import Path
 from urllib.request import urlretrieve
 
 import numpy as np
-from spglib import find_primitive
-from spglib import get_error_message
-from spglib import get_spacegroup_type
-from spglib import get_symmetry_dataset
+from spglib import (find_primitive, get_error_message, get_spacegroup_type,
+                    get_symmetry_dataset)
 
 from .affine import affine_map
 from .atom import Atom
 from .base import AtomicStructure
 from .lattice import Lattice
-from .parsers import CIFParser
-from .parsers import CODParser
-from .parsers import PDBParser
+from .parsers import CIFParser, CODParser, PDBParser
 
 CIF_ENTRIES = frozenset((Path(__file__).parent / "cifs").glob("*.cif"))
 
