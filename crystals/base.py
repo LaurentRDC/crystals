@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from collections import Counter, OrderedDict
+from copy import deepcopy as copy
 from functools import reduce
 from itertools import chain
 from math import gcd
 
 import numpy as np
+
+from .affine import affine_map
 
 
 class Base:
@@ -24,7 +27,6 @@ class Base:
 
     def __hash__(self):
         return 0
-
 
 class AtomicStructure(Base):
     """
@@ -127,6 +129,37 @@ class AtomicStructure(Base):
         return "".join(
             f"{symbol}{count}" if count > 1 else symbol for symbol, count in elements
         )
+    
+    def transform(self, *operators):
+        """
+        Return a transformed AtomicStructure based on symmetry operators.
+
+        operators : iterable of array_like
+            Symmetry operators, either 3x3 or 4x4.
+        
+        Returns
+        -------
+        transformed : AtomicStructure
+            New structure.
+        """
+        operators = tuple(map(affine_map, operators))
+
+        transformed_atoms = set()
+        for atom in self.atoms:
+            for operator in operators:
+                new = copy(atom)
+                new.transform(operator)
+                transformed_atoms.add(new)
+
+        # Substructures are recursively transformed
+        transformed_substructures = set()
+        for substructure in self.substructures:
+            transformed_substructures.add(
+                substructure.transform(*operators)
+            )
+        
+        return AtomicStructure(atoms=transformed_atoms, substructures=transformed_substructures)
+
 
     def __contains__(self, item):
         """ Check containership of :class:`Atom` instances or :class:`AtomicStructure` substructures recursively."""

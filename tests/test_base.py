@@ -12,6 +12,8 @@ from crystals import AtomicStructure
 from crystals import Crystal
 
 
+np.random.seed(23)
+
 class TestAtomicStructure(unittest.TestCase):
     def setUp(self):
         self.substructure = AtomicStructure(atoms=[Atom("U", [0, 0, 0])])
@@ -24,6 +26,38 @@ class TestAtomicStructure(unittest.TestCase):
         """ Test iteration of AtomicStructure yields from orphan atoms and substructure atoms alike """
         elements = [atm.element for atm in self.structure]
         self.assertTrue(len(elements), 3)
+    
+    def test_trivial_transformation(self):
+        """ Test that the identity transformation of an AtomicStructure works as expected. """
+        transformed = self.structure.transform(np.eye(3))
+
+        # transformed structure should be different, but equal, to original structure
+        self.assertIsNot(transformed, self.structure)
+        self.assertEqual(transformed, self.structure)
+
+    def test_transformations_inversions(self):
+        """ Test that symmetry operations work as expected when inverted. """
+        operator = np.random.random(size=(3,3))
+        inv_op = np.linalg.inv(operator)
+
+        transformed1 = self.structure.transform(operator)
+        transformed2 = transformed1.transform(inv_op)
+
+        # transformed2 structure should be different, but equal, to original structure
+        self.assertIsNot(transformed2, self.structure)
+        self.assertEqual(transformed2, self.structure)
+    
+    def test_transformations_correctness(self):
+        """ Test that AtomicStructure.transform() works as expected. """
+        operator = 2*np.eye(3)
+        transformed = self.structure.transform(operator)
+
+        expected_atoms = [deepcopy(atm) for atm in self.structure]
+        for atm in expected_atoms:
+            atm.transform(operator)
+
+        for atm in expected_atoms:
+            self.assertIn(atm, transformed)
 
     def test_itersorted(self):
         """ Test that AtomicStructure.itersorted() works as expected """
@@ -41,7 +75,7 @@ class TestAtomicStructure(unittest.TestCase):
         """ Test that AtomicStructure.chemical_composition always adds up to 1 """
         # Faster to create a large atomic structure from a Crystal object
         # Testing for 10 crystal structures only
-        for name in Crystal.builtins:
+        for name in islice(Crystal.builtins, 10):
             with self.subTest("Chemical composition: " + name):
                 structure = AtomicStructure(atoms=Crystal.from_database(name))
                 self.assertAlmostEqual(sum(structure.chemical_composition.values()), 1)
