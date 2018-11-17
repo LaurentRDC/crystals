@@ -226,7 +226,7 @@ class PDBParser(AbstractStructureParser):
         lattice_vectors = self.lattice_vectors()
 
         # Filter lines with start with ATM or HETATM
-        is_atom_line = lambda l: l.startswith(("ATM", "HETATM"))
+        is_atom_line = lambda l: l.startswith(("ATOM", "HETATM"))
 
         # ``residues`` is a dictionary mapping between residue sequence numbers
         # and an iterable of ``Atom``. When we have collected all atoms, we then create
@@ -298,9 +298,9 @@ class PDBParser(AbstractStructureParser):
         Returns the symmetry operators that map the atomic positions in a
         PDB file to the crystal unit cell.
 
-        Yields
-        ------
-        sym_ops : `~numpy.ndarray`, shape (4,4)
+        Returns
+        -------
+        sym_ops : iterable of `~numpy.ndarray`, shape (4,4)
             Transformation matrices. Since translations and rotation are combined,
             the transformation matrices are 4x4.
         """
@@ -325,12 +325,14 @@ class PDBParser(AbstractStructureParser):
                 "No symmetry could be parsed from file {}".format(self._handle.filename)
             )
 
+        operators = list()
         for op in sym_ops.values():
             mat = np.eye(4, dtype=np.float)
             mat[:3, :3] = np.array(op["rotation"])
             mat[:3, 3] = np.array(op["translation"])
+            operators.append(mat)
 
-            yield mat
+        return operators
 
 
 class CIFParser(AbstractStructureParser):

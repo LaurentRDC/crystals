@@ -3,24 +3,19 @@ import os
 import socket
 import tempfile
 import unittest
-from collections import Counter
-from collections import namedtuple
+from collections import Counter, namedtuple
 from contextlib import suppress
+from itertools import chain
 from pathlib import Path
 from tempfile import gettempdir
-from warnings import catch_warnings
-from warnings import filterwarnings
+from warnings import catch_warnings, filterwarnings
 
 import numpy as np
-from spglib import get_symmetry_dataset
-
-from crystals import CIFParser
-from crystals import Crystal
-from crystals import PDBParser
-from crystals import frac_coords
+from crystals import CIFParser, Crystal, PDBParser, frac_coords
 from crystals.affine import transform
 from crystals.parsers import STRUCTURE_CACHE
 from crystals.spg_data import Hall2Number
+from spglib import get_symmetry_dataset
 
 try:
     import Bio.PDB as biopdb
@@ -65,6 +60,17 @@ class TestPDBParser(unittest.TestCase):
                 for sym_op in parser.symmetry_operators():
                     t = sym_op[:3, :3]
                     self.assertAlmostEqual(abs(np.linalg.det(t)), 1, places=5)
+    
+    def test_residues(self):
+        """ Test the parsing of residues for 1fbb """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            with PDBParser("1fbb", download_dir=temp_dir) as parser:
+                residues = list(parser.residues())
+                atoms = list(parser.atoms())
+
+        # Flatten residues into a list of atoms
+        residue_atoms = list(chain.from_iterable(residues))
+        self.assertEqual(len(residue_atoms), len(atoms))
 
     def test_default_download_dir(self):
         """ Test that the file is saved in the correct temporary directory by default """

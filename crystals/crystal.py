@@ -23,13 +23,18 @@ from .parsers import CIFParser, CODParser, PDBParser
 CIF_ENTRIES = frozenset((Path(__file__).parent / "cifs").glob("*.cif"))
 
 
+is_atom = lambda a: isinstance(a, Atom)
+is_structure = lambda s: isinstance(s, AtomicStructure)
+
+
 def symmetry_expansion(atoms, symmetry_operators):
     """
-    Generate a set of unique atoms from an asymmetric cell and symmetry operators.
+    Generate a set of unique atoms and structures from an asymmetric cell 
+    and symmetry operators.
 
     Parameters
     ----------
-    atoms : iterable of Atom
+    atoms : iterable of ``Atom`` or ``AtomicStructures``
         Assymetric unit cell atoms. It is assumed that the atomic 
         coordinates are in fractional form.
     symmetry_operators : iterable of array_like
@@ -37,23 +42,28 @@ def symmetry_expansion(atoms, symmetry_operators):
     
     Yields
     ------
-    Atom
+    it : ``Atom`` or ``AtomicStructures``
+        Appropriately-transformed object. Original objects are left untouched.
     """
     # TODO: provide ability to reduce to primitive, niggli_reduce, etc.
     #       using spglib?
-    uniques = set([])
     symmetry_operators = tuple(map(affine_map, symmetry_operators))
 
-    for atm in atoms:
+    unique_atoms = set([])
+    for atm in filter(is_atom, atoms):
         for sym_op in symmetry_operators:
             new = atm.transform(sym_op)
             new.coords_fractional[:] = np.mod(new.coords_fractional, 1)
-            uniques.add(new)
-    yield from uniques
+            unique_atoms.add(new)
+    
+    unique_structures = set([])
+    for structure in filter(is_structure, atoms):
+        for sym_op in symmetry_operators:
+            new = structure.transform(sym_op)
+            unique_structures.add(new)
 
-
-is_atom = lambda a: isinstance(a, Atom)
-is_structure = lambda s: isinstance(s, AtomicStructure)
+    yield from unique_atoms
+    yield from unique_structures
 
 
 class Crystal(AtomicStructure, Lattice):
@@ -195,9 +205,11 @@ class Crystal(AtomicStructure, Lattice):
             number is provided, files will always be overwritten. 
         """
         with PDBParser(ID=ID, download_dir=download_dir) as parser:
+            sym_ops = parser.symmetry_operators()
+            residues = list(parser.residues())
             return cls(
                 unitcell=symmetry_expansion(
-                    parser.atoms(), parser.symmetry_operators()
+                    residues, sym_ops
                 ),
                 lattice_vectors=parser.lattice_vectors(),
                 source=parser.filename,
