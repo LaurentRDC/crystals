@@ -5,8 +5,13 @@ from functools import lru_cache
 import numpy as np
 
 from .affine import change_of_basis, transform
-from .atom_data import (ELEM_TO_MAGMOM, ELEM_TO_MASS, ELEM_TO_NAME,
-                        ELEM_TO_NUM, NUM_TO_ELEM)
+from .atom_data import (
+    ELEM_TO_MAGMOM,
+    ELEM_TO_MASS,
+    ELEM_TO_NAME,
+    ELEM_TO_NUM,
+    NUM_TO_ELEM,
+)
 from .lattice import Lattice
 
 

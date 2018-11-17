@@ -8,8 +8,12 @@ from pathlib import Path
 from urllib.request import urlretrieve
 
 import numpy as np
-from spglib import (find_primitive, get_error_message, get_spacegroup_type,
-                    get_symmetry_dataset)
+from spglib import (
+    find_primitive,
+    get_error_message,
+    get_spacegroup_type,
+    get_symmetry_dataset,
+)
 
 from .affine import affine_map
 from .atom import Atom

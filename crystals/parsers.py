@@ -208,7 +208,7 @@ class PDBParser(AbstractStructureParser):
 
         return Lattice.from_parameters(a, b, c, alpha, beta, gamma).lattice_vectors
 
-    def residues(self, ignored = ('HOH', 'LI1', 'SQU')):
+    def residues(self, ignored=("HOH", "LI1", "SQU")):
         """ 
         Iterable of residues present in the structure.
 
@@ -226,7 +226,7 @@ class PDBParser(AbstractStructureParser):
         lattice_vectors = self.lattice_vectors()
 
         # Filter lines with start with ATM or HETATM
-        is_atom_line = lambda l : l.startswith(('ATM', 'HETATM'))
+        is_atom_line = lambda l: l.startswith(("ATM", "HETATM"))
 
         # ``residues`` is a dictionary mapping between residue sequence numbers
         # and an iterable of ``Atom``. When we have collected all atoms, we then create
@@ -235,31 +235,34 @@ class PDBParser(AbstractStructureParser):
 
         self._handle.seek(0)
         for line in filter(is_atom_line, self._handle):
-            residue_name = str(line[17:20]).replace(' ','')
-            if residue_name in ignored: continue
-            
+            residue_name = str(line[17:20]).replace(" ", "")
+            if residue_name in ignored:
+                continue
+
             residue_seq = int(line[22:26])
             if residue_seq not in residues:
                 residues[residue_seq] = list()
 
             # TODO: include Atom ID record in Atom objects
-            identification = str(line[12:16]).replace(' ','')
+            identification = str(line[12:16]).replace(" ", "")
             x, y, z = float(line[30:38]), float(line[38:46]), float(line[46:54])
-            coords_fractional = frac_coords([x,y,z], lattice_vectors)
-            element = str(line[76:78]).replace(' ','')
+            coords_fractional = frac_coords([x, y, z], lattice_vectors)
+            element = str(line[76:78]).replace(" ", "")
 
             try:
                 occupancy = float(line[54:60])
             except ValueError:
                 occupancy = None
 
-            residues[residue_seq].append(Atom(element=element, coords=coords_fractional, occupancy=occupancy))
-        
+            residues[residue_seq].append(
+                Atom(element=element, coords=coords_fractional, occupancy=occupancy)
+            )
+
         if not residues:
-            raise ParseError(f'No residues found in {self.filename}')
-        
+            raise ParseError(f"No residues found in {self.filename}")
+
         for seq_number, atoms in residues.items():
-            yield AtomicStructure(atoms = atoms)
+            yield AtomicStructure(atoms=atoms)
 
     def atoms(self):
         """
