@@ -5,30 +5,24 @@ Atomic structure parsers.
 import gzip
 import warnings
 from abc import abstractmethod
-from contextlib import AbstractContextManager
-from contextlib import suppress
+from contextlib import AbstractContextManager, suppress
 from functools import lru_cache
 from os import remove
 from pathlib import Path
 from re import sub
-from string import digits
-from string import punctuation
+from string import digits, punctuation
 from tempfile import gettempdir
 from urllib.request import urlretrieve
 
 import numpy as np
-from CifFile import ReadCif
-from CifFile import get_number_with_esd
+from CifFile import ReadCif, get_number_with_esd
 from numpy.linalg import inv
 
-from .affine import affine_map
-from .affine import transform
-from .atom import Atom
-from .atom import frac_coords
+from .affine import affine_map, transform
+from .atom import Atom, frac_coords
+from .base import AtomicStructure
 from .lattice import Lattice
-from .spg_data import HM2Hall
-from .spg_data import Number2Hall
-from .spg_data import SymOpsHall
+from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
 # Temporary directory in which to cache crystal structure files
 # downloaded from the internet.
@@ -213,6 +207,59 @@ class PDBParser(AbstractStructureParser):
             raise ParseError("No CRYST1 line found")
 
         return Lattice.from_parameters(a, b, c, alpha, beta, gamma).lattice_vectors
+
+    def residues(self, ignored = ('HOH', 'LI1', 'SQU')):
+        """ 
+        Iterable of residues present in the structure.
+
+        Parameters
+        ----------
+        ignored : iterable of str, optional
+            3-letter string code for residues to ignore.
+        
+        Yields
+        ------
+        res : AtomicStructure instance
+        """
+        # Lattice vectors have to be determined first because
+        # the file pointer is moved
+        lattice_vectors = self.lattice_vectors()
+
+        # Filter lines with start with ATM or HETATM
+        is_atom_line = lambda l : l.startswith(('ATM', 'HETATM'))
+
+        # ``residues`` is a dictionary mapping between residue sequence numbers
+        # and an iterable of ``Atom``. When we have collected all atoms, we then create
+        # an ``AtomicStructure`` for each sequence number
+        residues = dict()
+
+        self._handle.seek(0)
+        for line in filter(is_atom_line, self._handle):
+            residue_name = str(line[17:20]).replace(' ','')
+            if residue_name in ignored: continue
+            
+            residue_seq = int(line[22:26])
+            if residue_seq not in residues:
+                residues[residue_seq] = list()
+
+            # TODO: include Atom ID record in Atom objects
+            identification = str(line[12:16]).replace(' ','')
+            x, y, z = float(line[30:38]), float(line[38:46]), float(line[46:54])
+            coords_fractional = frac_coords([x,y,z], lattice_vectors)
+            element = str(line[76:78]).replace(' ','')
+
+            try:
+                occupancy = float(line[54:60])
+            except ValueError:
+                occupancy = None
+
+            residues[residue_seq].append(Atom(element=element, coords=coords_fractional, occupancy=occupancy))
+        
+        if not residues:
+            raise ParseError(f'No residues found in {self.filename}')
+        
+        for seq_number, atoms in residues.items():
+            yield AtomicStructure(atoms = atoms)
 
     def atoms(self):
         """
