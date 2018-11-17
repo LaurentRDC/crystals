@@ -141,12 +141,12 @@ class TestCrystalConstructors(unittest.TestCase):
         """ Test that a name not in Crystal.builtins will raise a ValueError """
         with self.assertRaises(ValueError):
             c = Crystal.from_database("___")
-    
+
     def test_substructure_preservation(self):
         """ Test that initializing a crystal with substructures preserves the substructures """
         atoms = [Atom("Ag", [0, 0, 0]), Atom("Ag", [1, 1, 1])]
         substructures = [AtomicStructure(atoms=[Atom("U", [0, 0, 0])])]
-        c = Crystal(unitcell = atoms + substructures, lattice_vectors=np.eye(3))
+        c = Crystal(unitcell=atoms + substructures, lattice_vectors=np.eye(3))
 
         self.assertEqual(len(c), 3)
         self.assertIn(substructures[0], c.substructures)
