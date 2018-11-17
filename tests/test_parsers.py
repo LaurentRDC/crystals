@@ -60,7 +60,7 @@ class TestPDBParser(unittest.TestCase):
                 for sym_op in parser.symmetry_operators():
                     t = sym_op[:3, :3]
                     self.assertAlmostEqual(abs(np.linalg.det(t)), 1, places=5)
-    
+
     def test_residues(self):
         """ Test the parsing of residues for 1fbb """
         with tempfile.TemporaryDirectory() as temp_dir:

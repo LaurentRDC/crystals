@@ -67,9 +67,9 @@ class AbstractStructureParser(AbstractContextManager):
         Returns the symmetry operators that map the fractional atomic positions in a
         structure to the crystal *conventional* unit cell.
 
-        Yields
-        ------
-        sym_ops : ndarray, shape (4,4)
+        Returns
+        ------=
+        sym_ops : iterable of ndarray, shape (4,4)
             Transformation matrices. Since translations and rotation are combined,
             the transformation matrices are 4x4.
         """
@@ -80,9 +80,9 @@ class AbstractStructureParser(AbstractContextManager):
         """
         Asymmetric unit cell. Combine with CIFParser.symmetry_operators() for a full unit cell.
 
-        Yields
-        ------
-        atoms : Atom instance
+        Returns
+        -------
+        atoms : iterable of Atom instance
         """
         pass
 
@@ -217,9 +217,9 @@ class PDBParser(AbstractStructureParser):
         ignored : iterable of str, optional
             3-letter string code for residues to ignore.
         
-        Yields
-        ------
-        res : AtomicStructure instance
+        Returns
+        -------
+        res : iterable of AtomicStructure instances
         """
         # Lattice vectors have to be determined first because
         # the file pointer is moved
@@ -261,23 +261,26 @@ class PDBParser(AbstractStructureParser):
         if not residues:
             raise ParseError(f"No residues found in {self.filename}")
 
+        structures = list()
         for seq_number, atoms in residues.items():
-            yield AtomicStructure(atoms=atoms)
+            structures.append(AtomicStructure(atoms=atoms))
+        return structures
 
     def atoms(self):
         """
         Returns a list of atoms associated with a PDB structure in fractional coordinates. 
         These atoms form the asymmetric unit cell.
 
-        Yields
-        ------
-        atom: Atom
+        Returns
+        -------
+        atoms: iterable of Atom
         """
         # Lattice vectors have to be determined first because
         # the file pointer is moved
         lattice_vectors = self.lattice_vectors()
 
         self._handle.seek(0)
+        atoms = list()
         for line in filter(lambda l: l.startswith(("ATOM", "HETATM")), self._handle):
             element = str(line[76:78]).replace(" ", "").title()
 
@@ -289,9 +292,12 @@ class PDBParser(AbstractStructureParser):
             except ValueError:
                 occupancy = None
 
-            yield Atom(
-                element=element, coords=fractional_coordinates, occupancy=occupancy
+            atoms.append(
+                Atom(
+                    element=element, coords=fractional_coordinates, occupancy=occupancy
+                )
             )
+        return atoms
 
     def symmetry_operators(self):
         """
@@ -496,9 +502,9 @@ class CIFParser(AbstractStructureParser):
         Returns the symmetry operators that map the fractional atomic positions in a
         CIF file to the crystal *conventional* unit cell.
 
-        Yields
-        ------
-        sym_ops : ndarray, shape (4,4)
+        Returns
+        -------
+        sym_ops : iterable of ndarray, shape (4,4)
             Transformation matrices. Since translations and rotation are combined,
             the transformation matrices are 4x4.
         """
@@ -521,15 +527,15 @@ class CIFParser(AbstractStructureParser):
                     "The number of equivalent sites is not in line with the database. The file might be incomplete"
                 )
 
-        yield from map(self.sym_ops_from_equiv, equivalent_sites_str)
+        return list(map(self.sym_ops_from_equiv, equivalent_sites_str))
 
     def atoms(self):
         """
         Asymmetric unit cell. Combine with CIFParser.symmetry_operators() for a full unit cell.
 
-        Yields
-        ------
-        atoms : Atom instance
+        Returns
+        -------
+        atoms : iterable of Atom instance
         """
         block = self.structure_block
 
@@ -582,8 +588,8 @@ class CIFParser(AbstractStructureParser):
             if not elements:
                 raise ParseError("Atom symbols could not be found or inferred.")
         elements = map(lambda s: s.strip(punctuation + digits).title(), elements)
-
-        lv = self.lattice_vectors()
+        
+        atoms = list()
         for e, x, y, z in zip(elements, xs, ys, zs):
             coords = np.array(
                 [
@@ -597,9 +603,11 @@ class CIFParser(AbstractStructureParser):
             # Therefore we need the fractional coordinates
             if cartesian:
                 coords = transform(cart_trans_matrix, coords)
-                coords[:] = frac_coords(coords, lv)
+                coords[:] = frac_coords(coords, self.lattice_vectors())
 
-            yield Atom(element=e, coords=np.mod(coords, 1))
+            atoms.append(Atom(element=e, coords=np.mod(coords, 1)))
+
+        return atoms
 
 
 class CODParser(CIFParser):

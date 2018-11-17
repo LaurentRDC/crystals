@@ -66,7 +66,7 @@ def transform(matrix, array):
 	ValueError : If the transformation matrix is neither 3x3 or 4x4
     """
     array = np.asarray(array)
-    
+
     if matrix.shape not in [(3, 3), (4, 4)]:
         raise ValueError(
             "Input matrix is neither a 3x3 or 4x4 matrix, but \

@@ -55,7 +55,7 @@ def symmetry_expansion(atoms, symmetry_operators):
             new = atm.transform(sym_op)
             new.coords_fractional[:] = np.mod(new.coords_fractional, 1)
             unique_atoms.add(new)
-    
+
     unique_structures = set([])
     for structure in filter(is_structure, atoms):
         for sym_op in symmetry_operators:
@@ -205,11 +205,9 @@ class Crystal(AtomicStructure, Lattice):
             number is provided, files will always be overwritten. 
         """
         with PDBParser(ID=ID, download_dir=download_dir) as parser:
-            sym_ops = parser.symmetry_operators()
-            residues = list(parser.residues())
             return cls(
                 unitcell=symmetry_expansion(
-                    residues, sym_ops
+                    parser.residues(), parser.symmetry_operators()
                 ),
                 lattice_vectors=parser.lattice_vectors(),
                 source=parser.filename,
