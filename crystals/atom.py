@@ -151,7 +151,7 @@ class Atom(object):
 
     def transform(self, *matrices):
         """
-        Transforms the real space coordinates according to a matrix.
+        Transforms the fractional coordinates according to a matrix.
         
         Parameters
         ----------

@@ -92,39 +92,6 @@ class TestLatticeMeshes(unittest.TestCase):
         self.assertTrue(np.max(lattice.mesh(x)[0]) == 2)
 
 
-class TestLatticeTransform(unittest.TestCase):
-    def setUp(self):
-        self.lattice = Lattice(np.random.random((3, 3)))
-
-    def test_trivial_transformation(self):
-        before = np.array(self.lattice.lattice_vectors, copy=True)
-        self.lattice.transform(np.eye(3))
-        after = np.array(self.lattice.lattice_vectors, copy=True)
-
-        self.assertSequenceEqual(tuple(before.ravel()), tuple(after.ravel()))
-
-    def test_wraparound_rotation(self):
-        """ Test that a rotation by 360 degrees yields the same lattice """
-        before = np.array(self.lattice.lattice_vectors, copy=True)
-        self.lattice.transform(
-            rotation_matrix(radians(360), axis=np.random.random((3,)))
-        )
-        after = np.array(self.lattice.lattice_vectors, copy=True)
-
-        for x1, x2 in zip(tuple(before.ravel()), tuple(after.ravel())):
-            self.assertAlmostEqual(x1, x2)
-
-    def test_transform_back_and_forth(self):
-        before = np.array(self.lattice.lattice_vectors, copy=True)
-        transf = np.random.random((3, 3))
-        self.lattice.transform(transf)
-        self.lattice.transform(np.linalg.inv(transf))
-        after = np.array(self.lattice.lattice_vectors, copy=True)
-
-        for x1, x2 in zip(tuple(before.ravel()), tuple(after.ravel())):
-            self.assertAlmostEqual(x1, x2)
-
-
 class TestLatticeParameters(unittest.TestCase):
     def test_orthorombic(self):
         """ alpha = beta = gamma = 90"""

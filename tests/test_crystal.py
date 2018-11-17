@@ -73,60 +73,6 @@ class TestCrystalSpecialMethods(unittest.TestCase):
                 else:
                     self.assertNotEqual(repr(c), str(c))
 
-
-class TestCrystalRotations(unittest.TestCase):
-    def setUp(self):
-        self.crystal = Crystal.from_database(next(iter(Crystal.builtins)))
-
-    def test_crystal_equality(self):
-        """ Tests that Crystal.__eq__ is working properly """
-        self.assertEqual(self.crystal, self.crystal)
-
-        cryst2 = copy(self.crystal)
-        cryst2.transform(
-            2 * np.eye(3)
-        )  # This stretches lattice vectors, symmetry operators
-        self.assertFalse(self.crystal is cryst2)
-        self.assertNotEqual(self.crystal, cryst2)
-
-        cryst2.transform(0.5 * np.eye(3))
-        self.assertEqual(self.crystal, cryst2)
-
-    def test_trivial_rotation(self):
-        """ Test rotation by 360 deg around all axes. """
-        unrotated = copy(self.crystal)
-        r = rotation_matrix(radians(360), [0, 0, 1])
-        self.crystal.transform(r)
-
-        self.assertEqual(self.crystal, unrotated)
-
-    def test_identity_transform(self):
-        """ Tests the trivial identity transform """
-        transf = copy(self.crystal)
-        transf.transform(np.eye(3))
-        self.assertEqual(self.crystal, transf)
-
-    def test_one_axis_rotation(self):
-        """ Tests the crystal orientation after rotations. """
-        unrotated = copy(self.crystal)
-        transf = rotation_matrix(radians(37), [0, 1, 0])
-        inv = np.linalg.inv(transf)
-
-        self.crystal.transform(transf)
-        self.assertNotEqual(unrotated, self.crystal)
-
-        self.crystal.transform(inv)
-        self.assertEqual(unrotated, self.crystal)
-
-    def test_wraparound_rotation(self):
-        cryst1 = copy(self.crystal)
-        cryst2 = copy(self.crystal)
-
-        cryst1.transform(rotation_matrix(radians(22.3), [0, 0, 1]))
-        cryst2.transform(rotation_matrix(radians(22.3 - 360), [0, 0, 1]))
-        self.assertEqual(cryst1, cryst2)
-
-
 class TestCrystalConstructors(unittest.TestCase):
     def test_builtins(self):
         """ Test that all names in Crystal.builtins build without errors,

@@ -252,21 +252,6 @@ class Lattice(Base):
             basis2=np.eye(3)
         )
 
-    def transform(self, *matrices):
-        """
-        Transforms the real space coordinates according to a matrix.
-        
-        Parameters
-        ----------
-        matrices : ndarrays, shape {(3,3), (4,4)}
-            Transformation matrices.
-        """
-        # Transform lattice vectors
-        for matrix in matrices:
-            self.a1 = transform(matrix, self.a1)
-            self.a2 = transform(matrix, self.a2)
-            self.a3 = transform(matrix, self.a3)
-
 
 # TODO: Introduce conventions on ordering a, b, c and angles
 #       based on http://atztogo.github.io/spglib/definition.html#def-idealize-cell
