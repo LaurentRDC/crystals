@@ -5,17 +5,12 @@ import tempfile
 import unittest
 from contextlib import suppress
 from copy import copy
-from copy import copy
 from math import radians
 from pathlib import Path
 
 import numpy as np
-
-from crystals import Atom
-from crystals import Crystal
-from crystals import Lattice
-from crystals.affine import rotation_matrix
-from crystals.affine import transform
+from crystals import Atom, AtomicStructure, Crystal, Lattice
+from crystals.affine import rotation_matrix, transform
 
 
 def connection_available():
@@ -146,6 +141,15 @@ class TestCrystalConstructors(unittest.TestCase):
         """ Test that a name not in Crystal.builtins will raise a ValueError """
         with self.assertRaises(ValueError):
             c = Crystal.from_database("___")
+    
+    def test_substructure_preservation(self):
+        """ Test that initializing a crystal with substructures preserves the substructures """
+        atoms = [Atom("Ag", [0, 0, 0]), Atom("Ag", [1, 1, 1])]
+        substructures = [AtomicStructure(atoms=[Atom("U", [0, 0, 0])])]
+        c = Crystal(unitcell = atoms + substructures, lattice_vectors=np.eye(3))
+
+        self.assertEqual(len(c), 3)
+        self.assertIn(substructures[0], c.substructures)
 
     @unittest.skipUnless(connection_available(), "Internet connection is required.")
     def test_from_pdb(self):

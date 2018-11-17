@@ -55,12 +55,16 @@ def symmetry_expansion(atoms, symmetry_operators):
     yield from uniques
 
 
+is_atom = lambda a: isinstance(a, Atom)
+is_structure = lambda s: isinstance(s, AtomicStructure)
+
+
 class Crystal(AtomicStructure, Lattice):
     """
-    The :class:`Crystal` class is a set-like container that represent crystalline structures. 
-
-    In addition to constructing the ``Crystal`` object yourself, other constructors
-    are also available (and preferred):
+    The :class:`Crystal` class is a set-like container that represent 
+    crystalline structures. In addition to constructing the ``Crystal`` 
+    object yourself, other constructors are also available 
+    (and preferred):
     
     * ``Crystal.from_cif``: create an instance from a CIF file;
     
@@ -74,8 +78,9 @@ class Crystal(AtomicStructure, Lattice):
 
     Parameters
     ----------
-    unitcell : iterable of ``Atom``
-        Unit cell atoms. It is assumed that the atoms are in fractional coordinates.
+    unitcell : iterable of ``Atom`` or ``AtomicStructures``
+        Unit cell atoms or substructures. It is assumed that the atoms are 
+        in fractional coordinates. 
     lattice_vectors : iterable of array_like
         Lattice vectors. If ``lattice_vectors`` is provided as a 3x3 array, it 
         is assumed that each lattice vector is a row.
@@ -86,7 +91,13 @@ class Crystal(AtomicStructure, Lattice):
     builtins = frozenset(map(lambda fn: fn.stem, CIF_ENTRIES))
 
     def __init__(self, unitcell, lattice_vectors, source=None, **kwargs):
-        super().__init__(atoms=unitcell, lattice_vectors=lattice_vectors, **kwargs)
+        unitcell = list(unitcell)
+        super().__init__(
+            atoms=filter(is_atom, unitcell),
+            substructures=filter(is_structure, unitcell),
+            lattice_vectors=lattice_vectors,
+            **kwargs,
+        )
 
         for atom in super().__iter__():
             atom.lattice = Lattice(self.lattice_vectors)
@@ -95,7 +106,7 @@ class Crystal(AtomicStructure, Lattice):
 
     @property
     def unitcell(self):
-        """ Atoms forming the crystal unit cell. """
+        """ Generator of atoms forming the crystal unit cell. """
         return self.__iter__()
 
     @classmethod
@@ -462,8 +473,9 @@ class Supercell(Crystal):
 
     Parameters
     ----------
-    unitcell : iterable of ``Atom``
-        Unit cell atoms. It is assumed that the atoms are in fractional coordinates.
+    unitcell : iterable of ``Atom`` or ``AtomicStructures``
+        Unit cell atoms or substructures. It is assumed that the atoms are 
+        in fractional coordinates. 
     lattice_vectors : iterable of array_like
         Lattice vectors. If ``lattice_vectors`` is provided as a 3x3 array, it 
         is assumed that each lattice vector is a row.
@@ -476,11 +488,16 @@ class Supercell(Crystal):
         super().__init__(unitcell=unitcell, lattice_vectors=lattice_vectors, **kwargs)
         self.dimensions = tuple(dimensions)
 
+    @property
+    def unitcell(self):
+        """ Atoms forming the underlying crystal unit cell. """
+        return super().__iter__()
+
     def __iter__(self):
         """ Iterable over all atoms in the supercell """
         n1, n2, n3 = self.dimensions
 
-        for atm in super().__iter__():
+        for atm in self.unitcell:
             for factors in product(range(0, n1), range(0, n2), range(0, n3)):
                 offset = np.asarray(factors)
                 yield Atom(
@@ -615,11 +632,6 @@ class Supercell(Crystal):
         # We're only 'overriding' this method to update the doctstring
         # Otherwise, there is no change.
         return super().from_ase(atoms, dimensions=dimensions, **kwargs)
-
-    @property
-    def unitcell(self):
-        """ Atoms forming the underlying crystal unit cell. """
-        return super().__iter__()
 
     def primitive(self, symprec=1e-2):
         """ 
