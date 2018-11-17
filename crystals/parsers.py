@@ -588,7 +588,7 @@ class CIFParser(AbstractStructureParser):
             if not elements:
                 raise ParseError("Atom symbols could not be found or inferred.")
         elements = map(lambda s: s.strip(punctuation + digits).title(), elements)
-        
+
         atoms = list()
         for e, x, y, z in zip(elements, xs, ys, zs):
             coords = np.array(
