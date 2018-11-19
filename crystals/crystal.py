@@ -19,6 +19,7 @@ from .atom import Atom
 from .base import AtomicStructure
 from .lattice import Lattice
 from .parsers import CIFParser, CODParser, PDBParser
+from .spg_data import Hall2HM
 
 CIF_ENTRIES = frozenset((Path(__file__).parent / "cifs").glob("*.cif"))
 
@@ -329,6 +330,8 @@ class Crystal(AtomicStructure, Lattice):
 
             * ``'hall_symbol'`` : Hall symbol;
 
+            * ``'hm_symbol'`` : Hermann-Mauguin symbol;
+
             * ``'pointgroup'`` : International Tables of 
               Crystallography point-group;
 
@@ -358,6 +361,7 @@ class Crystal(AtomicStructure, Lattice):
             info = {
                 "international_symbol": dataset["international"],
                 "hall_symbol": dataset["hall"],
+                "hm_symbol": Hall2HM[dataset["hall"]],
                 "international_number": dataset["number"],
                 "hall_number": dataset["hall_number"],
                 "international_full": spg_type["international_full"],
@@ -390,6 +394,11 @@ class Crystal(AtomicStructure, Lattice):
     def hall_symbol(self):
         """ Hall symbol. """
         return self.symmetry()["hall_symbol"]
+
+    @property
+    def hm_symbol(self):
+        """ Hermann-Mauguin symbol. """
+        return self.symmetry()["hm_symbol"]
 
     @property
     def pointgroup(self):
