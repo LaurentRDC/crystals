@@ -20,7 +20,7 @@ from numpy.linalg import inv
 
 from .affine import affine_map, transform
 from .atom import Atom, frac_coords
-from .base import AtomicStructure
+from .base import Helix, AtomicStructure, Sheet, Residue
 from .lattice import Lattice
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
@@ -208,6 +208,70 @@ class PDBParser(AbstractStructureParser):
 
         return Lattice.from_parameters(a, b, c, alpha, beta, gamma).lattice_vectors
 
+    def helices(self, ignored=("HOH", "LI1", "SQU")):
+        """ Returns an iterable of helices present in the protein. 
+
+        Parameters
+        ----------
+        ignored : iterable of str, optional
+            3-letter string code for residues to ignore.
+        
+        Returns
+        -------
+        hex : iterable of Helix instances
+        """
+        residues = self.residues(ignored)
+        helices = list()
+        self._handle.seek(0)
+
+        # Helices are defined as a list of residues making them up
+        # Therefore, we simply filter residues down to the ones in range
+        for line in filter(lambda line: line.startswith("HELIX"), self._handle):
+            seq_num = int(line[7:10])  # TODO: place in helix
+            seq_range = range(int(line[21:25]), int(line[33:37]) + 1)
+            helices.append(
+                Helix(
+                    residues=filter(
+                        lambda res: res.sequence_number in seq_range, residues
+                    ),
+                    sequence_number=seq_num,
+                )
+            )
+
+        return helices
+
+    def sheets(self, ignored=("HOH", "LI1", "SQU")):
+        """ Returns an iterable of sheets present in the protein. 
+
+        Parameters
+        ----------
+        ignored : iterable of str, optional
+            3-letter string code for residues to ignore.
+        
+        Returns
+        -------
+        sheets : iterable of Sheet instances
+        """
+        residues = self.residues(ignored)
+        sheets = list()
+        self._handle.seek(0)
+
+        # Helices are defined as a list of residues making them up
+        # Therefore, we simply filter residues down to the ones in range
+        for line in filter(lambda line: line.startswith("SHEET"), self._handle):
+            seq_num = int(line[7:10])  # TODO: place in sheet
+            seq_range = range(int(line[22:26]), int(line[33:37]) + 1)
+            sheets.append(
+                Sheet(
+                    residues=filter(
+                        lambda res: res.sequence_number in seq_range, residues
+                    ),
+                    sequence_number=seq_num,
+                )
+            )
+
+        return sheets
+
     def residues(self, ignored=("HOH", "LI1", "SQU")):
         """ 
         Iterable of residues present in the structure.
@@ -219,7 +283,7 @@ class PDBParser(AbstractStructureParser):
         
         Returns
         -------
-        res : iterable of AtomicStructure instances
+        res : iterable of Residue instances
         """
         # Lattice vectors have to be determined first because
         # the file pointer is moved
@@ -228,9 +292,9 @@ class PDBParser(AbstractStructureParser):
         # Filter lines with start with ATM or HETATM
         is_atom_line = lambda l: l.startswith(("ATOM", "HETATM"))
 
-        # ``residues`` is a dictionary mapping between residue sequence numbers
+        # ``residues`` is a dictionary mapping between (sequence numbers, name)
         # and an iterable of ``Atom``. When we have collected all atoms, we then create
-        # an ``AtomicStructure`` for each sequence number
+        # a ``Residue`` for each sequence number
         residues = dict()
 
         self._handle.seek(0)
@@ -240,8 +304,8 @@ class PDBParser(AbstractStructureParser):
                 continue
 
             residue_seq = int(line[22:26])
-            if residue_seq not in residues:
-                residues[residue_seq] = list()
+            if (residue_seq, residue_name) not in residues:
+                residues[(residue_seq, residue_name)] = list()
 
             # TODO: include Atom ID record in Atom objects
             identification = str(line[12:16]).replace(" ", "")
@@ -254,7 +318,7 @@ class PDBParser(AbstractStructureParser):
             except ValueError:
                 occupancy = None
 
-            residues[residue_seq].append(
+            residues[(residue_seq, residue_name)].append(
                 Atom(element=element, coords=coords_fractional, occupancy=occupancy)
             )
 
@@ -262,8 +326,10 @@ class PDBParser(AbstractStructureParser):
             raise ParseError(f"No residues found in {self.filename}")
 
         structures = list()
-        for seq_number, atoms in residues.items():
-            structures.append(AtomicStructure(atoms=atoms))
+        for (seq_number, name), atoms in residues.items():
+            structures.append(
+                Residue(atoms=atoms, name=name, sequence_number=seq_number)
+            )
         return structures
 
     def atoms(self):

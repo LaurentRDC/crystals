@@ -47,15 +47,17 @@ class TestAtomicStructure(unittest.TestCase):
         # transformed2 structure should be different, but equal, to original structure
         self.assertIsNot(transformed2, self.structure)
         self.assertEqual(transformed2, self.structure)
-    
+
     def test_transform_subclass(self):
         """ Test that the object returned by the transform() method is the 
         same class as the method caller. """
 
         class NewAtomicStructure(AtomicStructure):
             pass
-        
-        structure = NewAtomicStructure(atoms=[Atom("Ag", [0, 0, 0]), Atom("Ag", [1, 1, 1])])
+
+        structure = NewAtomicStructure(
+            atoms=[Atom("Ag", [0, 0, 0]), Atom("Ag", [1, 1, 1])]
+        )
         transformed = structure.transform(np.eye(3))
 
         self.assertIs(type(transformed), type(structure))

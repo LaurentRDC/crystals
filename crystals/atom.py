@@ -170,7 +170,9 @@ class Atom(object):
         for matrix in matrices:
             coords_fractional = transform(matrix, coords_fractional)
 
-        return Atom(
+        # We defer construction to the current class. Therefore, subclasses of Atom
+        # will transform into their own class
+        return self.__class__(
             element=self.element,
             coords=coords_fractional,
             lattice=self.lattice,

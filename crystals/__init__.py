@@ -19,6 +19,9 @@ from .atom_data import ELEM_TO_NUM
 from .atom_data import NUM_TO_ELEM
 from .base import AtomicStructure
 from .base import Base
+from .base import Residue
+from .base import Helix
+from .base import Sheet
 from .conversion import ase_atoms
 from .conversion import write_xyz
 from .crystal import Crystal
