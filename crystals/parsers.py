@@ -478,12 +478,14 @@ class CIFParser(AbstractStructureParser):
 
         try:
             a, _ = get_number_with_esd(block["_cell_length_a"])
-            b, _ = get_number_with_esd(block["_cell_length_b"])
-            c, _ = get_number_with_esd(block["_cell_length_c"])
+            # In case where b and c are not listed, we use the value of a
+            b, _ = get_number_with_esd(block.get("_cell_length_b", (a, 0)))
+            c, _ = get_number_with_esd(block.get("_cell_length_c", (a, 0)))
+
             alpha, _ = get_number_with_esd(block["_cell_angle_alpha"])
             beta, _ = get_number_with_esd(block["_cell_angle_beta"])
             gamma, _ = get_number_with_esd(block["_cell_angle_gamma"])
-        except:
+        except KeyError:
             raise ParseError("Lattice vectors could not be determined.")
         else:
             return a, b, c, alpha, beta, gamma
