@@ -363,6 +363,10 @@ class CIFParser(AbstractStructureParser):
     def __exit__(self, *args, **kwargs):
         self._handle.close()
 
+    @property
+    def filename(self):
+        return self._handle.name
+
     @staticmethod
     def sym_ops_from_equiv(equiv_site):
         """ Parse a symmetry operator from an equivalent-site representation 
@@ -477,18 +481,20 @@ class CIFParser(AbstractStructureParser):
         block = self.structure_block
 
         try:
-            a, _ = get_number_with_esd(block["_cell_length_a"])
-            # In case where b and c are not listed, we use the value of a
-            b, _ = get_number_with_esd(block.get("_cell_length_b", (a, 0)))
-            c, _ = get_number_with_esd(block.get("_cell_length_c", (a, 0)))
-
-            alpha, _ = get_number_with_esd(block["_cell_angle_alpha"])
-            beta, _ = get_number_with_esd(block["_cell_angle_beta"])
-            gamma, _ = get_number_with_esd(block["_cell_angle_gamma"])
+            a_with_err = block["_cell_length_a"]
         except KeyError:
-            raise ParseError("Lattice vectors could not be determined.")
-        else:
-            return a, b, c, alpha, beta, gamma
+            raise ParseError(f"No lattice information is present in {self.filename}")
+
+        # In case where b and c are not listed, we use the value of a
+        a, _ = get_number_with_esd(a_with_err)
+        b, _ = get_number_with_esd(block.get("_cell_length_b", a_with_err))
+        c, _ = get_number_with_esd(block.get("_cell_length_c", a_with_err))
+
+        alpha, _ = get_number_with_esd(block["_cell_angle_alpha"])
+        beta, _ = get_number_with_esd(block["_cell_angle_beta"])
+        gamma, _ = get_number_with_esd(block["_cell_angle_gamma"])
+
+        return a, b, c, alpha, beta, gamma
 
     @lru_cache(maxsize=1)
     def lattice_vectors(self):

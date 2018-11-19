@@ -37,7 +37,7 @@ class TestSpglibMethods(unittest.TestCase):
             "international_symbol": "P6_3/mmc",
             "international_full": "P 6_3/m 2/m 2/c",
             "hall_symbol": "-P 6c 2c",
-            'hm_symbol': 'P63/mmc',
+            "hm_symbol": "P63/mmc",
             "pointgroup": "D6h",
         }
 
