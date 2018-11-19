@@ -155,7 +155,9 @@ class AtomicStructure(Base):
         for substructure in self.substructures:
             transformed_substructures.add(substructure.transform(*operators))
 
-        return AtomicStructure(
+        # We defer construction to the current class. Therefore, subclasses of AtomicStructure
+        # will transform into their own class 
+        return self.__class__(
             atoms=transformed_atoms, substructures=transformed_substructures
         )
 
