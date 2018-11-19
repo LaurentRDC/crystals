@@ -127,16 +127,18 @@ class Atom(object):
 
     @property
     def atomic_number(self):
+        """ Atomic number """
         return ELEM_TO_NUM[self.element]
 
     @property
     def mass(self):
+        """ Atomic mass [u] """
         return ELEM_TO_MASS[self.element]
 
     @property
     def coords_cartesian(self):
         """ 
-        Real-space position of the atom on the lattice.
+        Real-space position of the atom on the lattice, in Angstroms.
                     
         Returns
         -------

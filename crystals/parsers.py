@@ -120,7 +120,7 @@ class PDBParser(AbstractStructureParser):
         pdb_code, download_dir=None, server="ftp://ftp.wwpdb.org", overwrite=False
     ):
         """ 
-        Retrieves a PDB structure file from the PDB server and
+        Retrieves a PDB structure file from a PDB server and
         stores it in a local file tree.
 
         Parameters
@@ -279,9 +279,11 @@ class PDBParser(AbstractStructureParser):
         # the file pointer is moved
         lattice_vectors = self.lattice_vectors()
 
+        is_atom_line = lambda l: l.startswith(("ATOM", "HETATM"))
+
         self._handle.seek(0)
         atoms = list()
-        for line in filter(lambda l: l.startswith(("ATOM", "HETATM")), self._handle):
+        for line in filter(is_atom_line, self._handle):
             element = str(line[76:78]).replace(" ", "").title()
 
             x, y, z = float(line[30:38]), float(line[38:46]), float(line[46:54])
