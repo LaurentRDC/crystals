@@ -260,7 +260,8 @@ Thanks to `spglib <http://atztogo.github.io/spglib/>`_, we can get space-group i
     >>> gold = Crystal.from_database('Au')
     >>> gold.symmetry()
     {'international_symbol': 'Fm-3m', 
-     'hall_symbol': '-F 4 2 3', 
+     'hall_symbol': '-F 4 2 3',
+     'hm_symbol': 'Fm-3m', 
      'international_number': 225, 
      'hall_number': 523, 
      'international_full': 'F 4/m -3 2/m', 
@@ -273,6 +274,8 @@ In the above example, :data:`spg_info` is a dictionary with the following keys:
 * ``'international_full'``: International Tables of Crystallography space-group full symbol;
 
 * ``'hall_symbol'`` : Hall symbol;
+
+* ``'hm_symbol'`` : Hermann-Mauguin symbol;
 
 * ``'pointgroup'`` : International Tables of Crystallography point-group;
 
