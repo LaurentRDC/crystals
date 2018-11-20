@@ -1,7 +1,7 @@
 .. _biological:
 
 **************************
-Biological Data Structures
+Biological data structures
 **************************
 
 .. currentmodule:: crystals

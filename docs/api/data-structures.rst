@@ -1,7 +1,7 @@
 .. _data_structures:
 
 ***********************
-Primary Data Structures
+Primary data structures
 ***********************
 
 .. currentmodule:: crystals

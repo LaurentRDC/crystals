@@ -80,6 +80,7 @@ Symmetry information is also readily available::
     >>> print(vo2.symmetry())
     {'international_symbol': 'P2_1/c', 
      'hall_symbol': '-P 2ybc', 
+     'hm_symbol': 'P121/c1',
      'international_number': 14, 
      'hall_number': 81, 
      'international_full': 'P 1 2_1/c 1', 

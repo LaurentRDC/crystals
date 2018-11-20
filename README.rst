@@ -70,6 +70,7 @@ Symmetry information is also readily available::
     >>> print(vo2.symmetry())
     {'international_symbol': 'P2_1/c', 
      'hall_symbol': '-P 2ybc', 
+     'hm_symbol': 'P121/c1',
      'international_number': 14, 
      'hall_number': 81, 
      'international_full': 'P 1 2_1/c 1', 
@@ -122,11 +123,13 @@ Citations
 As this package is a spinoff from ``scikit-ued``, please consider citing the following publication if you find ``crystals`` useful:
 
 .. [#] L. P. René de Cotret, M. R. Otto, M. J. Stern. and B. J. Siwick, *An open-source software ecosystem for the interactive 
-       exploration of ultrafast electron scattering data*, Advanced Structural and Chemical Imaging **4**:11 (2018) DOI: 10.1186/s40679-018-0060-y
+       exploration of ultrafast electron scattering data*, Advanced Structural and Chemical Imaging **4**:11 (2018) 
+       DOI: 10.1186/s40679-018-0060-y
 
 Underlying algorithms provided by ``spglib`` are described in the following publication:
 
-.. [#] A. Togo and I. Tanaka, *spglib: a software library for crystal symmetry search*. https://arxiv.org/abs/1808.01590 (written at version 1.10.4).
+.. [#] A. Togo and I. Tanaka, *spglib: a software library for crystal symmetry search*. https://arxiv.org/abs/1808.01590 
+       (written at version 1.10.4).
 
 Structure parsing from CIF files has been tested for correctness against CIF2CELL, detailed here:
 
@@ -137,10 +140,15 @@ Structure parsing from PDB files has been tested for correctness against ``Bio.P
 
 .. [#] Hamelryck, T., Manderick, B. *PDB parser and structure class implemented in Python*. Bioinformatics 19: 2308–2310 (2003)
 
+Atomic weights are reported in the following publication:
+
+.. [#] Meija, J., Coplen, T., Berglund, M., et al. (2016). Atomic weights of the elements 2013 (IUPAC Technical Report). 
+       Pure and Applied Chemistry, 88(3), pp. 265-291. Retrieved 30 Nov. 2016, doi:10.1515/pac-2015-0305
+
 Aknowledgements
 ===============
 
-This package depends on the work of some amazing people. Of note are the `spglib contributors <https://github.com/atztogo/spglib>`_
+This package depends on the work of some amazing people. Of note are the `spglib contributors <https://github.com/atztogo/spglib>`_.
 
 Support / Report Issues
 =======================
