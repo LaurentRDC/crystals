@@ -279,7 +279,7 @@ class SecondaryStructure(AtomicStructure):
     sequence_number : int
         Sequence number within a protein.
     """
-    
+
     def __init__(self, residues, sequence_number, **kwargs):
         super().__init__(substructures=residues, **kwargs)
         self.sequence_number = int(sequence_number)
