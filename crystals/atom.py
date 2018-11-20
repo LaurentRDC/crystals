@@ -68,7 +68,6 @@ class Element:
         return ELEM_TO_MAGMOM[self.element]
 
 
-# TODO: store atomic data as class attributes?
 class Atom(Element):
     """
     Container object for atomic data. 
