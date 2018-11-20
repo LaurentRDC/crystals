@@ -399,7 +399,7 @@ or :class:`Lattice`) can be accessed using the :meth:`Atom.coords_cartesian` met
 Atomic distances
 ----------------
 
-The fractional/cartesian distance between two atoms sitting *on the same lattice* is possible:
+The fractional/cartesian distance between two atoms sitting *on the same lattice* is possible::
 
     >>> from crystals import Crystal, distance_fractional, distance_cartesian
     >>> graphite = Crystal.from_database('C')
@@ -414,20 +414,43 @@ The fractional/cartesian distance between two atoms sitting *on the same lattice
     >>> distance_cartesian(carbon1, carbon2)    # in Angstroms
     3.6446077732986644
 
-If atoms are not sitting on the same lattice, calculating the distance should not be defined. In this case, an exception is raised:
+If atoms are not sitting on the same lattice, calculating the distance should not be defined. In this case, an exception is raised::
 
->>> from crystals import Crystal
->>> gold = Crystal.from_database('Au')
->>> silver = Crystal.from_database('Ag')
->>>
->>> gold1, *_ = tuple(gold)
->>> silver1, *_ = tuple(silver)
->>>
->>> distance_cartesian(gold1, silver1)
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-  File "(...omitted...)\crystals\atom.py", line 181, in distance_cartesian
-    "Cartesian distance is undefined if atoms are sitting on different lattices."
-RuntimeError: Distance is undefined if atoms are sitting on different lattices.
+    >>> from crystals import Crystal
+    >>> gold = Crystal.from_database('Au')
+    >>> silver = Crystal.from_database('Ag')
+    >>>
+    >>> gold1, *_ = tuple(gold)
+    >>> silver1, *_ = tuple(silver)
+    >>>
+    >>> distance_cartesian(gold1, silver1)
+    Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+    File "(...omitted...)\crystals\atom.py", line 181, in distance_cartesian
+        "Cartesian distance is undefined if atoms are sitting on different lattices."
+    RuntimeError: Distance is undefined if atoms are sitting on different lattices.
+
+Elements
+--------
+
+If all you want is access to elemental information, like atomic weights, you can instantiate an :class:`Element` instead of an :class:`Atom`::
+
+    >>> from crystals import Element
+    >>> Element("H")
+    < Element object : Hydrogen >
+    >>> Element("Cu").mass # Atomic mass in [u]
+    63.546
+    >>> Element("Cu).atomic_number
+    29
+    >>>
+    >>> Element(29)   # You can also specify elements by their number
+    < Element object : Copper >
+
+Since :class:`Atom` is a subclass of :class:`Element`, all of the above examples also work for :class:`Atom`:
+
+    >>> from crystals import Atom
+    >>>
+    >>> Atom("Cu", coords = [0,0,0]).mass
+    63.546
 
 :ref:`Return to Top <user_guide>`

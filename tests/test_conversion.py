@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-from random import choice
-from random import randint
+from random import choice, randint
 
 import numpy as np
 
-from crystals import Crystal
-from crystals import ase_atoms
+from crystals import Crystal, ase_atoms
 
 try:
     import ase

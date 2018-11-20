@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-
 from itertools import islice
+
 import numpy as np
+
 from crystals import Atom, Crystal, Supercell
 
 

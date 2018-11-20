@@ -8,6 +8,7 @@ __license__ = "BSD3"
 __version__ = "0.4.3"
 
 from .atom import Atom
+from .atom import Element
 from .atom import frac_coords
 from .atom import real_coords
 from .atom import distance_fractional

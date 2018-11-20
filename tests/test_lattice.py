@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 import unittest
 from copy import deepcopy
-from math import degrees
-from math import radians
+from math import degrees, radians
 
 import numpy as np
 from numpy.linalg import norm
 
-from crystals import Crystal
-from crystals import Lattice
-from crystals import LatticeSystem
+from crystals import Crystal, Lattice, LatticeSystem
 from crystals.affine import rotation_matrix
 
 np.random.seed(23)

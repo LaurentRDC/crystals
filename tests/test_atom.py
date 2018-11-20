@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 import unittest
 from copy import deepcopy
-from random import randint
-from random import random
-from random import seed
+from random import randint, random, seed
 
 import numpy as np
 
-from crystals import Atom
-from crystals import distance_fractional
-from crystals import distance_cartesian
-from crystals import Lattice
+from crystals import Atom, Element, Lattice, distance_cartesian, distance_fractional
+from crystals.atom_data import chemical_symbols
 from crystals.affine import rotation_matrix
 
 seed(23)
@@ -19,6 +15,25 @@ np.random.seed(23)
 
 def random_transform():
     return rotation_matrix(random(), axis=np.random.random((3,)))
+
+
+class TestElement(unittest.TestCase):
+    def test_build(self):
+        """ Test that all valid chemical symbols can be used to create an Element instance """
+        for symbol in chemical_symbols:
+            Element(symbol)
+
+    def test_invalid_element(self):
+        """ Test that an invalid chemical symbol will raise an error """
+        with self.assertRaises(ValueError):
+            Element("montreal")
+
+    def test_init_with_atomic_number(self):
+        """ Test that constructing an Element from a symbol or atomic number results in the same element """
+        for symbol in chemical_symbols:
+            from_symbol = Element(symbol)
+            from_number = Element(from_symbol.atomic_number)
+            self.assertEqual(from_number, from_symbol)
 
 
 class TestAtom(unittest.TestCase):

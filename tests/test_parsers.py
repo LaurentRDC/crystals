@@ -11,11 +11,12 @@ from tempfile import gettempdir
 from warnings import catch_warnings, filterwarnings
 
 import numpy as np
+from spglib import get_symmetry_dataset
+
 from crystals import CIFParser, Crystal, PDBParser, frac_coords
 from crystals.affine import transform
 from crystals.parsers import STRUCTURE_CACHE
 from crystals.spg_data import Hall2Number
-from spglib import get_symmetry_dataset
 
 try:
     import Bio.PDB as biopdb

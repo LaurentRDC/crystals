@@ -9,6 +9,7 @@ from math import radians
 from pathlib import Path
 
 import numpy as np
+
 from crystals import Atom, AtomicStructure, Crystal, Lattice
 from crystals.affine import rotation_matrix, transform
 

@@ -11,12 +11,65 @@ from .atom_data import (
     ELEM_TO_NAME,
     ELEM_TO_NUM,
     NUM_TO_ELEM,
+    chemical_symbols,
 )
 from .lattice import Lattice
 
 
+class Element:
+    """
+    class representing an abtract chemical element, but no particular atom.
+    THis class gives access to elemental properties, like atomic number, 
+    atomic mass, full element name, etc.
+
+    Parameters
+    ----------
+    element : str or int
+        Elemental symbol (e.g. "He") or atomic number.
+    """
+
+    valid_symbols = frozenset(chemical_symbols)
+
+    def __init__(self, element, *args, **kwargs):
+        if isinstance(element, int):
+            element = NUM_TO_ELEM[element]
+
+        element = str(element).title()
+        if element not in self.valid_symbols:
+            raise ValueError(f"Element {element} is not valid.")
+        self.element = element
+
+    def __repr__(self):
+        return f"< Element object : {self.element_full} >"
+
+    def __eq__(self, other):
+        if type(self) is type(other):
+            return self.element == other.element
+        return NotImplemented
+
+    @property
+    def element_full(self):
+        """ Full element name, e.g. "Hydrogen" """
+        return ELEM_TO_NAME[self.element]
+
+    @property
+    def atomic_number(self):
+        """ Atomic number """
+        return ELEM_TO_NUM[self.element]
+
+    @property
+    def mass(self):
+        """ Atomic mass [u] """
+        return ELEM_TO_MASS[self.element]
+
+    @property
+    def magnetic_moment_ground(self):
+        """ Ground state magnetic moment. """
+        return ELEM_TO_MAGMOM[self.element]
+
+
 # TODO: store atomic data as class attributes?
-class Atom(object):
+class Atom(Element):
     """
     Container object for atomic data. 
 
@@ -53,23 +106,16 @@ class Atom(object):
         displacement=None,
         magmom=None,
         occupancy=1.0,
-        **kwargs
+        **kwargs,
     ):
-        if isinstance(element, int):
-            element = NUM_TO_ELEM[element]
-        elif element not in ELEM_TO_NUM:
-            raise ValueError("Invalid chemical element {}".format(element))
+        super().__init__(element=element)
 
-        if magmom is None:
-            magmom = ELEM_TO_MAGMOM[element]
-
-        self.element = element.title()
         self.coords_fractional = np.asfarray(coords)
         self.lattice = lattice or Lattice(np.eye(3))
         self.displacement = np.asfarray(
             displacement if displacement is not None else (0, 0, 0)
         )
-        self.magmom = magmom
+        self.magmom = magmom or self.magnetic_moment_ground
         self.occupancy = occupancy
 
     def __repr__(self):
@@ -124,16 +170,6 @@ class Atom(object):
             coords=frac_coords(atom.position, lattice),
             magmom=atom.magmom,
         )
-
-    @property
-    def atomic_number(self):
-        """ Atomic number """
-        return ELEM_TO_NUM[self.element]
-
-    @property
-    def mass(self):
-        """ Atomic mass [u] """
-        return ELEM_TO_MASS[self.element]
 
     @property
     def coords_cartesian(self):
