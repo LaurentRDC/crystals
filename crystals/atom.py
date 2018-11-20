@@ -18,7 +18,7 @@ from .lattice import Lattice
 
 class Element:
     """
-    class representing an abtract chemical element, but no particular atom.
+    Class representing an abtract chemical element, but no particular atom.
     THis class gives access to elemental properties, like atomic number, 
     atomic mass, full element name, etc.
 
@@ -40,7 +40,7 @@ class Element:
         self.element = element
 
     def __repr__(self):
-        return f"< Element object : {self.element_full} >"
+        return f"< {self.element_full} >"
 
     def __eq__(self, other):
         if type(self) is type(other):
@@ -48,6 +48,8 @@ class Element:
         return NotImplemented
     
     def __hash__(self):
+        # Technically, if atomic_number is an int, hash(atomic_number) = atomic_number
+        # However, just in case this won't be true in the future, we still use the hash() function
         return hash(self.atomic_number)
 
     @property
@@ -91,6 +93,8 @@ class Atom(Element):
         Fractional occupancy. If None (default), occupancy is set to 1.0.
     """
 
+    # Because of the possibility of a large number of atoms (> 1e6), we use the __slots__
+    # mechanism to make Atom objects as small as possible.
     __slots__ = (
         "element",
         "coords_fractional",

@@ -437,7 +437,7 @@ If all you want is access to elemental information, like atomic weights, you can
 
     >>> from crystals import Element
     >>> Element("H")
-    < Element object : Hydrogen >
+    < Hydrogen >
     >>> Element("Cu").mass # Atomic mass in [u]
     63.546
     >>> Element("Cu).atomic_number
