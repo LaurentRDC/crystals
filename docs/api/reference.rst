@@ -13,5 +13,6 @@ You can also take a look at the short :ref:`user guide <user_guide>` for some us
     :maxdepth: 2
     
     data-structures
+    biological
     base-classes
     utilities
