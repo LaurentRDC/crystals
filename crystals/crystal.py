@@ -332,6 +332,8 @@ class Crystal(AtomicStructure, Lattice):
 
             * ``'hm_symbol'`` : Hermann-Mauguin symbol;
 
+            *``'centering'``: Centering-type ("P", "F", etc.);
+
             * ``'pointgroup'`` : International Tables of 
               Crystallography point-group;
 
@@ -357,11 +359,12 @@ class Crystal(AtomicStructure, Lattice):
 
         if dataset:
             spg_type = get_spacegroup_type(dataset["hall_number"])
-
+            hm_symbol = Hall2HM[dataset["hall"]]
             info = {
                 "international_symbol": dataset["international"],
                 "hall_symbol": dataset["hall"],
-                "hm_symbol": Hall2HM[dataset["hall"]],
+                "hm_symbol": hm_symbol,
+                "centering": hm_symbol[0],
                 "international_number": dataset["number"],
                 "hall_number": dataset["hall_number"],
                 "international_full": spg_type["international_full"],
@@ -371,7 +374,7 @@ class Crystal(AtomicStructure, Lattice):
             err_msg = get_error_message()
             if err_msg != "no error":
                 raise RuntimeError(
-                    "Symmetry-determination has returned the following error: {}".format(
+                    "[SPGLIB] Symmetry-determination has returned the following error: {}".format(
                         err_msg
                     )
                 )
@@ -414,6 +417,27 @@ class Crystal(AtomicStructure, Lattice):
     def hall_number(self):
         """ Hall number (between 1 and 531). """
         return self.symmetry()["hall_number"]
+
+    @property
+    def centering(self):
+        """ 
+        Centering type of this crystals. Possible values are 
+        
+        * ``'P'`` : Primitive
+
+        * ``'I'`` : Body-centered
+
+        * ``'F'`` : Face-centered
+
+        * ``'A'`` : Base-centered on A faces
+
+        * ``'B'`` : Base-centered on B faces
+
+        * ``'C'`` : Base-centered on C faces
+
+        * ``'R'`` : Rhombohedral
+        """
+        return self.symmetry()["centering"]
 
     def __str__(self):
         """ String representation of this instance. Atoms may be omitted. """
