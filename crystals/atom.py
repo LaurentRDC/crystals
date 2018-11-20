@@ -46,6 +46,9 @@ class Element:
         if type(self) is type(other):
             return self.element == other.element
         return NotImplemented
+    
+    def __hash__(self):
+        return hash(self.atomic_number)
 
     @property
     def element_full(self):

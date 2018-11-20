@@ -90,7 +90,7 @@ class TestCrystalConstructors(unittest.TestCase):
     def test_builtins_wrong_name(self):
         """ Test that a name not in Crystal.builtins will raise a ValueError """
         with self.assertRaises(ValueError):
-            c = Crystal.from_database("___")
+            Crystal.from_database("___")
 
     def test_substructure_preservation(self):
         """ Test that initializing a crystal with substructures preserves the substructures """
