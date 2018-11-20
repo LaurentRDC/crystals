@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2013-03-29 10:50:04 +0000 (Fri, 29 Mar 2013) $
-#$Revision: 77877 $
+#$Date: 2017-10-14 23:18:49 +0300 (Sat, 14 Oct 2017) $
+#$Revision: 202019 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008587.cif $
 #------------------------------------------------------------------------------
 #
@@ -41,7 +41,6 @@ _cell_length_c                   10.973
 _cell_volume                     320.425
 _exptl_crystal_density_diffrn    20.232
 _cod_database_code               9008587
-_amcsd_database_code             AMCSD#0010918
 loop_
 _symmetry_equiv_pos_as_xyz
 x,y,z
@@ -61,3 +60,8 @@ Pu5 0.01600 0.25000 0.62100
 Pu6 0.46500 0.25000 0.64400
 Pu7 0.33700 0.25000 0.92600
 Pu8 0.89200 0.25000 0.89700
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 ChemSpider 22382

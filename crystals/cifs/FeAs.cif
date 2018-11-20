@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
-#$Date: 2010-06-10 15:11:07 +0000 (Thu, 10 Jun 2010) $
-#$Revision: 1210 $
-#$URL: svn://cod.ibt.lt/cod/cif/9/9007668.cif $
+#$Date: 2016-11-13 17:22:27 +0200 (Sun, 13 Nov 2016) $
+#$Revision: 188410 $
+#$URL: file:///home/coder/svn-repositories/cod/cif/9/00/76/9007668.cif $
 #------------------------------------------------------------------------------
 #
 # This file is available in the Crystallography Open Database (COD),
@@ -25,9 +25,11 @@ _publ_section_title
  Note: anisoB's taken from ICSD
  Sample: Pnam refinement, P = .0001 GPa
 ;
+_journal_issue                   1
 _journal_name_full               'Acta Crystallographica, Section B'
 _journal_page_first              14
 _journal_page_last               20
+_journal_paper_doi               10.1107/S0108768184001695
 _journal_volume                  40
 _journal_year                    1984
 _chemical_formula_sum            'As Fe'
@@ -44,9 +46,8 @@ _cell_length_c                   3.3712
 _cell_volume                     110.513
 _diffrn_ambient_pressure         100
 _exptl_crystal_density_diffrn    7.860
-_[local]_cod_chemical_formula_sum_orig 'Fe As'
+_cod_original_formula_sum        'Fe As'
 _cod_database_code               9007668
-_amcsd_database_code             AMCSD#0009602
 loop_
 _symmetry_equiv_pos_as_xyz
 x,y,z

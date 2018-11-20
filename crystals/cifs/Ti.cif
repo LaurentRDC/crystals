@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2012-02-28 15:44:07 +0000 (Tue, 28 Feb 2012) $
-#$Revision: 35913 $
+#$Date: 2017-10-15 03:23:08 +0300 (Sun, 15 Oct 2017) $
+#$Revision: 202022 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008517.cif $
 #------------------------------------------------------------------------------
 #
@@ -28,7 +28,7 @@ _journal_page_last               83
 _journal_volume                  1
 _journal_year                    1963
 _chemical_formula_sum            Ti
-_chemical_name_mineral           Titanium
+_chemical_name_common            Titanium
 _space_group_IT_number           194
 _symmetry_space_group_name_Hall  '-P 6c 2c'
 _symmetry_space_group_name_H-M   'P 63/m m c'
@@ -41,7 +41,6 @@ _cell_length_c                   4.686
 _cell_volume                     35.316
 _exptl_crystal_density_diffrn    4.503
 _cod_database_code               9008517
-_amcsd_database_code             AMCSD#0010848
 loop_
 _symmetry_equiv_pos_as_xyz
 x,y,z
@@ -74,3 +73,10 @@ _atom_site_fract_x
 _atom_site_fract_y
 _atom_site_fract_z
 Ti 0.33333 0.66667 0.25000
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 ChemSpider 22402
+2 MPOD 1000061
+3 MPOD 1000211

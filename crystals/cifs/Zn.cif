@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2012-02-28 15:44:07 +0000 (Tue, 28 Feb 2012) $
-#$Revision: 35913 $
+#$Date: 2017-10-15 03:23:08 +0300 (Sun, 15 Oct 2017) $
+#$Revision: 202022 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008522.cif $
 #------------------------------------------------------------------------------
 #
@@ -41,7 +41,6 @@ _cell_length_c                   4.9467
 _cell_volume                     30.421
 _exptl_crystal_density_diffrn    7.139
 _cod_database_code               9008522
-_amcsd_database_code             AMCSD#0010853
 loop_
 _symmetry_equiv_pos_as_xyz
 x,y,z
@@ -74,3 +73,15 @@ _atom_site_fract_x
 _atom_site_fract_y
 _atom_site_fract_z
 Zn 0.33333 0.66667 0.25000
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 ChemSpider 22430
+2 MPOD 1000065
+3 MPOD 1000153
+4 MPOD 1000171
+5 MPOD 1000172
+6 MPOD 1000173
+7 MPOD 1000174
+8 MPOD 1000213

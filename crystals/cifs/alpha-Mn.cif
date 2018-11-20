@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
-#$Date: 2010-06-10 15:11:07 +0000 (Thu, 10 Jun 2010) $
-#$Revision: 1210 $
-#$URL: svn://cod.ibt.lt/cod/cif/9/9008589.cif $
+#$Date: 2017-10-14 23:18:49 +0300 (Sat, 14 Oct 2017) $
+#$Revision: 202019 $
+#$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008589.cif $
 #------------------------------------------------------------------------------
 #
 # This file is available in the Crystallography Open Database (COD),
@@ -27,7 +27,7 @@ _journal_page_first              7
 _journal_page_last               83
 _journal_volume                  1
 _journal_year                    1963
-_chemical_formula_sum            Mn29
+_chemical_formula_sum            Mn
 _chemical_name_mineral           Manganese-alpha
 _space_group_IT_number           217
 _symmetry_space_group_name_Hall  'I -4 2 3'
@@ -41,7 +41,6 @@ _cell_length_c                   8.894
 _cell_volume                     703.544
 _exptl_crystal_density_diffrn    7.521
 _cod_database_code               9008589
-_amcsd_database_code             AMCSD#0010920
 loop_
 _symmetry_equiv_pos_as_xyz
 x,y,z
@@ -101,3 +100,8 @@ Mn1 0.00000 0.00000 0.00000
 Mn2 0.31700 0.31700 0.31700
 Mn3 0.35600 0.35600 0.04200
 Mn4 0.08900 0.08900 0.27800
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 ChemSpider 22372

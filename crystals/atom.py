@@ -46,7 +46,7 @@ class Element:
         if type(self) is type(other):
             return self.element == other.element
         return NotImplemented
-    
+
     def __hash__(self):
         # Technically, if atomic_number is an int, hash(atomic_number) = atomic_number
         # However, just in case this won't be true in the future, we still use the hash() function

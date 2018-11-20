@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2012-02-03 17:16:24 +0000 (Fri, 03 Feb 2012) $
-#$Revision: 32112 $
+#$Date: 2017-10-13 08:28:26 +0300 (Fri, 13 Oct 2017) $
+#$Revision: 201972 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/2/10/04/2100456.cif $
 #------------------------------------------------------------------------------
 #
@@ -30,6 +30,7 @@ _journal_issue                   2
 _journal_name_full               'Acta Crystallographica Section B'
 _journal_page_first              173
 _journal_page_last               189
+_journal_paper_doi               10.1107/S0108768106003314
 _journal_volume                  62
 _journal_year                    2006
 _chemical_formula_sum            In
@@ -50,8 +51,8 @@ _cell_volume                     52.287(6)
 _pd_block_id
 2005-01-09T08:34|CE2RHIN8_RT_HRP23988_phase4|Moshopoulou||
 _pd_phase_name                   In
-_[local]_cod_data_source_file    ws5027.cif
-_[local]_cod_data_source_block   CE2RHIN8_RT_HRP23988_phase_4
+_cod_data_source_file            ws5027.cif
+_cod_data_source_block           CE2RHIN8_RT_HRP23988_phase_4
 _cod_original_cell_volume        52.2870(3)
 _cod_database_code               2100456
 loop_
@@ -107,3 +108,8 @@ IN 2.0
 loop_
 _pd_block_diffractogram_id
 2005-01-09T08:34|CE2RHIN8_RT_HRP23988_H_01|Moshopoulou|HRPD
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 ChemSpider 4514408

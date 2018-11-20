@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2013-03-28 16:17:04 +0000 (Thu, 28 Mar 2013) $
-#$Revision: 77586 $
+#$Date: 2017-10-15 03:23:08 +0300 (Sun, 15 Oct 2017) $
+#$Revision: 202022 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/5/00/02/5000215.cif $
 #------------------------------------------------------------------------------
 #
@@ -13,16 +13,18 @@
 data_5000215
 loop_
 _publ_author_name
-'Cucka, P'
-'Barrett, C S'
+'Cucka, P.'
+'Barrett, C. S.'
 _publ_section_title
 ;
-The Crystal Structure of Bi and of solid solutions of Pb, Sn, Sb and Te
-in Bi
+ The Crystal Structure of Bi and of solid solutions of Pb, Sn, Sb
+ and Te in Bi
 ;
-_journal_name_full               'Acta Crystallographica (1,1948-23,1967)'
+_journal_issue                   9
+_journal_name_full               'Acta Crystallographica'
 _journal_page_first              865
 _journal_page_last               872
+_journal_paper_doi               10.1107/S0365110X62002297
 _journal_volume                  15
 _journal_year                    1962
 _chemical_formula_structural     Bi
@@ -43,7 +45,7 @@ _cell_length_b                   4.535(2)
 _cell_length_c                   11.814(6)
 _cell_volume                     210.4
 _refine_ls_R_factor_all          0.0278
-_[local]_cod_cif_authors_sg_H-M  'R -3 m H'
+_cod_original_sg_symbol_H-M      'R -3 m H'
 _cod_database_code               5000215
 loop_
 _symmetry_equiv_pos_as_xyz
@@ -99,3 +101,8 @@ loop_
 _atom_type_symbol
 _atom_type_oxidation_number
 Bi0 0.000
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 MPOD 1000155

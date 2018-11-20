@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2012-02-28 15:44:07 +0000 (Tue, 28 Feb 2012) $
-#$Revision: 35913 $
+#$Date: 2017-10-15 03:23:08 +0300 (Sun, 15 Oct 2017) $
+#$Revision: 202022 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008570.cif $
 #------------------------------------------------------------------------------
 #
@@ -40,9 +40,8 @@ _cell_length_b                   5.8197
 _cell_length_c                   3.17488
 _cell_volume                     107.530
 _exptl_crystal_density_diffrn    7.333
-_[local]_cod_cif_authors_sg_H-M  'I 41/a m d'
+_cod_original_sg_symbol_H-M      'I 41/a m d'
 _cod_database_code               9008570
-_amcsd_database_code             AMCSD#0010901
 loop_
 _symmetry_equiv_pos_as_xyz
 x,y,z
@@ -83,3 +82,8 @@ _atom_site_fract_x
 _atom_site_fract_y
 _atom_site_fract_z
 Sn 0.00000 0.00000 0.00000
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 MPOD 1000157

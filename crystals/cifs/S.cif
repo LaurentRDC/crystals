@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2012-02-28 15:44:07 +0000 (Tue, 28 Feb 2012) $
-#$Revision: 35913 $
+#$Date: 2017-10-15 03:23:08 +0300 (Sun, 15 Oct 2017) $
+#$Revision: 202022 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008577.cif $
 #------------------------------------------------------------------------------
 #
@@ -27,6 +27,7 @@ _journal_page_last               83
 _journal_volume                  1
 _journal_year                    1963
 _chemical_formula_sum            S8
+_chemical_name_common            Sulphur
 _chemical_name_mineral           Sulphur
 _space_group_IT_number           70
 _symmetry_space_group_name_Hall  '-F 2uv 2vw'
@@ -39,9 +40,8 @@ _cell_length_b                   12.870
 _cell_length_c                   24.493
 _cell_volume                     3299.459
 _exptl_crystal_density_diffrn    2.066
-_[local]_cod_cif_authors_sg_H-M  'F d d d'
+_cod_original_sg_symbol_H-M      'F d d d'
 _cod_database_code               9008577
-_amcsd_database_code             AMCSD#0010908
 loop_
 _symmetry_equiv_pos_as_xyz
 x,y,z
@@ -85,3 +85,9 @@ S1 0.85540 0.95260 0.95160
 S2 0.78440 0.03010 0.07630
 S3 0.70690 0.97950 0.00400
 S4 0.78620 0.90730 0.12900
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 ChemSpider 59726
+2 MPOD 1000248

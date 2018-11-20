@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2012-02-28 15:44:07 +0000 (Tue, 28 Feb 2012) $
-#$Revision: 35913 $
+#$Date: 2017-10-14 23:18:49 +0300 (Sat, 14 Oct 2017) $
+#$Revision: 202019 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/84/9008484.cif $
 #------------------------------------------------------------------------------
 #
@@ -28,7 +28,7 @@ _journal_page_last               83
 _journal_volume                  1
 _journal_year                    1963
 _chemical_formula_sum            Sr
-_chemical_name_mineral           Strontium
+_chemical_name_common            Strontium
 _space_group_IT_number           225
 _symmetry_space_group_name_Hall  '-F 4 2 3'
 _symmetry_space_group_name_H-M   'F m -3 m'
@@ -40,9 +40,8 @@ _cell_length_b                   6.0847
 _cell_length_c                   6.0847
 _cell_volume                     225.277
 _exptl_crystal_density_diffrn    2.583
-_[local]_cod_cif_authors_sg_H-M  'F m 3 m'
+_cod_original_sg_symbol_H-M      'F m 3 m'
 _cod_database_code               9008484
-_amcsd_database_code             AMCSD#0010814
 loop_
 _symmetry_equiv_pos_as_xyz
 x,y,z
@@ -243,3 +242,8 @@ _atom_site_fract_x
 _atom_site_fract_y
 _atom_site_fract_z
 Sr 0.00000 0.00000 0.00000
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 ChemSpider 4514263

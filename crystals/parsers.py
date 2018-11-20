@@ -716,11 +716,38 @@ class CODParser(CIFParser):
     def __init__(
         self, num, revision=None, download_dir=None, overwrite=False, **kwargs
     ):
+        if download_dir is None:
+            download_dir = STRUCTURE_CACHE
+
+        super().__init__(
+            filename=self.download_cif(download_dir, num, revision, overwrite), **kwargs
+        )
+
+    @classmethod
+    def download_cif(cls, download_dir, num, revision=None, overwrite=False):
+        """
+        Download a CIF file from the Crystallography Open Database.
+
+        Parameters
+        ----------
+        download_dir : path-like object or None
+            Directory where to save the CIF file.
+        num : int
+            COD identification number.
+        revision : int or None, optional
+            Revision number. If None (default), the latest revision is used.
+        overwrite : bool, optional
+            Whether or not to overwrite files in cache if they exist. If no revision 
+            number is provided, files will always be overwritten. 
+
+        Returns
+        -------
+        path : pathlib.Path
+            Path to the downloaded file.
+        """
         if revision is None:
             overwrite = True
 
-        if download_dir is None:
-            download_dir = STRUCTURE_CACHE
         download_dir = Path(download_dir)
 
         if not download_dir.exists():
@@ -738,4 +765,4 @@ class CODParser(CIFParser):
         if (not path.is_file()) or overwrite:
             urlretrieve(url, path)
 
-        super().__init__(filename=path, **kwargs)
+        return path

@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2012-02-28 15:44:07 +0000 (Tue, 28 Feb 2012) $
-#$Revision: 35913 $
+#$Date: 2017-10-15 03:23:08 +0300 (Sun, 15 Oct 2017) $
+#$Revision: 202022 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/84/9008478.cif $
 #------------------------------------------------------------------------------
 #
@@ -40,9 +40,8 @@ _cell_length_b                   3.8898
 _cell_length_c                   3.8898
 _cell_volume                     58.855
 _exptl_crystal_density_diffrn    12.010
-_[local]_cod_cif_authors_sg_H-M  'F m 3 m'
+_cod_original_sg_symbol_H-M      'F m 3 m'
 _cod_database_code               9008478
-_amcsd_database_code             AMCSD#0010808
 loop_
 _symmetry_equiv_pos_as_xyz
 x,y,z
@@ -243,3 +242,9 @@ _atom_site_fract_x
 _atom_site_fract_y
 _atom_site_fract_z
 Pd 0.00000 0.00000 0.00000
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 ChemSpider 22380
+2 MPOD 1000039

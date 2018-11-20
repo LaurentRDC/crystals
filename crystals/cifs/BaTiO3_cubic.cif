@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
-#$Date: 2010-07-19 14:02:56 +0000 (Mon, 19 Jul 2010) $
-#$Revision: 1230 $
-#$URL: svn://cod.ibt.lt/cod/cif/2/2100862.cif $
+#$Date: 2017-10-15 03:23:08 +0300 (Sun, 15 Oct 2017) $
+#$Revision: 202022 $
+#$URL: file:///home/coder/svn-repositories/cod/cif/2/10/08/2100862.cif $
 #------------------------------------------------------------------------------
 #
 # This file is available in the Crystallography Open Database (COD),
@@ -25,6 +25,7 @@ _journal_issue                   6
 _journal_name_full               'Acta Crystallographica Section B'
 _journal_page_first              764
 _journal_page_last               769
+_journal_paper_doi               10.1107/S010876819200510X
 _journal_volume                  48
 _journal_year                    1992
 _chemical_compound_source
@@ -75,10 +76,8 @@ _refine_ls_R_factor_all          0.012
 _refine_ls_weighting_details     w=1/[\s^2^(Fo^2^)]
 _refine_ls_weighting_scheme      calc
 _refine_ls_wR_factor_all         0.013
-_[local]_cod_data_source_file    as0598.cif
-_[local]_cod_data_source_block   as0598e
-_[local]_cod_cif_authors_sg_H-M  'P m-3m'
-_[local]_cod_chemical_formula_sum_orig 'Ba1 O3 Ti1'
+_cod_data_source_file            as0598.cif
+_cod_data_source_block           as0598e
 _cod_depositor_comments
 ;
 
@@ -125,6 +124,8 @@ _cod_depositor_comments
  2010.07.19
 ;
 _cod_original_cell_volume        64.281
+_cod_original_sg_symbol_H-M      'P m-3m'
+_cod_original_formula_sum        'Ba1 O3 Ti1'
 _cod_suboptimal_structure        yes
 _cod_related_optimal_struct      2100858
 _cod_database_code               2100862
@@ -154,3 +155,8 @@ _diffrn_standard_refln_index_l
 0 -3 0
 0 0 4
 0 0 -4
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 MPOD 1000305

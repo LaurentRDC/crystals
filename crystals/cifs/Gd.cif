@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2013-03-29 10:50:04 +0000 (Fri, 29 Mar 2013) $
-#$Revision: 77877 $
+#$Date: 2017-10-14 23:18:49 +0300 (Sat, 14 Oct 2017) $
+#$Revision: 202019 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/84/9008498.cif $
 #------------------------------------------------------------------------------
 #
@@ -43,7 +43,6 @@ _cell_volume                     66.105
 _diffrn_ambient_temperature      106
 _exptl_crystal_density_diffrn    7.900
 _cod_database_code               9008498
-_amcsd_database_code             AMCSD#0010828
 loop_
 _symmetry_equiv_pos_as_xyz
 x,y,z
@@ -76,3 +75,8 @@ _atom_site_fract_x
 _atom_site_fract_y
 _atom_site_fract_z
 Gd 0.33333 0.66667 0.25000
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 ChemSpider 22418
