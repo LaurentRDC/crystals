@@ -14,6 +14,7 @@ np.random.seed(23)
 
 
 def random_transform():
+    """ Create a rotation matrix, around a random axis, of a random amount """
     return rotation_matrix(random(), axis=np.random.random((3,)))
 
 
@@ -61,6 +62,16 @@ class TestAtom(unittest.TestCase):
 
         self.assertIsNot(transformed, self.atom)
         self.assertEqual(transformed, self.atom)
+
+    def test_atom_subclasses_transform_preserved(self):
+        """ Test transform() preserves subclasses """
+        class NewAtom(Atom):
+            pass
+        
+        atm = NewAtom('He', [0,0,0])
+        transformed = atm.transform(np.eye(3))
+
+        self.assertIs(type(atm), type(transformed))
 
     def test_transform_back_and_forth(self):
         """ Test Atom.transform() with a random transformation back and forth """
