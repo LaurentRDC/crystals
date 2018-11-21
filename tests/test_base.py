@@ -25,6 +25,47 @@ class TestAtomicStructure(unittest.TestCase):
         elements = [atm.element for atm in self.structure]
         self.assertTrue(len(elements), 3)
 
+    def test_addition_trivial(self):
+        """ Test that the addition of two AtomicStructures, one being empty, works as expected """
+        addition = self.structure + AtomicStructure()
+        self.assertEqual(addition, self.structure)
+        self.assertIsNot(addition, self.structure)
+
+    def test_addition_uniqueness(self):
+        """ Test that the addition of two AtomicStructures, works as expected regarding unique atoms """
+        self.assertEqual(self.structure + self.structure, self.structure)
+
+    def test_addition(self):
+        """ Test the addition of two different AtomicStructures works as expected. """
+        new_struct = AtomicStructure(
+            atoms=[Atom("U", [0, 1, 0])],
+            substructures=[
+                AtomicStructure(
+                    atoms=[Atom("Ag", [0.5, 0, 0]), Atom("Ag", [1, 0.3, 1])]
+                )
+            ],
+        )
+
+        addition = self.structure + new_struct
+
+        self.assertEqual(len(new_struct) + len(self.structure), len(addition))
+        self.assertEqual(
+            len(new_struct.atoms) + len(self.structure.atoms), len(addition.atoms)
+        )
+        self.assertEqual(
+            len(new_struct.substructures) + len(self.structure.substructures),
+            len(addition.substructures),
+        )
+
+    def test_addition_subclasses(self):
+        """ Test that the addition of two subclass of AtomicStructures is preserved under addition. """
+
+        class NewAtomicStructure(AtomicStructure):
+            pass
+
+        addition = NewAtomicStructure() + NewAtomicStructure()
+        self.assertIs(type(addition), NewAtomicStructure)
+
     def test_trivial_transformation(self):
         """ Test that the identity transformation of an AtomicStructure works as expected. """
         transformed = self.structure.transform(np.eye(3))

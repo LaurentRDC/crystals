@@ -61,6 +61,73 @@ class AtomicStructure(Base):
         yield from iter(self.atoms)
         yield from chain.from_iterable(self.substructures)
 
+    def __contains__(self, item):
+        """ Check containership of :class:`Atom` instances or :class:`AtomicStructure` substructures recursively."""
+        if isinstance(item, AtomicStructure):
+            return item in self.substructures
+
+        # Either the item is an orphan atom or
+        # it is in one of the substructures
+        # Checking containership of sets is faster than iterating
+        if item in self.atoms:
+            return True
+        else:
+            return any((item in struct) for struct in self.substructures)
+
+    def __len__(self):
+        """ Number of :class:`Atom` instances present in the structure and substructures """
+        return len(self.atoms) + sum(len(struct) for struct in self.substructures)
+
+    def __add__(self, other):
+        """ Create a new structure made from the combination of two structures. """
+        # We defer construction to the current class. Therefore, subclasses of AtomicStructure
+        # will add into their own class
+        return self.__class__(
+            atoms=copy(self.atoms) | copy(other.atoms),
+            substructures=copy(self.substructures) | copy(other.substructures),
+        )
+
+    def __hash__(self):
+        return hash((self.atoms, self.substructures, super().__hash__()))
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return (
+                set(self.atoms) == set(other.atoms)
+                and set(self.substructures) == set(other.substructures)
+                # Subclasses (like Crystal via Lattice) might have extra requirements for equality
+                and super().__eq__(other)
+            )
+        return NotImplemented
+
+    def __repr__(self):
+        """ Verbose string representation of this instance. """
+        # AtomicStructure subclasses need not override this method
+        # since the class name is dynamically determined
+        rep = "< {clsname} object with following orphan atoms:".format(
+            clsname=self.__class__.__name__
+        )
+
+        # Note that repr(Atom(...)) includes these '< ... >'
+        # We remove those for cleaner string representation
+        for atm in self.itersorted():
+            rep += "\n    " + repr(atm).replace("<", "").replace(">", "").strip()
+
+        if self.substructures:
+            rep += "and the following substructures:"
+            for struct in self.substructures:
+                rep += "\n" + repr(struct)
+
+        return rep + " >"
+
+    def __array__(self, *args, **kwargs):
+        """ Returns an array in which each row represents an :class:`Atom` instance. Atoms are ordered by atomic number """
+        arr = np.empty(shape=(len(self), 4), *args, **kwargs)
+        atoms = self.itersorted(key=lambda atm: atm.atomic_number)
+        for row, atm in enumerate(atoms):
+            arr[row, :] = np.array(atm, *args, **kwargs)
+        return arr
+
     def itersorted(self, *, key=None, reverse=False):
         """ 
         Yields :class:`Atom` in sorted order. By default, atoms are sorted by element. 
@@ -160,61 +227,3 @@ class AtomicStructure(Base):
         return self.__class__(
             atoms=transformed_atoms, substructures=transformed_substructures
         )
-
-    def __contains__(self, item):
-        """ Check containership of :class:`Atom` instances or :class:`AtomicStructure` substructures recursively."""
-        if isinstance(item, AtomicStructure):
-            return item in self.substructures
-
-        # Either the item is an orphan atom or
-        # it is in one of the substructures
-        # Checking containership of sets is faster than iterating
-        if item in self.atoms:
-            return True
-        else:
-            return any((item in struct) for struct in self.substructures)
-
-    def __len__(self):
-        """ Number of :class:`Atom` instances present in the structure and substructures """
-        return len(self.atoms) + sum(len(struct) for struct in self.substructures)
-
-    def __hash__(self):
-        return hash((self.atoms, self.substructures, super().__hash__()))
-
-    def __eq__(self, other):
-        if isinstance(other, self.__class__):
-            return (
-                set(self.atoms) == set(other.atoms)
-                and set(self.substructures) == set(other.substructures)
-                # Subclasses (like Crystal via Lattice) might have extra requirements for equality
-                and super().__eq__(other)
-            )
-        return NotImplemented
-
-    def __repr__(self):
-        """ Verbose string representation of this instance. """
-        # AtomicStructure subclasses need not override this method
-        # since the class name is dynamically determined
-        rep = "< {clsname} object with following orphan atoms:".format(
-            clsname=self.__class__.__name__
-        )
-
-        # Note that repr(Atom(...)) includes these '< ... >'
-        # We remove those for cleaner string representation
-        for atm in self.itersorted():
-            rep += "\n    " + repr(atm).replace("<", "").replace(">", "").strip()
-
-        if self.substructures:
-            rep += "and the following substructures:"
-            for struct in self.substructures:
-                rep += "\n" + repr(struct)
-
-        return rep + " >"
-
-    def __array__(self, *args, **kwargs):
-        """ Returns an array in which each row represents an :class:`Atom` instance. Atoms are ordered by atomic number """
-        arr = np.empty(shape=(len(self), 4), *args, **kwargs)
-        atoms = self.itersorted(key=lambda atm: atm.atomic_number)
-        for row, atm in enumerate(atoms):
-            arr[row, :] = np.array(atm, *args, **kwargs)
-        return arr
