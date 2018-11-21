@@ -65,10 +65,11 @@ class TestAtom(unittest.TestCase):
 
     def test_atom_subclasses_transform_preserved(self):
         """ Test transform() preserves subclasses """
+
         class NewAtom(Atom):
             pass
-        
-        atm = NewAtom('He', [0,0,0])
+
+        atm = NewAtom("He", [0, 0, 0])
         transformed = atm.transform(np.eye(3))
 
         self.assertIs(type(atm), type(transformed))

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from .base import AtomicStructure
 
+
 class Residue(AtomicStructure):
     """
     Container representing a protein residue.
