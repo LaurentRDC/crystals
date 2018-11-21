@@ -20,8 +20,8 @@ from numpy.linalg import inv
 
 from .affine import affine_map, transform
 from .atom import Atom, frac_coords
-from .base import Helix, AtomicStructure, Sheet, Residue
 from .lattice import Lattice
+from .protein import AtomicStructure, Helix, Residue, Sheet
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
 # Temporary directory in which to cache crystal structure files
