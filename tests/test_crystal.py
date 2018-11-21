@@ -10,7 +10,7 @@ from pathlib import Path
 
 import numpy as np
 
-from crystals import Atom, AtomicStructure, Crystal, Lattice
+from crystals import Atom, AtomicStructure, Crystal, Lattice, CenteringType
 from crystals.affine import rotation_matrix, transform
 
 
@@ -39,7 +39,7 @@ class TestSpglibMethods(unittest.TestCase):
             "international_full": "P 6_3/m 2/m 2/c",
             "hall_symbol": "-P 6c 2c",
             "hm_symbol": "P63/mmc",
-            "centering": "P",
+            "centering": CenteringType("P"),
             "pointgroup": "D6h",
         }
 

@@ -42,3 +42,15 @@ To access atomic data only, take a look at the :class:`Element` class:
 
 .. autoclass:: Element
     :show-inheritance:
+
+------------
+Enumerations
+------------
+
+To represent lattice systems and centering types, the following enumerations are used:
+
+.. autoclass:: LatticeSystem
+    :undoc-members:
+
+.. autoclass:: CenteringType
+    :undoc-members:

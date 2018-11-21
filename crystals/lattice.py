@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from enum import Enum
+from enum import Enum, unique
 from functools import partial
 from itertools import repeat
 from math import cos, isclose, radians, sin, sqrt, tan
@@ -11,6 +11,7 @@ from .affine import change_basis_mesh, transform
 from .base import Base
 
 
+@unique
 class LatticeSystem(Enum):
     """
     Lattice system enumeration. 

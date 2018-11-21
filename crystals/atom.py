@@ -26,6 +26,10 @@ class Element:
     ----------
     element : str or int
         Elemental symbol (e.g. "He") or atomic number.
+    
+    Raises
+    ------
+    ValueError : if the element is not valid.
     """
 
     valid_symbols = frozenset(chemical_symbols)
@@ -43,7 +47,7 @@ class Element:
         return f"< {self.element_full} >"
 
     def __eq__(self, other):
-        if type(self) is type(other):
+        if isinstance(other, self.__class__):
             return self.element == other.element
         return NotImplemented
 

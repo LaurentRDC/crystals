@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from enum import Enum, unique
 from functools import lru_cache
 from glob import glob
 from itertools import islice, product
@@ -26,6 +27,32 @@ CIF_ENTRIES = frozenset((Path(__file__).parent / "cifs").glob("*.cif"))
 
 is_atom = lambda a: isinstance(a, Atom)
 is_structure = lambda s: isinstance(s, AtomicStructure)
+
+
+@unique
+class CenteringType(Enum):
+    """
+    Enumeration of possible centering types. Together with the lattice system,
+    these centering types defined all 14 Bravais lattices in 3D.
+
+    The possible centering types are:
+
+    * ``'P'`` : Primitive
+
+    * ``'I'`` : Body-centered
+
+    * ``'F'`` : Face-centered
+
+    * ``'C'`` : Base-centered
+
+    * ``'R'`` : Rhombohedral in hexagonal setting.
+    """
+
+    primitive = "P"
+    base_centered = "C"
+    body_centered = "I"
+    face_centered = "F"
+    rhombohedral = "R"
 
 
 def symmetry_expansion(atoms, symmetry_operators):
@@ -357,31 +384,37 @@ class Crystal(AtomicStructure, Lattice):
             cell=self._spglib_cell(), symprec=symprec, angle_tolerance=angle_tolerance
         )
 
-        if dataset:
-            spg_type = get_spacegroup_type(dataset["hall_number"])
-            hm_symbol = Hall2HM[dataset["hall"]]
-            info = {
-                "international_symbol": dataset["international"],
-                "hall_symbol": dataset["hall"],
-                "hm_symbol": hm_symbol,
-                "centering": hm_symbol[0],
-                "international_number": dataset["number"],
-                "hall_number": dataset["hall_number"],
-                "international_full": spg_type["international_full"],
-                "pointgroup": spg_type["pointgroup_international"],
-            }
+        if dataset is None:
+            return None
 
-            err_msg = get_error_message()
-            if err_msg != "no error":
-                raise RuntimeError(
-                    "[SPGLIB] Symmetry-determination has returned the following error: {}".format(
-                        err_msg
-                    )
+        spg_type = get_spacegroup_type(dataset["hall_number"])
+        hm_symbol = Hall2HM[dataset["hall"]]
+
+        # We do not distinguish between base-centered "A", "B", and "C"
+        # "A" and "B" are translated to "C"
+        centering = CenteringType(
+            hm_symbol[0] if hm_symbol[0] not in {"A", "B"} else "C"
+        )
+        info = {
+            "international_symbol": dataset["international"],
+            "hall_symbol": dataset["hall"],
+            "hm_symbol": hm_symbol,
+            "centering": centering,
+            "international_number": dataset["number"],
+            "hall_number": dataset["hall_number"],
+            "international_full": spg_type["international_full"],
+            "pointgroup": spg_type["pointgroup_international"],
+        }
+
+        err_msg = get_error_message()
+        if err_msg != "no error":
+            raise RuntimeError(
+                "[SPGLIB] Symmetry-determination has returned the following error: {}".format(
+                    err_msg
                 )
+            )
 
-            return info
-
-        return None
+        return info
 
     @property
     def international_symbol(self):
@@ -420,23 +453,7 @@ class Crystal(AtomicStructure, Lattice):
 
     @property
     def centering(self):
-        """ 
-        Centering type of this crystals. Possible values are 
-        
-        * ``'P'`` : Primitive
-
-        * ``'I'`` : Body-centered
-
-        * ``'F'`` : Face-centered
-
-        * ``'A'`` : Base-centered on A faces
-
-        * ``'B'`` : Base-centered on B faces
-
-        * ``'C'`` : Base-centered on C faces
-
-        * ``'R'`` : Rhombohedral
-        """
+        """ Centering type of this crystals. """
         return self.symmetry()["centering"]
 
     def __str__(self):

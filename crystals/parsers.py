@@ -730,7 +730,7 @@ class CODParser(CIFParser):
 
         Parameters
         ----------
-        download_dir : path-like object or None
+        download_dir : path-like object
             Directory where to save the CIF file.
         num : int
             COD identification number.
