@@ -136,7 +136,7 @@ class Atom(Element):
     def __eq__(self, other):
         if type(other) is type(self):
             return (
-                (self.element == other.element)
+                super().__eq__(other)
                 and (self.magmom == other.magmom)
                 and np.allclose(
                     self.coords_fractional, other.coords_fractional, atol=1e-3
