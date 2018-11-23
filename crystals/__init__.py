@@ -20,9 +20,9 @@ from .atom_data import ELEM_TO_NUM
 from .atom_data import NUM_TO_ELEM
 from .base import AtomicStructure
 from .base import Base
-from .protein import Residue
-from .protein import Helix
-from .protein import Sheet
+from .biological import Residue
+from .biological import Helix
+from .biological import Sheet
 from .conversion import ase_atoms
 from .conversion import write_xyz
 from .crystal import Crystal

@@ -5,7 +5,7 @@ from .base import AtomicStructure
 
 class Residue(AtomicStructure):
     """
-    Container representing a protein residue.
+    Fundamental building block of a protein: amino acid residue.
 
     Parameters
     ----------
@@ -66,6 +66,11 @@ class SecondaryStructure(AtomicStructure):
     def __init__(self, residues, sequence_number, **kwargs):
         super().__init__(substructures=residues, **kwargs)
         self.sequence_number = int(sequence_number)
+
+    @property
+    def residues(self):
+        """ Residues making this structure. """
+        return self.substructures
 
     def transform(self, *operators):
         """

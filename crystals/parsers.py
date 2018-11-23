@@ -21,7 +21,7 @@ from numpy.linalg import inv
 from .affine import affine_map, transform
 from .atom import Atom, frac_coords
 from .lattice import Lattice
-from .protein import AtomicStructure, Helix, Residue, Sheet
+from .biological import AtomicStructure, Helix, Residue, Sheet
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
 # Temporary directory in which to cache crystal structure files
@@ -271,6 +271,20 @@ class PDBParser(AbstractStructureParser):
             )
 
         return sheets
+
+    def secondary_structures(self, ignored=("HOH", "LI1", "SQU")):
+        """ Iterable of all secondary structures present in this file. 
+        
+        Parameters
+        ----------
+        ignored : iterable of str, optional
+            3-letter string code for residues to ignore.
+        
+        Returns
+        -------
+        structures : iterable of SecondaryStructure instances
+        """
+        return list(self.sheets()) + list(self.helices())
 
     def residues(self, ignored=("HOH", "LI1", "SQU")):
         """ 
