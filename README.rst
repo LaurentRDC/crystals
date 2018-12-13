@@ -14,13 +14,13 @@ crystals
     :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/crystals
 
-.. image:: https://img.shields.io/pypi/pyversions/crystals.svg
-    :alt: Supported Python versions
-    :target: https://pypi.python.org/pypi/crystals
-
 .. image:: https://img.shields.io/conda/vn/conda-forge/crystals.svg
     :target: https://anaconda.org/conda-forge/crystals
     :alt: Conda-forge Version
+
+.. image:: https://img.shields.io/pypi/pyversions/crystals.svg
+    :alt: Supported Python versions
+    :target: https://pypi.python.org/pypi/crystals
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :alt: Code formatting style
