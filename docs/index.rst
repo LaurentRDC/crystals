@@ -124,7 +124,7 @@ All support requests and issue reports should be `filed on Github as an issue <h
 License
 =======
 
-``crystals`` is made available under the BSD 3-clause license. For more details, see `LICENSE.txt <https://github.com/LaurentRDC/crystals/blob/master/LICENSE.txt>`_.
+``crystals`` is made available under the BSD 3-clause license. For more details, see `LICENSE <https://github.com/LaurentRDC/crystals/blob/master/LICENSE>`_.
 
 Related projects
 ================
