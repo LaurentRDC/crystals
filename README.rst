@@ -18,6 +18,10 @@ crystals
     :alt: Supported Python versions
     :target: https://pypi.python.org/pypi/crystals
 
+.. image:: https://img.shields.io/conda/vn/conda-forge/crystals.svg
+    :target: https://anaconda.org/conda-forge/crystals
+    :alt: Conda-forge Version
+
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :alt: Code formatting style
     :target: https://github.com/ambv/black
@@ -82,6 +86,10 @@ Installation
 ``crystals`` is available on the Python Package Index::
 
     pip install crystals
+
+For users of the conda package manager, ``crystals`` is also available from the conda-forge channel::
+
+    conda install -c conda-forge crystals
 
 From source
 -----------

@@ -9,6 +9,10 @@ Using package managers
 
     pip install crystals
 
+For users of the conda package manager, ``crystals`` is also available from the conda-forge channel::
+
+    conda install -c conda-forge crystals
+
 From source
 -----------
 
