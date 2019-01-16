@@ -121,7 +121,10 @@ class AtomicStructure(Base):
         return rep + " >"
 
     def __array__(self, *args, **kwargs):
-        """ Returns an array in which each row represents an :class:`Atom` instance. Atoms are ordered by atomic number """
+        """ 
+        Returns an array in which each row represents an :class:`Atom` instance. 
+        Atoms are ordered by atomic number. 
+        """
         arr = np.empty(shape=(len(self), 4), *args, **kwargs)
         atoms = self.itersorted(key=lambda atm: atm.atomic_number)
         for row, atm in enumerate(atoms):
@@ -166,8 +169,9 @@ class AtomicStructure(Base):
     @property
     def chemical_formula(self):
         """ 
-        Empirical chemical formula for this structure based on the chemical symbols. The string is returned 
-        in Hill notation: symbols are alphabetically ordered except for carbon (C) and hydrogen (H), which are put first. 
+        Empirical chemical formula for this structure based on the chemical symbols. 
+        The string is returned in Hill notation: symbols are alphabetically ordered 
+        except for carbon (C) and hydrogen (H), which are put first. 
         """
         symbols_count = Counter(atm.element for atm in self)
 
