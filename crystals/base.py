@@ -150,6 +150,24 @@ class AtomicStructure(Base):
             key = lambda atm: atm.element
         yield from sorted(iter(self), key=key, reverse=reverse)
 
+    def satisfying(self, predicate):
+        """
+        Builds a new AtomicStructure from atoms satisfying a predicate.
+
+        This method is similar to the built-in filter, except that the properties
+        of AtomicStructures are conserved.
+
+        Parameters
+        ----------
+        predicate : callable
+            Function that takes a single atom, and returns boolean. 
+        
+        Returns
+        -------
+        out : AtomicStructure
+        """
+        return AtomicStructure(atoms=filter(predicate, iter(self)))
+
     @property
     def chemical_composition(self):
         """ 

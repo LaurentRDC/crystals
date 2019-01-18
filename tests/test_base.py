@@ -183,6 +183,14 @@ class TestAtomicStructure(unittest.TestCase):
         """ Test that AtomicStructure fits with collections.abc module """
         for abstract_base_class in (abc.Hashable, abc.Iterable, abc.Sized):
             self.assertIsInstance(self.structure, abstract_base_class)
+    
+    def test_satisfying(self):
+        """ Test the AtomicStructure.satisfying method """
+        uranium = self.structure.satisfying(lambda a: a.element == 'U')
+        silver = self.structure.satisfying(lambda a: a.element == 'Ag')
+
+        self.assertEqual(len(uranium), 1)
+        self.assertEqual(len(silver), 2)
 
 
 if __name__ == "__main__":

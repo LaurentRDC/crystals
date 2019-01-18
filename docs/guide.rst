@@ -149,6 +149,29 @@ The :class:`Crystal` class is a set-like container; checking containership (with
     >>> gold == silver
     False
 
+Structures can be extracted from a :class:`Crystal` instance by making use of its superclass, :class:`AtomicStructure`. For example, 
+all atoms satisfying a certain condition can be found using `Crystal.satisfying`::
+
+    >>> vo2 = Crystal.from_database('vo2-m1')
+    >>> 
+    >>> vo2.satisfying( lambda atom: atom.element == 'V' )
+    < AtomicStructure object with following orphan atoms:
+        Atom V  @ (0.24, 0.97, 0.03)
+        Atom V  @ (0.76, 0.48, 0.47)
+        Atom V  @ (0.76, 0.03, 0.97)
+        Atom V  @ (0.24, 0.53, 0.53) >
+    >>> 
+    >>> vo2.satisfying( lambda atom: atom.element == 'O' )
+    < AtomicStructure object with following orphan atoms:
+        Atom O  @ (0.61, 0.31, 0.71)
+        Atom O  @ (0.10, 0.21, 0.20)
+        Atom O  @ (0.10, 0.29, 0.70)
+        Atom O  @ (0.39, 0.81, 0.79)
+        Atom O  @ (0.90, 0.79, 0.80)
+        Atom O  @ (0.61, 0.19, 0.21)
+        Atom O  @ (0.39, 0.69, 0.29)
+        Atom O  @ (0.90, 0.71, 0.30) >
+
 If a :class:`Crystal` was generated from a file, the path to its file can be retrieved
 from the :attr:`source` attribute::
 
@@ -430,8 +453,8 @@ If atoms are not sitting on the same lattice, calculating the distance should no
         "Cartesian distance is undefined if atoms are sitting on different lattices."
     RuntimeError: Distance is undefined if atoms are sitting on different lattices.
 
-Elements
---------
+The :class:`Element` class
+==========================
 
 If all you want is access to elemental information, like atomic weights, you can instantiate an :class:`Element` instead of an :class:`Atom`::
 
