@@ -10,6 +10,7 @@ __version__ = "0.7.0"
 from .atom import Atom
 from .atom import Element
 from .atom import frac_coords
+from .atom import is_element
 from .atom import real_coords
 from .atom import distance_fractional
 from .atom import distance_cartesian

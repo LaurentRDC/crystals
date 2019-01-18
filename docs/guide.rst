@@ -160,8 +160,10 @@ all atoms satisfying a certain condition can be found using `Crystal.satisfying`
         Atom V  @ (0.76, 0.48, 0.47)
         Atom V  @ (0.76, 0.03, 0.97)
         Atom V  @ (0.24, 0.53, 0.53) >
-    >>> 
-    >>> vo2.satisfying( lambda atom: atom.element == 'O' )
+
+To make it easier, take a look at the :func:`is_element` function:
+
+    >>> vo2.satisfying( is_element('O') )
     < AtomicStructure object with following orphan atoms:
         Atom O  @ (0.61, 0.31, 0.71)
         Atom O  @ (0.10, 0.21, 0.20)

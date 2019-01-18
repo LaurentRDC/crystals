@@ -322,3 +322,34 @@ def distance_cartesian(atm1, atm2):
         )
 
     return np.linalg.norm(atm1.coords_cartesian - atm2.coords_cartesian)
+
+
+def is_element(element):
+    """
+    Create a function that checks whether an atom is of a certain element.
+
+    Parameters
+    ----------
+    element : str, int, or Element
+        Elemental symbol (e.g. "He"), atomic number, or Element instance.
+
+    Returns
+    -------
+    func : callable
+        Returns a function that can be used to check whether a `crystals.Atom`
+        instance is of a certain element.
+    
+    Examples
+    --------
+    >>> is_vanadium = is_element('V') # is_vanadium is a function
+    >>> atm = Atom('V', [0,0,0])
+    >>> is_vanadium(atm)
+    True
+    """
+    if not isinstance(element, Element):
+        element = Element(element)
+
+    def _is_element(atm):
+        return atm.atomic_number == element.atomic_number
+
+    return _is_element

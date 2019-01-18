@@ -15,3 +15,5 @@ Here are a few utility functions:
 .. autofunction:: distance_fractional
 
 .. autofunction:: distance_cartesian
+
+.. autofunction:: is_element

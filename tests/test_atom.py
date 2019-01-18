@@ -5,7 +5,14 @@ from random import randint, random, seed
 
 import numpy as np
 
-from crystals import Atom, Element, Lattice, distance_cartesian, distance_fractional
+from crystals import (
+    Atom,
+    Element,
+    Lattice,
+    distance_cartesian,
+    distance_fractional,
+    is_element,
+)
 from crystals.atom_data import chemical_symbols
 from crystals.affine import rotation_matrix
 
@@ -127,6 +134,17 @@ class TestAtomicDistances(unittest.TestCase):
         with self.subTest("Cartesian distance"):
             with self.assertRaises(RuntimeError):
                 distance_cartesian(atm1, atm2)
+
+
+class TestIsElement(unittest.TestCase):
+    def test_input_types(self):
+        """ Test that is_element() works as expected for all 
+        supported input types """
+        atm = Atom("V", [0, 0, 0])
+
+        self.assertTrue( is_element(atm.element)(atm) )
+        self.assertTrue( is_element(atm.atomic_number)(atm) )
+        self.assertTrue( is_element(atm)(atm) )
 
 
 if __name__ == "__main__":
