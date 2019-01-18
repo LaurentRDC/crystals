@@ -2,7 +2,8 @@
 Changelog
 =========
 
-0.1.0 (2018-11-06)
-------------------
+0.6.1 (development)
+-------------------
 
-* First release on PyPI.
+* Added the `AtomicStructure.satisfying` method, to extract atoms satisfying a predicate from structures
+* Added the `is_element` function. It can be used to make `AtomicStructure.satisfying` more readable.
