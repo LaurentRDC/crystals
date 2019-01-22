@@ -228,6 +228,8 @@ class AtomicStructure(Base):
         """
         Return a transformed AtomicStructure based on symmetry operators.
 
+        Parameters
+        ----------
         operators : iterable of array_like
             Symmetry operators, either 3x3 or 4x4.
         
