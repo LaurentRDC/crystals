@@ -77,7 +77,7 @@ class AtomicStructure(Base):
     def __len__(self):
         """ Number of :class:`Atom` instances present in the structure and substructures """
         return len(self.atoms) + sum(len(struct) for struct in self.substructures)
-    
+
     def __bool__(self):
         """ An :class:`AtomicStructure` is `False` if empty, and `True` otherwise """
         return bool(self.atoms) or bool(self.substructures)

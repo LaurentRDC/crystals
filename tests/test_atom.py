@@ -142,9 +142,9 @@ class TestIsElement(unittest.TestCase):
         supported input types """
         atm = Atom("V", [0, 0, 0])
 
-        self.assertTrue( is_element(atm.element)(atm) )
-        self.assertTrue( is_element(atm.atomic_number)(atm) )
-        self.assertTrue( is_element(atm)(atm) )
+        self.assertTrue(is_element(atm.element)(atm))
+        self.assertTrue(is_element(atm.atomic_number)(atm))
+        self.assertTrue(is_element(atm)(atm))
 
 
 if __name__ == "__main__":

@@ -65,7 +65,7 @@ class TestAtomicStructure(unittest.TestCase):
 
         addition = NewAtomicStructure() + NewAtomicStructure()
         self.assertIs(type(addition), NewAtomicStructure)
-    
+
     def test_truthiness(self):
         """ Test that empty AtomicStructures are falsey, and truthy otherwise. """
         empty_structure = AtomicStructure()
