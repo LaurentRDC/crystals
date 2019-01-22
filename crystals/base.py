@@ -177,6 +177,17 @@ class AtomicStructure(Base):
         """ 
         Chemical composition of this structure as an ordered dictionary. Keys are elemental symbols. 
         Elements are in descending order of prevalence.
+
+        Example
+        -------
+        >>> c = Crystal.from_cod(1508819)
+        >>> c.chemical_composition
+        OrderedDict([('H',  0.441),
+                     ('C',  0.349),
+                     ('N',  0.093),
+                     ('O',  0.093),
+                     ('Cl', 0.023)
+                     ])
         """
         # We can't use a Counter directly since Counter values are integer by default
         number_atoms = len(self)
@@ -194,6 +205,12 @@ class AtomicStructure(Base):
         Empirical chemical formula for this structure based on the chemical symbols. 
         The string is returned in Hill notation: symbols are alphabetically ordered 
         except for carbon (C) and hydrogen (H), which are put first. 
+
+        Example
+        -------
+        >>> c = Crystal.from_cod(1508819)
+        >>> c.chemical_formula
+        'C15 H19 Cl N4 O4'
         """
         symbols_count = Counter(atm.element for atm in self)
 
@@ -220,7 +237,7 @@ class AtomicStructure(Base):
         elements.extend(
             [(e, symbols_count_empirical[e]) for e in sorted(symbols_count_empirical)]
         )
-        return "".join(
+        return " ".join(
             f"{symbol}{count}" if count > 1 else symbol for symbol, count in elements
         )
 
