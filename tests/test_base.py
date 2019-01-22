@@ -65,6 +65,13 @@ class TestAtomicStructure(unittest.TestCase):
 
         addition = NewAtomicStructure() + NewAtomicStructure()
         self.assertIs(type(addition), NewAtomicStructure)
+    
+    def test_truthiness(self):
+        """ Test that empty AtomicStructures are falsey, and truthy otherwise. """
+        empty_structure = AtomicStructure()
+        self.assertFalse(empty_structure)
+
+        self.assertTrue(self.structure)
 
     def test_trivial_transformation(self):
         """ Test that the identity transformation of an AtomicStructure works as expected. """

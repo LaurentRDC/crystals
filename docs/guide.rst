@@ -149,6 +149,12 @@ The :class:`Crystal` class is a set-like container; checking containership (with
     >>> gold == silver
     False
 
+Just like lists and other container types, a :class:`Crystal` instance is `False` if empty, and `True` otherwise::
+
+    >>> mycrystal = Crystal.from_database('Cu')
+    >>> if mycrystal: # equivalent to: if len(mycrystal) > 0:
+    ...     pass
+
 Structures can be extracted from a :class:`Crystal` instance by making use of its superclass, :class:`AtomicStructure`. For example, 
 all atoms satisfying a certain condition can be found using `Crystal.satisfying`::
 
