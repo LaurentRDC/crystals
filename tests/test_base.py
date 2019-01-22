@@ -140,7 +140,7 @@ class TestAtomicStructure(unittest.TestCase):
 
     def test_chemical_formula(self):
         """ Test that AtomicStructure.chemical_formula is working as expected. """
-        self.assertEqual(self.structure.chemical_formula, "Ag2U")
+        self.assertEqual(self.structure.chemical_formula, "Ag2 U")
 
     def test_chemical_formula_hill_notation(self):
         """ Test that the Hill notation, where elements are alphabetically ordered except C and H, which are first. """
@@ -152,7 +152,7 @@ class TestAtomicStructure(unittest.TestCase):
                 Atom("U", [1, 1, 1]),
             ]
         )
-        self.assertEqual(structure.chemical_formula, "CHAgU")
+        self.assertEqual(structure.chemical_formula, "C H Ag U")
 
     def test_length(self):
         """ Test the __len__ methods """
