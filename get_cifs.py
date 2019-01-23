@@ -9,22 +9,33 @@ to the CIFs are to be expected.
 import csv
 import os
 from pathlib import Path
+from multiprocessing.dummy import Pool # multiprocessing API using threads rather than processes
 
 from crystals import CODParser
 
+# Ultimate download dir
+DOWNLOAD_DIR = Path(".") / "crystals" / "cifs"
+
+# By defining a function to download a specific structure,
+# we can use it in conjunction with a thread pool.
+def download(name, cod_id):
+    """
+    Parameters
+    ----------
+    name : str
+        Name of the structure to download
+    cod_id : str or int
+        Crystallography Open Database ID of the structure.
+    """
+    path = CODParser.download_cif(
+        DOWNLOAD_DIR, num=int(cod_id), revision=None, overwrite=True
+    )
+    os.replace(path, path.parent / f"{name}.cif")
+    print(f"Downloaded ID: {cod_id}".ljust(20),  f"| {name} ")
+
 if __name__ == "__main__":
 
-    # Ultimate download dir
-    download_dir = Path(".") / "crystals" / "cifs"
-
     with open(Path(".") / "builtins_cifs.csv") as built_in_cifs:
-        reader = csv.reader(built_in_cifs, delimiter=",")
-        for (name, cod_id) in reader:
-            # The file will be downloaded to the appropriate folder but it's name
-            # will not be very evocative. We therefore rename to something more appropriate
-            path = CODParser.download_cif(
-                download_dir, num=int(cod_id), revision=None, overwrite=True
-            )
-            os.replace(path, path.parent / f"{name}.cif")
-
-            print(f"Downloaded ID: {cod_id} [ {name} ] ")
+        reader = list(csv.reader(built_in_cifs, delimiter=","))
+    
+    Pool(None).starmap(download, reader)
