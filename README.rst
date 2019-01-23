@@ -3,7 +3,7 @@ crystals
 ========
 
 .. image:: https://readthedocs.org/projects/crystals/badge/?version=master
-    :target: https://readthedocs.org/projects/crystals
+    :target: https://crystals.readthedocs.io/
     :alt: Documentation Status
 
 .. image:: https://ci.appveyor.com/api/projects/status/github/LaurentRDC/crystals?branch=master&svg=true
