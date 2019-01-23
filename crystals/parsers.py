@@ -12,7 +12,9 @@ from pathlib import Path
 from re import sub
 from string import digits, punctuation
 from tempfile import gettempdir
+from urllib.error import URLError
 from urllib.request import urlretrieve
+from warnings import warn
 
 import numpy as np
 from CifFile import ReadCif, get_number_with_esd
@@ -20,8 +22,8 @@ from numpy.linalg import inv
 
 from .affine import affine_map, transform
 from .atom import Atom, frac_coords
-from .lattice import Lattice
 from .biological import AtomicStructure, Helix, Residue, Sheet
+from .lattice import Lattice
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
 # Temporary directory in which to cache crystal structure files
@@ -716,11 +718,14 @@ class CODParser(CIFParser):
     overwrite : bool, optional
         Whether or not to overwrite files in cache if they exist. If no revision 
         number is provided, files will always be overwritten. 
+    
+    Raises
+    ------
+    RuntimeError : If the file could not be downloaded from any of the mirrors.
     """
 
     # Database mirrors are made available
     # see http://wiki.crystallography.net/codmirrors/
-    # TODO: add mechanism to check all three databases
     mirrors = (
         "http://www.crystallography.net/cod/",
         "http://cod.ibt.lt/cod",
@@ -740,7 +745,7 @@ class CODParser(CIFParser):
     @classmethod
     def download_cif(cls, download_dir, num, revision=None, overwrite=False):
         """
-        Download a CIF file from the Crystallography Open Database.
+        Download a CIF file from the Crystallography Open Database. 
 
         Parameters
         ----------
@@ -758,25 +763,52 @@ class CODParser(CIFParser):
         -------
         path : pathlib.Path
             Path to the downloaded file.
+        
+        Raises
+        ------
+        RuntimeError : If the file could not be downloaded from any of the mirrors.
+        
+        Notes
+        -----
+        This function will try three download mirrors. Warnings will be emitted in case
+        the file cannot be found in a mirror.
         """
+        download_dir = Path(download_dir)
+        download_dir.mkdir(exist_ok=True)
+
         if revision is None:
+            # We can never be sure of what the latest revision is
+            # Therefore, to be safe, we overwrite
             overwrite = True
 
-        download_dir = Path(download_dir)
-
-        if not download_dir.exists():
-            download_dir.mkdir()
-
-        url = "http://www.crystallography.net/cod/{}.cif".format(num)
-
-        if revision is not None:
-            url = url + "@" + str(revision)
-            base = "{iden}-{rev}.cif".format(iden=num, rev=revision)
+            # If latest revision, url should be e.g. (mirror)/1023891.cif
+            url_suffix = f"{num}.cif"
+            base = f"{num}.cif"
         else:
-            base = "{}.cif".format(num)
-        path = download_dir / base
+            # For revision, url should be e.g. (mirror)/9812812.cif@98181234
+            url_suffix = str(num) + ".cif@" + str(revision)
+            base = f"{num}-{revision}.cif"
 
-        if (not path.is_file()) or overwrite:
-            urlretrieve(url, path)
+        download_path = download_dir / base
 
-        return path
+        if (not download_path.is_file()) or overwrite:
+
+            for index, mirror in enumerate(cls.mirrors, start=1):
+                url = mirror + url_suffix
+                try:
+                    urlretrieve(url, download_path)
+                except URLError as e:
+                    warn(f"The file {url} could not be downloaded because: {e.reason}")
+
+                    # If this is the last mirror, then the file could not
+                    # be downloaded at all
+                    if index == len(cls.mirrors):
+                        raise RuntimeError(
+                            f"Crystallography Open Database ID {num} could not be downloaded from any mirror."
+                        ) from None
+
+                    continue
+                else:
+                    break
+
+        return download_path
