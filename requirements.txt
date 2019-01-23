@@ -1,3 +1,3 @@
-numpy        >= 1.12
-spglib       >= 1.10
+numpy        >= 1.13
+spglib       >= 1.11
 pycifrw      >= 4.4
