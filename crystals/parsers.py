@@ -155,8 +155,7 @@ class PDBParser(AbstractStructureParser):
         else:
             path = Path(download_dir)
 
-        if not path.exists():
-            path.mkdir()
+        path.mkdir(exist_ok=True)
 
         filename = path / archive_fn
         final_file = path / "pdb{}.ent".format(code)  # (decompressed)

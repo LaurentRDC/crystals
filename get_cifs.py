@@ -9,7 +9,9 @@ to the CIFs are to be expected.
 import csv
 import os
 from pathlib import Path
-from multiprocessing.dummy import Pool # multiprocessing API using threads rather than processes
+from multiprocessing.dummy import (
+    Pool,
+)  # multiprocessing API using threads rather than processes
 
 from crystals import CODParser
 
@@ -31,11 +33,12 @@ def download(name, cod_id):
         DOWNLOAD_DIR, num=int(cod_id), revision=None, overwrite=True
     )
     os.replace(path, path.parent / f"{name}.cif")
-    print(f"Downloaded ID: {cod_id}".ljust(20),  f"| {name} ")
+    print(f"Downloaded ID: {cod_id}".ljust(20), f"| {name} ")
+
 
 if __name__ == "__main__":
 
     with open(Path(".") / "builtins_cifs.csv") as built_in_cifs:
         reader = list(csv.reader(built_in_cifs, delimiter=","))
-    
+
     Pool(None).starmap(download, reader)
