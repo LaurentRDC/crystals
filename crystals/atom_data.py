@@ -11,8 +11,6 @@ References
 from math import nan
 
 chemical_symbols = [
-    # 0
-    "X",
     # 1
     "H",
     "He",
@@ -142,7 +140,6 @@ chemical_symbols = [
 
 # IUPAC version dated 28 November 2016
 atomic_names = [
-    "",
     "Hydrogen",
     "Helium",
     "Lithium",
@@ -263,7 +260,7 @@ atomic_names = [
     "Oganesson",
 ]
 
-NUM_TO_ELEM = dict(enumerate(chemical_symbols))
+NUM_TO_ELEM = dict(enumerate(chemical_symbols, 1))
 ELEM_TO_NAME = dict(zip(chemical_symbols, atomic_names))
 ELEM_TO_NUM = {v: k for k, v in NUM_TO_ELEM.items()}
 
@@ -284,7 +281,6 @@ ELEM_TO_NUM = {v: k for k, v in NUM_TO_ELEM.items()}
 # where there the element has no stable isotopes (to avoid NaNs): Tc, Pm,
 # Po, At, Rn, Fr, Ra, Ac, everything after Np
 atomic_masses = [
-    1.0,  # X
     1.008,  # H [1.00784, 1.00811]
     4.002602,  # He
     6.94,  # Li [6.938, 6.997]
@@ -411,7 +407,6 @@ ELEM_TO_MASS = dict(zip(chemical_symbols, atomic_masses))
 
 # http://www.webelements.com
 ground_state_magnetic_moments = [
-    0.0,  # X
     1.0,  # H
     0.0,  # He
     1.0,  # Li
