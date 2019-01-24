@@ -398,8 +398,8 @@ atomic_masses = [
     289.194,  # 289Mc
     293.204,  # 293Lv
     293.208,  # 293Ts
-    294.214,
-]  # 294Og
+    294.214,  # 294Og
+] 
 
 
 # set atomic_masses to most recent version
@@ -509,7 +509,7 @@ ground_state_magnetic_moments = [
     2.0,  # Fm
     1.0,  # Md
     0.0,  # No
-    nan,
-]  # Lr
+    nan,  # Lr
+]
 
 ELEM_TO_MAGMOM = dict(zip(chemical_symbols, ground_state_magnetic_moments))
