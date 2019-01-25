@@ -485,6 +485,7 @@ class Crystal(AtomicStructure, Lattice):
         num_omitted_atms = len(self) - natoms
         if num_omitted_atms > 0:
             rep += "\n      ... omitting {:d} atoms ...".format(num_omitted_atms)
+            rep += "\n      ... use repr() to show the full cell ... "
 
         # Lattice parameters are split between lengths and angles
         rep += "\nLattice parameters:"
