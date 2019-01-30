@@ -399,7 +399,7 @@ atomic_masses = [
     293.204,  # 293Lv
     293.208,  # 293Ts
     294.214,  # 294Og
-] 
+]
 
 
 # set atomic_masses to most recent version
