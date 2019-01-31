@@ -9,6 +9,7 @@ from contextlib import AbstractContextManager, suppress
 from functools import lru_cache
 from os import remove
 from pathlib import Path
+from platform import system
 from re import sub
 from string import digits, punctuation
 from tempfile import gettempdir
@@ -28,7 +29,11 @@ from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
 # Temporary directory in which to cache crystal structure files
 # downloaded from the internet.
-STRUCTURE_CACHE = Path(gettempdir()) / "crystals_cache"
+# Note : temporary directory on MacOS systems (Darwin) do not work with gettempdir
+#        In this case, we use "/tmp"
+STRUCTURE_CACHE = (
+    Path("/tmp" if system() == "Darwin" else gettempdir()) / "crystals_cache"
+)
 
 
 class ParseError(IOError):
