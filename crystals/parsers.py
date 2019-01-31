@@ -23,7 +23,7 @@ from numpy.linalg import inv
 
 from .affine import affine_map, transform
 from .atom import Atom, frac_coords
-from .biological import AtomicStructure, Helix, Residue, Sheet
+from .biological import Helix, Residue, Sheet
 from .lattice import Lattice
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
