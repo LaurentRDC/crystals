@@ -139,11 +139,11 @@ class Lattice(Base):
     def periodicity(self):
         """ Crystal periodicity in x, y and z direction from the lattice constants.
         This is effectively a bounding cube for the unit cell, which is itself a unit cell. """
-        E1, E2, E3 = np.eye(3)
-        per_x = sum((abs(np.vdot(E1, a)) for a in self.lattice_vectors))
-        per_y = sum((abs(np.vdot(E2, a)) for a in self.lattice_vectors))
-        per_z = sum((abs(np.vdot(E3, a)) for a in self.lattice_vectors))
-        return per_x, per_y, per_z
+        # Add the absolute value of the component of every lattice vector
+        # along the three euclidian vectors, which is effectively the sum of
+        # absolutes of columns
+        lv = np.abs(np.array(self.lattice_vectors))
+        return tuple(lv.sum(axis=0))
 
     def scattering_vector(self, h, k, l):
         """
