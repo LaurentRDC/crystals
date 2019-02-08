@@ -367,7 +367,7 @@ def lattice_system(a, b, c, alpha, beta, gamma, atol=1e-2):
 
 
 def _two_equal(iterable, atol):
-    """ Returns True if and only if two items are equal """
+    """ Returns True if and only if two items from an iterable are equal """
     iterable = tuple(iterable)
     for i in iterable:
         if sum(isclose(i, l, abs_tol=atol) for l in iterable) == 2:
