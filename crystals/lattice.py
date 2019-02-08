@@ -137,8 +137,15 @@ class Lattice(Base):
 
     @property
     def periodicity(self):
-        """ Crystal periodicity in x, y and z direction from the lattice constants.
-        This is effectively a bounding cube for the unit cell, which is itself a unit cell. """
+        """ 
+        Crystal periodicity in x, y and z direction from the lattice constants.
+        This is effectively a bounding cube for the unit cell, which is itself a unit cell. 
+        
+        Returns
+        -------
+        x, y, z : float
+            Periodicity in Angstroms along the x, y, and z direction, respectively.
+        """
         # Add the absolute value of the component of every lattice vector
         # along the three euclidian vectors, which is effectively the sum of
         # absolutes of columns
