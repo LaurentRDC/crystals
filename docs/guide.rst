@@ -334,11 +334,11 @@ You can get the matrix symmetry operations directly from the :class:`Crystal` cl
     
 ``SymmetryOperation`` is a namedtuple, which acts like a regular 2-tuple:
 
-    >>> first_symop[0]
+    >>> first_symop[0]     # rotation
     array([[1, 0, 0],
            [0, 1, 0],
            [0, 0, 1]], dtype=int32)
-    >>> first_symop[1]
+    >>> first_symop[1]     # translation
     array([0., 0., 0.])
 
 However, symmetry operations can also be queried by name!
