@@ -2,6 +2,7 @@
 from enum import Enum, unique
 from functools import lru_cache
 from glob import glob
+from collections import namedtuple
 from itertools import islice, product
 from os import mkdir
 from pathlib import Path
@@ -13,6 +14,7 @@ from spglib import (
     get_error_message,
     get_spacegroup_type,
     get_symmetry_dataset,
+    get_symmetry,
 )
 
 from .affine import affine_map
@@ -27,6 +29,9 @@ CIF_ENTRIES = frozenset((Path(__file__).parent / "cifs").glob("*.cif"))
 
 is_atom = lambda a: isinstance(a, Atom)
 is_structure = lambda s: isinstance(s, AtomicStructure)
+
+
+SymmetryOperation = namedtuple("SymmetryOperation", ("rotation", "translation"))
 
 
 @unique
@@ -415,6 +420,33 @@ class Crystal(AtomicStructure, Lattice):
             )
 
         return info
+
+    def symmetry_operations(self, symprec=1e-2):
+        """
+        Get the symmetry operations that the crystal unit cell respects. These symmetry operations
+        are expressed in fractional coordinates.
+
+        Parameters
+        ----------
+        symprec : float, optional
+            Symmetry-search distance tolerance in Cartesian coordinates [Angstroms].
+        
+        Returns
+        -------
+        sym_ops : iterable of 2-tuples
+            Each symmetry operations is a tuple of ``(rotation, translation)``.
+            A rotation matrix is an array of shape (3,3), while ``translation`` is an array
+            of shape (3,)            
+        """
+        dataset = get_symmetry(cell=self._spglib_cell(), symprec=symprec)
+
+        if dataset is None:
+            return None
+
+        return [
+            SymmetryOperation(r, t)
+            for r, t in zip(dataset["rotations"], dataset["translations"])
+        ]
 
     @property
     def international_symbol(self):

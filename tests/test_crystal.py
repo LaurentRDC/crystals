@@ -11,6 +11,7 @@ from pathlib import Path
 import numpy as np
 
 from crystals import Atom, AtomicStructure, Crystal, Lattice, CenteringType
+from crystals.crystal import SymmetryOperation
 from crystals.affine import rotation_matrix, transform
 
 
@@ -61,6 +62,21 @@ class TestSpglibMethods(unittest.TestCase):
                 prim = c.primitive(symprec=0.1)
                 prim2 = prim.primitive(symprec=0.1)
                 self.assertIs(prim, prim2)
+
+    def test_symmetry_operations(self):
+        """ Test that the symmetry operations output makes sense """
+        identity = SymmetryOperation(np.eye(3, dtype=np.int32), np.zeros((3,)))
+
+        for name in Crystal.builtins:
+            with self.subTest(name):
+                c = Crystal.from_database(name)
+                symops = c.symmetry_operations()
+
+                self.assertTrue(np.allclose(identity.rotation, symops[0].rotation))
+
+                self.assertTrue(
+                    np.allclose(identity.translation, symops[0].translation)
+                )
 
 
 class TestCrystalSpecialMethods(unittest.TestCase):

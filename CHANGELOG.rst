@@ -5,7 +5,7 @@ Changelog
 0.6.2 (development)
 -------------------
 
-
+* Added the ``Crystal.symmetry_operations`` method to determine crystal symmetry operations.
 
 0.6.1
 -----

@@ -318,6 +318,38 @@ Each of those items are also available directly from the :class:`Crystal` instan
 is located in the ``crystal.hall_number`` attribute, the short international symbol is located in the ``crystal.international_symbol`` 
 attribute, and so on.
 
+Symmetry operations
+-------------------
+You can get the matrix symmetry operations directly from the :class:`Crystal` class:
+
+    >>> cryst = Crystal.from_database('C')
+    >>> first_symop = cryst.symmetry_operations()[0]
+    >>> 
+    >>> print(first_symop)
+    SymmetryOperation(
+        rotation=array([[1, 0, 0],
+                        [0, 1, 0],
+                        [0, 0, 1]], dtype=int32), 
+        translation=array([0., 0., 0.]))
+    
+``SymmetryOperation`` is a namedtuple, which acts like a regular 2-tuple:
+
+    >>> first_symop[0]
+    array([[1, 0, 0],
+           [0, 1, 0],
+           [0, 0, 1]], dtype=int32)
+    >>> first_symop[1]
+    array([0., 0., 0.])
+
+However, symmetry operations can also be queried by name!
+
+    >>> first_symop.rotation
+    array([[1, 0, 0],
+           [0, 1, 0],
+           [0, 0, 1]], dtype=int32)
+    >>> first_symop.translation
+    array([0., 0., 0.])
+
 Scattering utilities
 ====================
 :class:`Lattice` objects have a few methods that make life easier when dealing with scattering data and modeling.
