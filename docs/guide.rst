@@ -350,6 +350,13 @@ However, symmetry operations can also be queried by name!
     >>> first_symop.translation
     array([0., 0., 0.])
 
+Iterating also works like with tuples:
+
+    >>> for (r, t) in cryst.symmetry_operations():
+    ...     pass
+    ...
+    >>>
+
 Scattering utilities
 ====================
 :class:`Lattice` objects have a few methods that make life easier when dealing with scattering data and modeling.
