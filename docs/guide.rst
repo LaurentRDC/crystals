@@ -17,6 +17,7 @@ Since working with :class:`Crystal` instances is so important, there are many wa
 
 Constructing a :class:`Crystal` object
 --------------------------------------
+
 Creating a :class:`Crystal` object can be done most easily from a Crystal Information File (CIF, .cif)::
     
     >>> from crystals import Crystal
@@ -86,6 +87,8 @@ Another convenient way to construct a :class:`Crystal` is through the `Crystallo
     >>> vo2 = Crystal.from_cod(1521124)
     >>> # Revisions are accessible as well
     >>> old_vo2 = Crystal.from_cod(1521124, revision = 140771)
+
+Other constructors are supported. See the reference for the :class:`Crystal` class for more details.
 
 Constructing a :class:`Crystal` object by hand
 ----------------------------------------------
