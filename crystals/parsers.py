@@ -961,6 +961,15 @@ class PWSCFParser(AbstractStructureParser):
             )
             match = re.search(pattern, self._filecontent)
             coords = np.asarray(tuple(map(float, match.group(3, 4, 5))))
-            atoms.append(Atom(element=match.group("element"), coords=coords))
+
+            # Convert coordinates in fractional coordinates
+            # Note that the atomic coordinates are not quite real-space, but rather
+            # real space in units of lattice_parameter (alat) in bohr radius
+            atoms.append(
+                Atom(
+                    element=match.group("element"),
+                    coords=frac_coords(coords, self.lattice_vectors_alat()),
+                )
+            )
 
         return atoms

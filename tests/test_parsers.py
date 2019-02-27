@@ -248,15 +248,16 @@ class TestCIFParser(unittest.TestCase):
 
 
 class TestPWSCFParser(unittest.TestCase):
-
     def setUp(self):
-        self.parser_tise2 = PWSCFParser(Path(".") / "tests" / "data" / "pwscf_tise2.out")
+        self.parser_tise2 = PWSCFParser(
+            Path(".") / "tests" / "data" / "pwscf_tise2.out"
+        )
         self.parser_snse = PWSCFParser(Path(".") / "tests" / "data" / "pwscf_snse.out")
 
     def test_alat(self):
         """ Test the parsing of the lattice parameter (alat) """
         self.assertEqual(self.parser_tise2.alat, 6.6764)
-        self.assertEqual(self.parser_snse.alat,  21.4862)
+        self.assertEqual(self.parser_snse.alat, 21.4862)
 
     def test_natoms(self):
         """ Test the parsing of the number of unit cell atoms """
@@ -283,8 +284,11 @@ class TestPWSCFParser(unittest.TestCase):
             self.assertEqual(len(atoms), parser.natoms)
 
     def test_crystal_instance(self):
-        
-        for parser in (self.parser_tise2, self.parser_snse):
+        """ Test the construction of Crystal instances, and check against expected symmetry properties """
+
+        for parser, expected_spg in zip(
+            (self.parser_tise2, self.parser_snse), (164, 62)
+        ):
             with self.subTest(parser.filename):
                 crystal = Crystal.from_pwscf(parser.filename)
 
@@ -294,6 +298,11 @@ class TestPWSCFParser(unittest.TestCase):
                         np.array(crystal.lattice_vectors),
                         np.array(parser.lattice_vectors()),
                     )
+                )
+
+                # Comparison requires slighly relaxed precision
+                self.assertEqual(
+                    crystal.symmetry(symprec=1e-1)["international_number"], expected_spg
                 )
 
 
