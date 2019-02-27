@@ -265,6 +265,7 @@ class Crystal(AtomicStructure, Lattice):
                 unitcell=parser.atoms(),
                 lattice_vectors=parser.lattice_vectors(),
                 source=parser.filename,
+                **kwargs
             )
 
     @classmethod
