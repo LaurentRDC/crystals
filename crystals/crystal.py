@@ -114,6 +114,8 @@ class Crystal(AtomicStructure, Lattice):
     
     * ``Crystal.from_cod``: create an instance from a Crystallography Open Database entry.
 
+    * ``Crystal.from_pwscf``: create an instance from the output of the PWSCF program.
+
     * ``Crystal.from_ase``: create an instance from an ``ase.Atoms`` instance.
 
     Parameters

@@ -249,60 +249,52 @@ class TestCIFParser(unittest.TestCase):
 
 class TestPWSCFParser(unittest.TestCase):
 
-    testfile = Path(".") / "tests" / "data" / "pwscf.out"
-
     def setUp(self):
-        self.parser = PWSCFParser(self.testfile)
+        self.parser_tise2 = PWSCFParser(Path(".") / "tests" / "data" / "pwscf_tise2.out")
+        self.parser_snse = PWSCFParser(Path(".") / "tests" / "data" / "pwscf_snse.out")
 
     def test_alat(self):
         """ Test the parsing of the lattice parameter (alat) """
-        self.assertEqual(self.parser.alat, 6.6764)
+        self.assertEqual(self.parser_tise2.alat, 6.6764)
+        self.assertEqual(self.parser_snse.alat,  21.4862)
 
     def test_natoms(self):
         """ Test the parsing of the number of unit cell atoms """
-        self.assertEqual(self.parser.natoms, 3)
+        self.assertEqual(self.parser_tise2.natoms, 3)
+        self.assertEqual(self.parser_snse.natoms, 8)
 
-    def test_lattice_vectors(self):
-        """ Test the parsing of lattice vectors """
-        a1, a2, a3 = self.parser.lattice_vectors()
+    def test_lattice_vectors_alat(self):
+        """ Test the parsing of lattice vectors in alat units """
+        a1, a2, a3 = self.parser_tise2.lattice_vectors_alat()
         self.assertTrue(np.allclose(a1, np.array([0.989_891, -0.001_560, -0.001_990])))
         self.assertTrue(np.allclose(a2, np.array([-0.496_296, 0.856_491, 0.001_990])))
         self.assertTrue(np.allclose(a3, np.array([-0.003_315, 0.001_914, 1.669_621])))
 
-    def test_reciprocal_vectors(self):
-        """ Test the parsing of reciprocal vectors """
-        b1, b2, b3 = self.parser.reciprocal_vectors()
+    def test_reciprocal_vectors_alat(self):
+        """ Test the parsing of reciprocal vectors in alat units """
+        b1, b2, b3 = self.parser_tise2.reciprocal_vectors_alat()
         self.assertTrue(np.allclose(b1, np.array([1.011_138, 0.585_904, 0.001_336])))
         self.assertTrue(np.allclose(b2, np.array([0.001_839, 1.168_623, -0.001_336])))
         self.assertTrue(np.allclose(b3, np.array([0.001_203, -0.000_695, 0.598_942])))
 
     def test_atoms(self):
-        atoms = self.parser.atoms()
-        self.assertEqual(len(atoms), self.parser.natoms)
+        for parser in (self.parser_tise2, self.parser_snse):
+            atoms = parser.atoms()
+            self.assertEqual(len(atoms), parser.natoms)
 
     def test_crystal_instance(self):
-        crystal = Crystal.from_pwscf(self.testfile)
+        
+        for parser in (self.parser_tise2, self.parser_snse):
+            with self.subTest(parser.filename):
+                crystal = Crystal.from_pwscf(parser.filename)
 
-        self.assertEqual(len(crystal), self.parser.natoms)
-
-        # Compare the reciprocal vectors
-        # For some reason, the reciprocal vectors are not direct reciprocals
-        # Must be multiplied by 2pi
-        self.assertTrue(
-            np.allclose(
-                np.array(crystal.reciprocal_vectors),
-                2 * np.pi * np.array(self.parser.reciprocal_vectors()),
-                atol=1e-5,
-            )
-        )
-
-        # COmparison of lattice vectors
-        self.assertTrue(
-            np.allclose(
-                np.array(crystal.lattice_vectors),
-                np.array(self.parser.lattice_vectors()),
-            )
-        )
+                # COmparison of lattice vectors
+                self.assertTrue(
+                    np.allclose(
+                        np.array(crystal.lattice_vectors),
+                        np.array(parser.lattice_vectors()),
+                    )
+                )
 
 
 if __name__ == "__main__":

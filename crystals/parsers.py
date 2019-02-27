@@ -21,7 +21,7 @@ import numpy as np
 from CifFile import ReadCif, get_number_with_esd
 from numpy.linalg import inv
 
-from .affine import affine_map, transform
+from .affine import affine_map, transform, change_of_basis
 from .atom import Atom, frac_coords
 from .biological import Helix, Residue, Sheet
 from .lattice import Lattice
@@ -835,7 +835,10 @@ class PWSCFParser(AbstractStructureParser):
     # These are numbers separated by whitespace, in parentheses
     # Example:
     #   (  -0.0008701   0.5704561   0.4409210  )
-    vector_pattern = r"[(]\s* ([-]?[0-9]*\.[0-9]+\s*) ([-]?[0-9]*\.[0-9]+\s*) ([-]?[0-9]*\.[0-9]+\s*) [)]"
+    _vector_pattern = r"[(]\s* ([-]?[0-9]*\.[0-9]+\s*) ([-]?[0-9]*\.[0-9]+\s*) ([-]?[0-9]*\.[0-9]+\s*) [)]"
+
+    # Conversion factor from bohr radius to angstroms
+    _bohr_to_angs = 0.529_177_249
 
     def __init__(self, filename, **kwargs):
         self.filename = filename
@@ -873,45 +876,58 @@ class PWSCFParser(AbstractStructureParser):
 
         return int(match.group("natoms"))
 
-    def lattice_vectors(self):
+    def lattice_vectors_alat(self):
         """ 
-        Returns the lattice vectors associated to a structure. These lattice vectors are in units of `lattice parameters` [alat].
+        Returns the lattice vectors associated to a structure. These lattice vectors are in 
+        units of `lattice parameters` [alat].
         
         Returns
         -------
         lv : iterable of ndarrays, shape (3,)
         """
         a1 = re.search(
-            r"(\s*a[(]1[)]\s*=\s*)" + self.vector_pattern, self._filecontent
+            r"(\s*a[(]1[)]\s*=\s*)" + self._vector_pattern, self._filecontent
         ).group(2, 3, 4)
         a2 = re.search(
-            r"(\s*a[(]2[)]\s*=\s*)" + self.vector_pattern, self._filecontent
+            r"(\s*a[(]2[)]\s*=\s*)" + self._vector_pattern, self._filecontent
         ).group(2, 3, 4)
         a3 = re.search(
-            r"(\s*a[(]3[)]\s*=\s*)" + self.vector_pattern, self._filecontent
+            r"(\s*a[(]3[)]\s*=\s*)" + self._vector_pattern, self._filecontent
         ).group(2, 3, 4)
 
         return tuple(np.array(tuple(map(float, a))) for a in (a1, a2, a3))
 
-    def reciprocal_vectors(self):
+    def reciprocal_vectors_alat(self):
         """ 
-        Returns the lattice vectors associated to a structure.
+        Returns the reciprocal lattice vectors associated to a structure, in units of :math:`2 \pi / alat`.
         
         Returns
         -------
         lv : iterable of ndarrays, shape (3,)
         """
         b1 = re.search(
-            r"(\s*b[(]1[)]\s*=\s*)" + self.vector_pattern, self._filecontent
+            r"(\s*b[(]1[)]\s*=\s*)" + self._vector_pattern, self._filecontent
         ).group(2, 3, 4)
         b2 = re.search(
-            r"(\s*b[(]2[)]\s*=\s*)" + self.vector_pattern, self._filecontent
+            r"(\s*b[(]2[)]\s*=\s*)" + self._vector_pattern, self._filecontent
         ).group(2, 3, 4)
         b3 = re.search(
-            r"(\s*b[(]3[)]\s*=\s*)" + self.vector_pattern, self._filecontent
+            r"(\s*b[(]3[)]\s*=\s*)" + self._vector_pattern, self._filecontent
         ).group(2, 3, 4)
 
         return tuple(np.array(tuple(map(float, b))) for b in (b1, b2, b3))
+
+    def lattice_vectors(self):
+        """ 
+        Returns the lattice vectors associated to a structure [:math:`\AA`].
+        
+        Returns
+        -------
+        lv : iterable of ndarrays, shape (3,)
+        """
+        vectors = np.array(self.lattice_vectors_alat())
+        scale = self._bohr_to_angs * self.alat * np.eye(3)
+        return tuple(map(np.squeeze, np.vsplit(scale @ vectors, 3)))
 
     def symmetry_operators(self):
         """
@@ -941,7 +957,7 @@ class PWSCFParser(AbstractStructureParser):
                 r"\s*"
                 + str(index)
                 + r"\s*(?P<element>[A-Z][a-z]) (\s* tau[(]\s*\d+[)]\s*=\s*)"
-                + self.vector_pattern
+                + self._vector_pattern
             )
             match = re.search(pattern, self._filecontent)
             coords = np.asarray(tuple(map(float, match.group(3, 4, 5))))
