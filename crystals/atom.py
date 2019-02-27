@@ -256,8 +256,7 @@ def real_coords(frac_coords, lattice_vectors):
 
 def frac_coords(real_coords, lattice_vectors):
     """
-    Calculates and sets the real-space coordinates of the atom from fractional coordinates and lattice vectors.
-    Only valid for inorganic compounds.
+    Calculates the fractional coordinates of the atom from real-space coordinates and lattice vectors.
     
     Parameters
     ----------
