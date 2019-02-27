@@ -5,7 +5,7 @@ This package allows for manipulation and modelling of atomic structures in cryst
 __author__ = "Laurent P. René de Cotret"
 __email__ = "laurent.renedecotret@mail.mcgill.ca"
 __license__ = "BSD3"
-__version__ = "0.6.2"
+__version__ = "0.6.3"
 
 from .atom import Atom
 from .atom import Element
@@ -37,3 +37,4 @@ from .parsers import CIFParser
 from .parsers import CODParser
 from .parsers import ParseError
 from .parsers import PDBParser
+from .parsers import PWSCFParser

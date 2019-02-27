@@ -21,7 +21,7 @@ from .affine import affine_map
 from .atom import Atom
 from .base import AtomicStructure
 from .lattice import Lattice
-from .parsers import CIFParser, CODParser, PDBParser
+from .parsers import CIFParser, CODParser, PDBParser, PWSCFParser
 from .spg_data import Hall2HM
 
 CIF_ENTRIES = frozenset((Path(__file__).parent / "cifs").glob("*.cif"))
@@ -245,6 +245,24 @@ class Crystal(AtomicStructure, Lattice):
                 lattice_vectors=parser.lattice_vectors(),
                 source=parser.filename,
                 **kwargs,
+            )
+
+    @classmethod
+    def from_pwscf(cls, path, **kwargs):
+        """
+        Returns a Crystal object created from an output file of PWSCF.
+        Keyword arguments are passed to the constructor.
+
+        Parameters
+        ----------
+        path : path-like
+            File path
+        """
+        with PWSCFParser(path) as parser:
+            return cls(
+                unitcell=parser.atoms(),
+                lattice_vectors=parser.lattice_vectors(),
+                source=parser.filename,
             )
 
     @classmethod

@@ -3,6 +3,7 @@
 Atomic structure parsers.
 """
 import gzip
+import re
 import warnings
 from abc import abstractmethod
 from contextlib import AbstractContextManager, suppress
@@ -10,7 +11,6 @@ from functools import lru_cache
 from os import remove
 from pathlib import Path
 from platform import system
-from re import sub
 from string import digits, punctuation
 from tempfile import gettempdir
 from urllib.error import URLError
@@ -527,7 +527,7 @@ class CIFParser(AbstractStructureParser):
             )
 
             if h_m_symbol is not None:
-                h_m_symbol = sub(r"\s+", "", h_m_symbol)
+                h_m_symbol = re.sub(r"\s+", "", h_m_symbol)
                 with suppress(
                     KeyError
                 ):  # Symbol could be meaningless, e.g. h_m_symbol = '?' (True story)
@@ -816,3 +816,135 @@ class CODParser(CIFParser):
                     break
 
         return download_path
+
+
+class PWSCFParser(AbstractStructureParser):
+    """
+    Collection of methods that parses output files from the Plane-Wave Self-Consistent 
+    Field (PWSCF) program, part of the Quantum Espresso suite.
+    
+    The preferred method of using this object is as a context manager.
+
+    Parameters
+    ----------
+    filename : str or path-like
+        Location of the CIF file.
+    """
+
+    # Regular expression pattern for a 3-vector
+    # These are numbers separated by whitespace, in parentheses
+    # Example:
+    #   (  -0.0008701   0.5704561   0.4409210  )
+    vector_pattern = r"[(]\s* ([-]?[0-9]*\.[0-9]+\s*) ([-]?[0-9]*\.[0-9]+\s*) ([-]?[0-9]*\.[0-9]+\s*) [)]"
+
+    def __init__(self, filename, **kwargs):
+        self.filename = filename
+
+        with open(filename, mode="r") as f:
+            self._filecontent = f.read()
+
+    def __exit__(self, *args, **kwargs):
+        pass
+
+    @property
+    def alat(self):
+        """ Get the lattice parameter [Bohr radius] """
+        match = re.search(
+            r"\s*(lattice parameter [(]alat[)])\s*=\s*(?P<alat>\d+[.]\d+)\s*(a.u.)",
+            self._filecontent,
+        )
+        if not match:
+            raise ParseError(
+                f"Lattice parameter from {self.filename} could not be parsed."
+            )
+
+        return float(match.group("alat"))
+
+    @property
+    def natoms(self):
+        """ Number of atoms defined per cell """
+        match = re.search(
+            r"(\s*number of atoms/cell\s*)[=]\s*(?P<natoms>\d+)", self._filecontent
+        )
+        if not match:
+            raise ParseError(
+                f"Lattice parameter from {self.filename} could not be parsed."
+            )
+
+        return int(match.group("natoms"))
+
+    def lattice_vectors(self):
+        """ 
+        Returns the lattice vectors associated to a structure. These lattice vectors are in units of `lattice parameters` [alat].
+        
+        Returns
+        -------
+        lv : iterable of ndarrays, shape (3,)
+        """
+        a1 = re.search(
+            r"(\s*a[(]1[)]\s*=\s*)" + self.vector_pattern, self._filecontent
+        ).group(2, 3, 4)
+        a2 = re.search(
+            r"(\s*a[(]2[)]\s*=\s*)" + self.vector_pattern, self._filecontent
+        ).group(2, 3, 4)
+        a3 = re.search(
+            r"(\s*a[(]3[)]\s*=\s*)" + self.vector_pattern, self._filecontent
+        ).group(2, 3, 4)
+
+        return tuple(np.array(tuple(map(float, a))) for a in (a1, a2, a3))
+
+    def reciprocal_vectors(self):
+        """ 
+        Returns the lattice vectors associated to a structure.
+        
+        Returns
+        -------
+        lv : iterable of ndarrays, shape (3,)
+        """
+        b1 = re.search(
+            r"(\s*b[(]1[)]\s*=\s*)" + self.vector_pattern, self._filecontent
+        ).group(2, 3, 4)
+        b2 = re.search(
+            r"(\s*b[(]2[)]\s*=\s*)" + self.vector_pattern, self._filecontent
+        ).group(2, 3, 4)
+        b3 = re.search(
+            r"(\s*b[(]3[)]\s*=\s*)" + self.vector_pattern, self._filecontent
+        ).group(2, 3, 4)
+
+        return tuple(np.array(tuple(map(float, b))) for b in (b1, b2, b3))
+
+    def symmetry_operators(self):
+        """
+        Returns the symmetry operators that map the fractional atomic positions in a
+        structure to the crystal *conventional* unit cell.
+
+        Returns
+        ------=
+        sym_ops : iterable of ndarray, shape (4,4)
+            Transformation matrices. Since translations and rotation are combined,
+            the transformation matrices are 4x4.
+        """
+        # PWSCF output files do not describe symmetry operators
+        return [np.eye(4)]
+
+    def atoms(self):
+        """
+        Asymmetric unit cell. Combine with CIFParser.symmetry_operators() for a full unit cell.
+
+        Returns
+        -------
+        atoms : iterable of Atom instance
+        """
+        atoms = list()
+        for index in range(1, self.natoms + 1):
+            pattern = (
+                r"\s*"
+                + str(index)
+                + r"\s*(?P<element>[A-Z][a-z]) (\s* tau[(]\s*\d+[)]\s*=\s*)"
+                + self.vector_pattern
+            )
+            match = re.search(pattern, self._filecontent)
+            coords = np.asarray(tuple(map(float, match.group(3, 4, 5))))
+            atoms.append(Atom(element=match.group("element"), coords=coords))
+
+        return atoms

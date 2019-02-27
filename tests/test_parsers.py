@@ -15,7 +15,7 @@ from spglib import get_symmetry_dataset
 
 from crystals import CIFParser, Crystal, PDBParser, frac_coords
 from crystals.affine import transform
-from crystals.parsers import STRUCTURE_CACHE
+from crystals.parsers import STRUCTURE_CACHE, PWSCFParser
 from crystals.spg_data import Hall2Number
 
 try:
@@ -245,6 +245,64 @@ class TestCIFParser(unittest.TestCase):
             ),
         )
         self.assertAlmostEqual(vo2.volume, 117.466_153_0)  # from cif2cell
+
+
+class TestPWSCFParser(unittest.TestCase):
+
+    testfile = Path(".") / "tests" / "data" / "pwscf.out"
+
+    def setUp(self):
+        self.parser = PWSCFParser(self.testfile)
+
+    def test_alat(self):
+        """ Test the parsing of the lattice parameter (alat) """
+        self.assertEqual(self.parser.alat, 6.6764)
+
+    def test_natoms(self):
+        """ Test the parsing of the number of unit cell atoms """
+        self.assertEqual(self.parser.natoms, 3)
+
+    def test_lattice_vectors(self):
+        """ Test the parsing of lattice vectors """
+        a1, a2, a3 = self.parser.lattice_vectors()
+        self.assertTrue(np.allclose(a1, np.array([0.989_891, -0.001_560, -0.001_990])))
+        self.assertTrue(np.allclose(a2, np.array([-0.496_296, 0.856_491, 0.001_990])))
+        self.assertTrue(np.allclose(a3, np.array([-0.003_315, 0.001_914, 1.669_621])))
+
+    def test_reciprocal_vectors(self):
+        """ Test the parsing of reciprocal vectors """
+        b1, b2, b3 = self.parser.reciprocal_vectors()
+        self.assertTrue(np.allclose(b1, np.array([1.011_138, 0.585_904, 0.001_336])))
+        self.assertTrue(np.allclose(b2, np.array([0.001_839, 1.168_623, -0.001_336])))
+        self.assertTrue(np.allclose(b3, np.array([0.001_203, -0.000_695, 0.598_942])))
+
+    def test_atoms(self):
+        atoms = self.parser.atoms()
+        self.assertEqual(len(atoms), self.parser.natoms)
+
+    def test_crystal_instance(self):
+        crystal = Crystal.from_pwscf(self.testfile)
+
+        self.assertEqual(len(crystal), self.parser.natoms)
+
+        # Compare the reciprocal vectors
+        # For some reason, the reciprocal vectors are not direct reciprocals
+        # Must be multiplied by 2pi
+        self.assertTrue(
+            np.allclose(
+                np.array(crystal.reciprocal_vectors),
+                2 * np.pi * np.array(self.parser.reciprocal_vectors()),
+                atol=1e-5,
+            )
+        )
+
+        # COmparison of lattice vectors
+        self.assertTrue(
+            np.allclose(
+                np.array(crystal.lattice_vectors),
+                np.array(self.parser.lattice_vectors()),
+            )
+        )
 
 
 if __name__ == "__main__":
