@@ -459,7 +459,7 @@ class Crystal(AtomicStructure, Lattice):
 
         See also
         --------
-        Crystal.reciprocal_symmetry_operations : symmetry operations in reciprocal basis      
+        Crystal.reciprocal_symmetry_operations : symmetry operations in reciprocal basis
         """
         dataset = get_symmetry(cell=self._spglib_cell(), symprec=symprec)
 
@@ -490,7 +490,7 @@ class Crystal(AtomicStructure, Lattice):
 
         See also
         --------
-        Crystal.symmetry_operations : symmetry operations in lattice basis    
+        Crystal.symmetry_operations : symmetry operations in lattice basis
         """
         transformations = self.symmetry_operations(symprec=symprec)
         if not transformations:
