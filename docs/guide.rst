@@ -416,6 +416,8 @@ A :class:`Supercell` can also be generated using the same constructors as the :c
 
 * ``Supercell.from_cod``: create an instance from a Crystallography Open Database entry.
 
+* ``Supercell.from_pwscf``: create an instance from the output of the PWSCF program.
+
 * ``Supercell.from_ase``: create an instance from an ``ase.Atoms`` instance.
 
 A :class:`Supercell` is different than a :class:`Crystal` in only a few ways. Iterating over a :class:`Supercell` yields more atoms, 

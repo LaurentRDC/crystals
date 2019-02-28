@@ -156,7 +156,7 @@ class Crystal(AtomicStructure, Lattice):
     def from_cif(cls, path, **kwargs):
         """
         Returns a Crystal object created from a CIF 1.0, 1.1 or 2.0 file.
-        Keyword arguments are passed _vector_pattern.
+        Keyword arguments are passed to the Crystal constructor.
 
         Parameters
         ----------
@@ -177,7 +177,7 @@ class Crystal(AtomicStructure, Lattice):
     def from_database(cls, name, **kwargs):
         """ 
         Returns a Crystal object create from the internal CIF database.
-        Keyword arguments are passed _vector_pattern.
+        Keyword arguments are passed to the class constructor.
 
         Parameters
         ----------
@@ -198,7 +198,7 @@ class Crystal(AtomicStructure, Lattice):
     def from_cod(cls, num, revision=None, download_dir=None, overwrite=False, **kwargs):
         """ 
         Returns a Crystal object built from the Crystallography Open Database. 
-        Keyword arguments are passed _vector_pattern.
+        Keyword arguments are passed to the class constructor.
 
         Parameters
         ----------
@@ -226,7 +226,7 @@ class Crystal(AtomicStructure, Lattice):
     def from_pdb(cls, ID, download_dir=None, overwrite=False, **kwargs):
         """
         Returns a Crystal object created from a Protein DataBank entry.
-        Keyword arguments are passed _vector_pattern.
+        Keyword arguments are passed to the class constructor.
 
         Parameters
         ----------
@@ -253,7 +253,7 @@ class Crystal(AtomicStructure, Lattice):
     def from_pwscf(cls, path, **kwargs):
         """
         Returns a Crystal object created from an output file of PWSCF.
-        Keyword arguments are passed _vector_pattern.
+        Keyword arguments are passed to the class constructor.
 
         Parameters
         ----------
@@ -272,7 +272,7 @@ class Crystal(AtomicStructure, Lattice):
     def from_ase(cls, atoms, **kwargs):
         """
         Returns a Crystal object created from an ASE Atoms object.
-        Keyword arguments are passed _vector_pattern.
+        Keyword arguments are passed to the class constructor.
         
         Parameters
         ----------
@@ -574,6 +574,8 @@ class Supercell(Crystal):
     
     * ``Supercell.from_cod``: create an instance from a Crystallography Open Database entry.
 
+    * ``Supercell.from_pwscf``: create an instance from the output of the PWSCF program.
+
     * ``Supercell.from_ase``: create an instance from an ``ase.Atoms`` instance.
 
     These constructors mirror the equivalent ``Crystal`` constructores.
@@ -626,6 +628,7 @@ class Supercell(Crystal):
         n1, n2, n3 = self.dimensions
         return n1 * n2 * n3 * super().__len__()
 
+    # Constructors from Crystal superclass are re-defined here for documentation purposes only
     @classmethod
     def from_cif(cls, path, dimensions, **kwargs):
         """
@@ -726,6 +729,22 @@ class Supercell(Crystal):
             dimensions=dimensions,
             **kwargs,
         )
+
+    @classmethod
+    def from_pwscf(cls, path, dimensions, **kwargs):
+        """
+        Returns a Crystal object created from an output file of PWSCF.
+        Keyword arguments are passed the constructor.
+
+        Parameters
+        ----------
+        path : path-like
+            File path
+        dimensions : 3-tuple of ints
+            Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
+            ``(1, 1, 1)`` represents the trivial supercell.
+        """
+        return super().from_pwscf(path=path, dimensions=dimensions, **kwargs)
 
     @classmethod
     def from_ase(cls, atoms, dimensions, **kwargs):
