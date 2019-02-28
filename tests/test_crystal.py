@@ -78,6 +78,21 @@ class TestSpglibMethods(unittest.TestCase):
                     np.allclose(identity.translation, symops[0].translation)
                 )
 
+    def test_reciprocal_symmetry_operations(self):
+        """ Test that the reciprocal symmetry operations output makes sense """
+        identity = SymmetryOperation(np.eye(3, dtype=np.int32), np.zeros((3,)))
+
+        for name in Crystal.builtins:
+            with self.subTest(name):
+                c = Crystal.from_database(name)
+                symops = c.reciprocal_symmetry_operations()
+
+                self.assertTrue(np.allclose(identity.rotation, symops[0].rotation))
+
+                self.assertTrue(
+                    np.allclose(identity.translation, symops[0].translation)
+                )
+
 
 class TestCrystalSpecialMethods(unittest.TestCase):
     def test_str_vs_repr(self):

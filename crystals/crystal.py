@@ -15,7 +15,7 @@ from spglib import (
     get_symmetry,
 )
 
-from .affine import affine_map
+from .affine import affine_map, change_of_basis
 from .atom import Atom
 from .base import AtomicStructure
 from .lattice import Lattice
@@ -455,7 +455,11 @@ class Crystal(AtomicStructure, Lattice):
         sym_ops : iterable of 2-tuples
             Each symmetry operations is a tuple of ``(rotation, translation)``.
             A rotation matrix is an array of shape (3,3), while ``translation`` is an array
-            of shape (3,)            
+            of shape (3,)      
+
+        See also
+        --------
+        Crystal.reciprocal_symmetry_operations : symmetry operations in reciprocal basis      
         """
         dataset = get_symmetry(cell=self._spglib_cell(), symprec=symprec)
 
@@ -465,6 +469,44 @@ class Crystal(AtomicStructure, Lattice):
         return [
             SymmetryOperation(r, t)
             for r, t in zip(dataset["rotations"], dataset["translations"])
+        ]
+
+    def reciprocal_symmetry_operations(self, symprec=1e-2):
+        """
+        Get the symmetry operations that the reciprocal unit cell respects. These symmetry operations
+        are expressed in reciprocal fractional coordinates.
+
+        Parameters
+        ----------
+        symprec : float, optional
+            Symmetry-search distance tolerance in Cartesian coordinates [Angstroms].
+        
+        Returns
+        -------
+        sym_ops : iterable of 2-tuples
+            Each symmetry operations is a tuple of ``(rotation, translation)``.
+            A rotation matrix is an array of shape (3,3), while ``translation`` is an array
+            of shape (3,)            
+
+        See also
+        --------
+        Crystal.symmetry_operations : symmetry operations in lattice basis    
+        """
+        transformations = self.symmetry_operations(symprec=symprec)
+        if not transformations:
+            return None
+
+        # Change of basis matrices allow to express
+        # transformations in other bases
+        to_reciprocal = change_of_basis(
+            np.array(self.lattice_vectors), np.array(self.reciprocal_vectors)
+        )
+        from_reciprocal = np.linalg.inv(to_reciprocal)
+
+        cast = lambda m: to_reciprocal @ m @ from_reciprocal
+
+        return [
+            SymmetryOperation(cast(rot), cast(trans)) for rot, trans in transformations
         ]
 
     @property
