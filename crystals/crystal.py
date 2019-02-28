@@ -4,9 +4,7 @@ from functools import lru_cache
 from glob import glob
 from collections import namedtuple
 from itertools import islice, product
-from os import mkdir
 from pathlib import Path
-from urllib.request import urlretrieve
 
 import numpy as np
 from spglib import (

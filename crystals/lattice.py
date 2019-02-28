@@ -7,7 +7,7 @@ from math import cos, isclose, radians, sin, sqrt, tan
 import numpy as np
 from numpy.linalg import norm
 
-from .affine import change_basis_mesh, transform
+from .affine import change_basis_mesh
 from .base import Base
 
 

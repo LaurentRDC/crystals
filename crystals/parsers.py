@@ -21,7 +21,7 @@ import numpy as np
 from CifFile import ReadCif, get_number_with_esd
 from numpy.linalg import inv
 
-from .affine import affine_map, transform, change_of_basis
+from .affine import affine_map, transform
 from .atom import Atom, frac_coords
 from .biological import Helix, Residue, Sheet
 from .lattice import Lattice

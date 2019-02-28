@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from functools import lru_cache
-
 import numpy as np
 
 from .affine import change_of_basis, transform
