@@ -452,10 +452,11 @@ class Crystal(AtomicStructure, Lattice):
         
         Returns
         -------
-        sym_ops : iterable of 2-tuples
+        sym_ops : iterable of 2-tuples or None
             Each symmetry operations is a tuple of ``(rotation, translation)``.
             A rotation matrix is an array of shape (3,3), while ``translation`` is an array
-            of shape (3,)      
+            of shape (3,).
+            If symmetry-determination has failed, None is returned.
 
         See also
         --------
@@ -483,10 +484,11 @@ class Crystal(AtomicStructure, Lattice):
         
         Returns
         -------
-        sym_ops : iterable of 2-tuples
+        sym_ops : iterable of 2-tuples or None
             Each symmetry operations is a tuple of ``(rotation, translation)``.
             A rotation matrix is an array of shape (3,3), while ``translation`` is an array
-            of shape (3,)            
+            of shape (3,).
+            If symmetry-determination has failed, None is returned.   
 
         See also
         --------
