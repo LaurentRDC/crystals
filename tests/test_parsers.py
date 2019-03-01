@@ -259,6 +259,13 @@ class TestPWSCFParser(unittest.TestCase):
         self.assertEqual(self.parser_tise2.alat, 6.6764)
         self.assertEqual(self.parser_snse.alat, 21.4862)
 
+        self.assertAlmostEqual(
+            self.parser_tise2.alat, self.parser_tise2.celldm[1], places=4
+        )
+        self.assertAlmostEqual(
+            self.parser_snse.alat, self.parser_snse.celldm[1], places=4
+        )
+
     def test_natoms(self):
         """ Test the parsing of the number of unit cell atoms """
         self.assertEqual(self.parser_tise2.natoms, 3)

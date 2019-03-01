@@ -876,6 +876,32 @@ class PWSCFParser(AbstractStructureParser):
 
         return int(match.group("natoms"))
 
+    @property
+    def celldm(self):
+        """ Crystallographic constants as defined by INPUT_PW. They are, in order:
+
+        * a,b,c in ANGSTROM
+
+        * cosAB = cosine of the angle between axis a and b (gamma)
+
+        * cosAC = cosine of the angle between axis a and c (beta)
+        
+        * cosBC = cosine of the angle between axis b and c (alpha)
+
+        The constants are placed in a dictionary, indexed between 1 and 6.
+        """
+        params = dict()
+        for index in (1, 2, 3, 4, 5, 6):
+            pattern = (
+                r"(celldm[(]"
+                + str(index)
+                + r"[)]=\s*)(?P<value>[-]?[0-9]*\.[0-9]+)(\s*)"
+            )
+            match = re.search(pattern, self._filecontent).group("value")
+            params[index] = float(match)
+
+        return params
+
     def lattice_vectors_alat(self):
         """ 
         Returns the lattice vectors associated to a structure. These lattice vectors are in 
