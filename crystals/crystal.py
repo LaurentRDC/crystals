@@ -407,7 +407,7 @@ class Crystal(AtomicStructure, Lattice):
         )
 
         if dataset is None:
-            raise RuntimeError('[SPGLIB] Symmetry-determination has not found a match.')
+            raise RuntimeError("[SPGLIB] Symmetry-determination has not found a match.")
 
         spg_type = get_spacegroup_type(dataset["hall_number"])
         hm_symbol = Hall2HM[dataset["hall"]]
