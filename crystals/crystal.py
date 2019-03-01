@@ -370,7 +370,7 @@ class Crystal(AtomicStructure, Lattice):
         
         Returns
         -------
-        info : dict or None
+        info : dict
             Dictionary of space-group information. The following keys are available:
 
             * ``'international_symbol'``: International Tables of Crystallography 
@@ -392,12 +392,10 @@ class Crystal(AtomicStructure, Lattice):
               Crystallography space-group number (between 1 and 230);
 
             * ``'hall_number'`` : Hall number (between 1 and 531).
-
-            If symmetry-determination has failed, None is returned.
         
         Raises
         ------
-        RuntimeError : If symmetry-determination has yielded an error.
+        RuntimeError : if symmetry-determination has not succeeded.
         
         Notes
         -----
@@ -409,7 +407,7 @@ class Crystal(AtomicStructure, Lattice):
         )
 
         if dataset is None:
-            return None
+            raise RuntimeError('[SPGLIB] Symmetry-determination has not found a match.')
 
         spg_type = get_spacegroup_type(dataset["hall_number"])
         hm_symbol = Hall2HM[dataset["hall"]]
@@ -452,20 +450,20 @@ class Crystal(AtomicStructure, Lattice):
         
         Returns
         -------
-        sym_ops : iterable of 2-tuples or None
+        sym_ops : iterable of 2-tuples
             Each symmetry operations is a tuple of ``(rotation, translation)``.
             A rotation matrix is an array of shape (3,3), while ``translation`` is an array
             of shape (3,).
-            If symmetry-determination has failed, None is returned.
+
+        Raises
+        ------
+        RuntimeError : if symmetry-determination has not succeeded.
 
         See also
         --------
         Crystal.reciprocal_symmetry_operations : symmetry operations in reciprocal basis
         """
         dataset = get_symmetry(cell=self._spglib_cell(), symprec=symprec)
-
-        if dataset is None:
-            return None
 
         return [
             SymmetryOperation(r, t)
@@ -484,19 +482,20 @@ class Crystal(AtomicStructure, Lattice):
         
         Returns
         -------
-        sym_ops : iterable of 2-tuples or None
+        sym_ops : iterable of 2-tuples
             Each symmetry operations is a tuple of ``(rotation, translation)``.
             A rotation matrix is an array of shape (3,3), while ``translation`` is an array
-            of shape (3,).
-            If symmetry-determination has failed, None is returned.   
+            of shape (3,).  
+
+        Raises
+        ------
+        RuntimeError : if symmetry-determination has not succeeded.
 
         See also
         --------
         Crystal.symmetry_operations : symmetry operations in lattice basis
         """
         transformations = self.symmetry_operations(symprec=symprec)
-        if not transformations:
-            return None
 
         # Change of basis matrices allow to express
         # transformations in other bases
