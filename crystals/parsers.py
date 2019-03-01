@@ -835,7 +835,7 @@ class PWSCFParser(AbstractStructureParser):
     # These are numbers separated by whitespace, in parentheses
     # Example:
     #   (  -0.0008701   0.5704561   0.4409210  )
-    _vector_pattern = r"[(]\s* ([-]?[0-9]*\.[0-9]+\s*) ([-]?[0-9]*\.[0-9]+\s*) ([-]?[0-9]*\.[0-9]+\s*) [)]"
+    _vector_pattern = r"[(]\s* (?P<x1>[-]?[0-9]*\.[0-9]+\s*) (?P<x2>[-]?[0-9]*\.[0-9]+\s*) (?P<x3>[-]?[0-9]*\.[0-9]+\s*) [)]"
 
     # Conversion factor from bohr radius to angstroms
     _bohr_to_angs = 0.529_177_249
@@ -913,13 +913,13 @@ class PWSCFParser(AbstractStructureParser):
         """
         a1 = re.search(
             r"(\s*a[(]1[)]\s*=\s*)" + self._vector_pattern, self._filecontent
-        ).group(2, 3, 4)
+        ).group("x1", "x2", "x3")
         a2 = re.search(
             r"(\s*a[(]2[)]\s*=\s*)" + self._vector_pattern, self._filecontent
-        ).group(2, 3, 4)
+        ).group("x1", "x2", "x3")
         a3 = re.search(
             r"(\s*a[(]3[)]\s*=\s*)" + self._vector_pattern, self._filecontent
-        ).group(2, 3, 4)
+        ).group("x1", "x2", "x3")
 
         return tuple(np.array(tuple(map(float, a))) for a in (a1, a2, a3))
 
@@ -933,13 +933,13 @@ class PWSCFParser(AbstractStructureParser):
         """
         b1 = re.search(
             r"(\s*b[(]1[)]\s*=\s*)" + self._vector_pattern, self._filecontent
-        ).group(2, 3, 4)
+        ).group("x1", "x2", "x3")
         b2 = re.search(
             r"(\s*b[(]2[)]\s*=\s*)" + self._vector_pattern, self._filecontent
-        ).group(2, 3, 4)
+        ).group("x1", "x2", "x3")
         b3 = re.search(
             r"(\s*b[(]3[)]\s*=\s*)" + self._vector_pattern, self._filecontent
-        ).group(2, 3, 4)
+        ).group("x1", "x2", "x3")
 
         return tuple(np.array(tuple(map(float, b))) for b in (b1, b2, b3))
 
