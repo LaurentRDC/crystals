@@ -68,19 +68,19 @@ class AbstractStructureParser(AbstractContextManager):
         """
         pass
 
-    @abstractmethod
     def symmetry_operators(self):
         """
         Returns the symmetry operators that map the fractional atomic positions in a
         structure to the crystal *conventional* unit cell.
 
         Returns
-        ------=
+        -------
         sym_ops : iterable of ndarray, shape (4,4)
             Transformation matrices. Since translations and rotation are combined,
             the transformation matrices are 4x4.
         """
-        pass
+        # Default implementation is the trivial transformation
+        return [np.eye(4)]
 
     @abstractmethod
     def atoms(self):
@@ -929,23 +929,9 @@ class PWSCFParser(AbstractStructureParser):
         scale = self._bohr_to_angs * self.alat * np.eye(3)
         return tuple(map(np.squeeze, np.vsplit(scale @ vectors, 3)))
 
-    def symmetry_operators(self):
-        """
-        Returns the symmetry operators that map the fractional atomic positions in a
-        structure to the crystal *conventional* unit cell.
-
-        Returns
-        ------=
-        sym_ops : iterable of ndarray, shape (4,4)
-            Transformation matrices. Since translations and rotation are combined,
-            the transformation matrices are 4x4.
-        """
-        # PWSCF output files do not describe symmetry operators
-        return [np.eye(4)]
-
     def atoms(self):
         """
-        Asymmetric unit cell. Combine with CIFParser.symmetry_operators() for a full unit cell.
+        Asymmetric unit cell.
 
         Returns
         -------
