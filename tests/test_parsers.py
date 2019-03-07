@@ -253,11 +253,13 @@ class TestPWSCFParser(unittest.TestCase):
             Path(".") / "tests" / "data" / "pwscf_tise2.out"
         )
         self.parser_snse = PWSCFParser(Path(".") / "tests" / "data" / "pwscf_snse.out")
+        self.parser_graphite = PWSCFParser(Path(".") / "tests" / "data" / "pwscf_graphite.out")
 
     def test_alat(self):
         """ Test the parsing of the lattice parameter (alat) """
         self.assertEqual(self.parser_tise2.alat, 6.6764)
         self.assertEqual(self.parser_snse.alat, 21.4862)
+        self.assertEqual(self.parser_graphite.alat, 4.6563)
 
         self.assertAlmostEqual(
             self.parser_tise2.alat, self.parser_tise2.celldm[1], places=4
@@ -265,11 +267,15 @@ class TestPWSCFParser(unittest.TestCase):
         self.assertAlmostEqual(
             self.parser_snse.alat, self.parser_snse.celldm[1], places=4
         )
+        self.assertAlmostEqual(
+            self.parser_graphite.alat, self.parser_graphite.celldm[1], places=4
+        )
 
     def test_natoms(self):
         """ Test the parsing of the number of unit cell atoms """
         self.assertEqual(self.parser_tise2.natoms, 3)
         self.assertEqual(self.parser_snse.natoms, 8)
+        self.assertEqual(self.parser_graphite.natoms, 4)
 
     def test_lattice_vectors_alat(self):
         """ Test the parsing of lattice vectors in alat units """
@@ -286,7 +292,7 @@ class TestPWSCFParser(unittest.TestCase):
         self.assertTrue(np.allclose(b3, np.array([0.001_203, -0.000_695, 0.598_942])))
 
     def test_atoms(self):
-        for parser in (self.parser_tise2, self.parser_snse):
+        for parser in (self.parser_tise2, self.parser_snse, self.parser_graphite):
             atoms = parser.atoms()
             self.assertEqual(len(atoms), parser.natoms)
 
@@ -294,7 +300,7 @@ class TestPWSCFParser(unittest.TestCase):
         """ Test the construction of Crystal instances, and check against expected symmetry properties """
 
         for parser, expected_spg in zip(
-            (self.parser_tise2, self.parser_snse), (164, 62)
+            (self.parser_tise2, self.parser_snse, self.parser_graphite), (164, 62, 194)
         ):
             with self.subTest(parser.filename):
                 crystal = Crystal.from_pwscf(parser.filename)

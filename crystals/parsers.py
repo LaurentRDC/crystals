@@ -845,7 +845,7 @@ class PWSCFParser(AbstractStructureParser):
 
         with open(filename, mode="r") as f:
             self._filecontent = f.read()
-
+        
     def __exit__(self, *args, **kwargs):
         pass
 
@@ -968,7 +968,7 @@ class PWSCFParser(AbstractStructureParser):
             pattern = (
                 r"\s*"
                 + str(index)
-                + r"\s*(?P<element>[A-Z][a-z]) (\s* tau[(]\s*\d+[)]\s*=\s*)"
+                + r"\s*(?P<element>[A-Z][a-z]?) (\s* tau[(]\s*\d+[)]\s*=\s*)"
                 + self._vector_pattern
             )
             match = re.search(pattern, self._filecontent)
