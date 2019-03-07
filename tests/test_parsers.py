@@ -253,7 +253,9 @@ class TestPWSCFParser(unittest.TestCase):
             Path(".") / "tests" / "data" / "pwscf_tise2.out"
         )
         self.parser_snse = PWSCFParser(Path(".") / "tests" / "data" / "pwscf_snse.out")
-        self.parser_graphite = PWSCFParser(Path(".") / "tests" / "data" / "pwscf_graphite.out")
+        self.parser_graphite = PWSCFParser(
+            Path(".") / "tests" / "data" / "pwscf_graphite.out"
+        )
 
     def test_alat(self):
         """ Test the parsing of the lattice parameter (alat) """

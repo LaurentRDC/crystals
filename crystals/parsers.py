@@ -845,7 +845,7 @@ class PWSCFParser(AbstractStructureParser):
 
         with open(filename, mode="r") as f:
             self._filecontent = f.read()
-        
+
     def __exit__(self, *args, **kwargs):
         pass
 
