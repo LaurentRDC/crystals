@@ -10,6 +10,8 @@ Changelog
 * Added the ``Crystal.reciprocal_symmetry_operations`` method to determine crystal symmetry operations in reciprocal basis.
 * Symmetry-determination via ``Crystal.symmetry()`` and related methods now raises a RuntimeError if symmetry-determination fails, rather
 than returning ``None``
+* Added the ``Atom.tag`` property, which can be used to tag ``Atom`` instances with extra information. This is for internal use. So far, it
+is used to label the order of Atoms from a PWSCF output file.
 
 0.6.2
 -----
