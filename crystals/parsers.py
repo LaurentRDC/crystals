@@ -981,7 +981,7 @@ class PWSCFParser(AbstractStructureParser):
                 Atom(
                     element=match.group("element"),
                     coords=frac_coords(coords, self.lattice_vectors_alat()),
-                    tag=int(match.group("atm_index"))
+                    tag=int(match.group("atm_index")),
                 )
             )
 
