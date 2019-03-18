@@ -968,11 +968,11 @@ class PWSCFParser(AbstractStructureParser):
             pattern = (
                 r"\s*"
                 + str(index)
-                + r"\s*(?P<element>[A-Z][a-z]?) (\s* tau[(]\s*\d+[)]\s*=\s*)"
+                + r"\s*(?P<element>[A-Z][a-z]?) (\s* tau[(]\s*(?P<atm_index>\d+)[)]\s*=\s*)"
                 + self._vector_pattern
             )
             match = re.search(pattern, self._filecontent)
-            coords = np.asarray(tuple(map(float, match.group(3, 4, 5))))
+            coords = np.asarray(tuple(map(float, match.group(4, 5, 6))))
 
             # Convert coordinates in fractional coordinates
             # Note that the atomic coordinates are not quite real-space, but rather
@@ -981,6 +981,7 @@ class PWSCFParser(AbstractStructureParser):
                 Atom(
                     element=match.group("element"),
                     coords=frac_coords(coords, self.lattice_vectors_alat()),
+                    tag=int(match.group("atm_index"))
                 )
             )
 

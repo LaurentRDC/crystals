@@ -93,6 +93,9 @@ class Atom(Element):
         Magnetic moment. If None (default), the ground-state magnetic moment is used.
     occupancy : float, optional
         Fractional occupancy. If None (default), occupancy is set to 1.0.
+    tag : object, optional
+        Tag an atom with an object. Useful to keep track of atom order, for example 
+        in PWSCF output files. This is mostly for internal use.
     """
 
     # Because of the possibility of a large number of atoms (> 1e6), we use the __slots__
@@ -114,6 +117,7 @@ class Atom(Element):
         displacement=None,
         magmom=None,
         occupancy=1.0,
+        tag=None,
         **kwargs,
     ):
         super().__init__(element=element)
@@ -125,6 +129,7 @@ class Atom(Element):
         )
         self.magmom = magmom or self.magnetic_moment_ground
         self.occupancy = occupancy
+        self.tag = tag
 
     def __repr__(self):
         return "< Atom {:<2} @ ({:.2f}, {:.2f}, {:.2f}) >".format(
