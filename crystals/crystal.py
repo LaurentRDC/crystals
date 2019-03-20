@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+from collections import namedtuple
 from enum import Enum, unique
 from functools import lru_cache
 from glob import glob
-from collections import namedtuple
 from itertools import islice, product
 from pathlib import Path
 
@@ -11,8 +11,9 @@ from spglib import (
     find_primitive,
     get_error_message,
     get_spacegroup_type,
-    get_symmetry_dataset,
     get_symmetry,
+    get_symmetry_dataset,
+    refine_cell,
 )
 
 from .affine import affine_map, change_of_basis
@@ -330,6 +331,43 @@ class Crystal(AtomicStructure, Lattice):
 
         return Crystal(
             unitcell=atoms, lattice_vectors=lattice_vectors, source=self.source
+        )
+
+    def ideal(self, symprec=1e-2):
+        """ 
+        Returns a Crystal object with an idealized unit cell.
+        
+        Parameters
+        ----------
+        symprec : float, optional
+            Symmetry-search distance tolerance in Cartesian coordinates [Angstroms].
+
+        Returns
+        -------
+        ideal : Crystal
+            Crystal with idealized cell. 
+
+        Raises
+        ------
+        RuntimeError : If an ideal cell could not be found.
+        
+        Notes
+        -----
+        Optional atomic properties (e.g magnetic moment) might be lost in the symmetrization.
+        """
+        search = refine_cell(self._spglib_cell(), symprec=symprec)
+        if search is None:
+            raise RuntimeError("Ideal cell could not be found.")
+
+        lattice_vectors, scaled_positions, numbers = search
+
+        return Crystal(
+            unitcell=(
+                Atom(int(Z), coords=coords)
+                for Z, coords in zip(numbers, scaled_positions)
+            ),
+            lattice_vectors=lattice_vectors,
+            source=self.source,
         )
 
     def supercell(self, n1, n2, n3):

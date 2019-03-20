@@ -63,6 +63,13 @@ class TestSpglibMethods(unittest.TestCase):
                 prim2 = prim.primitive(symprec=0.1)
                 self.assertIs(prim, prim2)
 
+    def test_ideal_for_builtins(self):
+        """ Test that all built-in crystal have an ideal cell """
+        for name in Crystal.builtins:
+            with self.subTest(name):
+                # This will raise an error if no idealized cell is found
+                c = Crystal.from_database(name).ideal()
+
     def test_symmetry_operations(self):
         """ Test that the symmetry operations output makes sense """
         identity = SymmetryOperation(np.eye(3, dtype=np.int32), np.zeros((3,)))

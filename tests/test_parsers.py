@@ -50,8 +50,7 @@ class TestPDBParser(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             with PDBParser("1fbb", download_dir=temp_dir) as parser:
                 for atm in parser.atoms():
-                    pass # TODO: find a test for this. 
-                    
+                    pass  # TODO: find a test for this.
 
     def test_symmetry_operators(self):
         """ Test that the non-translation part of the symmetry_operators is an invertible

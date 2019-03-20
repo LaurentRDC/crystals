@@ -12,6 +12,7 @@ Changelog
 than returning ``None``
 * Added the ``Atom.tag`` property, which can be used to tag ``Atom`` instances with extra information. This is for internal use. So far, it
 is used to label the order of Atoms from a PWSCF output file.
+* Added the ``Crystal.ideal`` method to create idealized crystal structures.
 
 0.6.2
 -----
