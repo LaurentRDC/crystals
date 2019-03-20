@@ -40,6 +40,7 @@ Table of content
     installation
     guide
     api/reference
+    whatsnew
     contributing
 
 Usage example
