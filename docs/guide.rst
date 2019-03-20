@@ -360,6 +360,87 @@ Iterating also works like with tuples:
     ...
     >>>
 
+Symmetry operations in reciprocal space are also made available via ``Crystal.reciprocal_symmetry_operations``
+
+Cell refinements and manipulations
+----------------------------------
+
+Again, through `spglib <http://atztogo.github.io/spglib/>`_, we can create different versions of ``Crystal`` instances. For example,
+a primitive ``Crystal`` can be created using the ``Crystal.primitive`` method::
+
+    >>> gold = Crystal.from_database('Au')
+    >>> print(gold)
+    < Crystal object with following unit cell:
+        Atom Au @ (0.00, 0.00, 0.00)
+        Atom Au @ (0.00, 0.50, 0.50)
+        Atom Au @ (0.50, 0.00, 0.50)
+        Atom Au @ (0.50, 0.50, 0.00)
+    Lattice parameters:
+        a=4.078Å, b=4.078Å, c=4.078Å
+        α=90.000°, β=90.000°, γ=90.000°
+    Chemical composition:
+        Au: 100.000%
+    Source:
+        (...omitted...)\crystals\cifs\Au.cif >
+    >>>
+    >>> primitive_gold = gold.primitive() # this is a whole new Crystal instance
+    >>> print(primitive_gold)
+    < Crystal object with following unit cell:
+        Atom Au @ (0.00, 0.00, 0.00)
+    Lattice parameters:
+        a=2.884Å, b=2.884Å, c=2.884Å
+        α=60.000°, β=60.000°, γ=60.000°
+    Chemical composition:
+        Au: 100.000%
+    Source:
+        (...omitted...)\crystals\cifs\Au.cif >
+
+Notice how the primitive structure is much simpler.
+
+Idealized versions of ``Crystal``s are also made available. Let's take the example of graphite::
+
+    >>> iron_arsenide = Crystal.from_database('FeAs')
+    >>> print(iron_arsenide)
+    < Crystal object with following unit cell:
+        Atom As @ (0.30, 0.08, 0.75)
+        Atom As @ (0.70, 0.92, 0.25)
+        Atom As @ (0.20, 0.58, 0.25)
+        Atom As @ (0.80, 0.42, 0.75)
+        Atom Fe @ (0.00, 0.20, 0.25)
+        Atom Fe @ (1.00, 0.80, 0.75)
+        Atom Fe @ (0.50, 0.30, 0.25)
+        Atom Fe @ (0.50, 0.70, 0.75)
+    Lattice parameters:
+        a=5.440Å, b=6.026Å, c=3.371Å
+        α=90.000°, β=90.000°, γ=90.000°
+    Chemical composition:
+        Fe: 50.000%
+        As: 50.000%
+    Source:
+        (...omitted...)\crystals\cifs\FeAs.cif >
+    >>>
+    >>> idealized = iron_arsenide.ideal() # this is a whole new Crystal instance
+    >>> print(idealized)
+    < Crystal object with following unit cell:
+        Atom As @ (0.70, 0.25, 0.08)
+        Atom As @ (0.20, 0.25, 0.42)
+        Atom As @ (0.80, 0.75, 0.58)
+        Atom As @ (0.30, 0.75, 0.92)
+        Atom Fe @ (0.00, 0.25, 0.80)
+        Atom Fe @ (0.50, 0.25, 0.70)
+        Atom Fe @ (0.50, 0.75, 0.30)
+        Atom Fe @ (1.00, 0.75, 0.20)
+    Lattice parameters:
+        a=5.440Å, b=3.371Å, c=6.026Å
+        α=90.000°, β=90.000°, γ=90.000°
+    Chemical composition:
+        Fe: 50.000%
+        As: 50.000%
+    Source:
+        (...omitted...)\crystals\cifs\FeAs.cif >
+
+The atomic coordinates have been swapped to follow conventions of the appropriate space-group.
+
 Scattering utilities
 ====================
 :class:`Lattice` objects have a few methods that make life easier when dealing with scattering data and modeling.
