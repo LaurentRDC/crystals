@@ -54,15 +54,6 @@ class TestSpglibMethods(unittest.TestCase):
                 prim = c.primitive(symprec=0.1)
                 self.assertLessEqual(len(prim), len(c))
 
-    def test_primitive_uniqueness(self):
-        """ Test that the primitive cell of a primitive cell is itself """
-        for name in Crystal.builtins:
-            with self.subTest(name):
-                c = Crystal.from_database(name)
-                prim = c.primitive(symprec=0.1)
-                prim2 = prim.primitive(symprec=0.1)
-                self.assertIs(prim, prim2)
-
     def test_ideal_for_builtins(self):
         """ Test that all built-in crystal have an ideal cell """
         for name in Crystal.builtins:

@@ -5,6 +5,7 @@ from functools import lru_cache
 from glob import glob
 from itertools import islice, product
 from pathlib import Path
+from copy import deepcopy
 
 import numpy as np
 from spglib import (
@@ -306,8 +307,8 @@ class Crystal(AtomicStructure, Lattice):
         Returns
         -------
         primitive : Crystal
-            Crystal with primitive cell. If primitive cell is the same size as
-            the source Crystal, a reference to the source Crystal is returned.
+            Crystal with primitive cell. Even if the crystal already has a primitive
+            cell, a new (copied) crystal is returned.
 
         Raises
         ------
@@ -323,13 +324,16 @@ class Crystal(AtomicStructure, Lattice):
 
         lattice_vectors, scaled_positions, numbers = search
         if numbers.size == len(self):  # Then there's no point in creating a new crystal
-            return self
+            return deepcopy(self)
 
         atoms = [
             Atom(int(Z), coords=coords) for Z, coords in zip(numbers, scaled_positions)
         ]
 
-        return Crystal(
+        # Preserve whatever subclass this object already is
+        # This is important because some properties can be extracted from
+        # source files (e.g. PWSCF output files)
+        return type(self)(
             unitcell=atoms, lattice_vectors=lattice_vectors, source=self.source
         )
 
@@ -361,7 +365,10 @@ class Crystal(AtomicStructure, Lattice):
 
         lattice_vectors, scaled_positions, numbers = search
 
-        return Crystal(
+        # Preserve whatever subclass this object already is
+        # This is important because some properties can be extracted from
+        # source files (e.g. PWSCF output files)
+        return type(self)(
             unitcell=(
                 Atom(int(Z), coords=coords)
                 for Z, coords in zip(numbers, scaled_positions)
