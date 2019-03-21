@@ -308,7 +308,7 @@ class Crystal(AtomicStructure, Lattice):
         -------
         primitive : Crystal
             Crystal with primitive cell. Even if the crystal already has a primitive
-            cell, a new (copied) crystal is returned.
+            cell, a new crystal is returned.
 
         Raises
         ------
@@ -323,9 +323,6 @@ class Crystal(AtomicStructure, Lattice):
             raise RuntimeError("Primitive cell could not be found.")
 
         lattice_vectors, scaled_positions, numbers = search
-        if numbers.size == len(self):  # Then there's no point in creating a new crystal
-            return deepcopy(self)
-
         atoms = [
             Atom(int(Z), coords=coords) for Z, coords in zip(numbers, scaled_positions)
         ]

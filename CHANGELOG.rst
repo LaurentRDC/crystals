@@ -2,6 +2,11 @@
 What's new
 ==========
 
+0.6.4
+-----
+
+* ``Crystal.ideal`` and ``Crystal.primitive`` will now preserve subclasses.
+
 0.6.3
 -----
 
