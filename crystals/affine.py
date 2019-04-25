@@ -178,7 +178,6 @@ def is_rotation_matrix(matrix):
 def rotation_matrix(angle, axis=(0, 0, 1)):
     """ 
 	Return matrix to rotate about axis defined by direction around the origin [0,0,0].
-	To combine rotation and translations, see http://www.euclideanspace.com/maths/geometry/affine/matrix4x4/index.htm
     
 	Parameters
 	----------
@@ -195,6 +194,11 @@ def rotation_matrix(angle, axis=(0, 0, 1)):
 	See also
 	--------
 	translation_rotation_matrix
+
+    Notes
+    -----
+    To combine rotation and translations, see 
+    http://www.euclideanspace.com/maths/geometry/affine/matrix4x4/index.htm
 	"""
     sina, cosa = math.sin(angle), math.cos(angle)
 
