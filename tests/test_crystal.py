@@ -53,12 +53,14 @@ class TestSpglibMethods(unittest.TestCase):
                 c = Crystal.from_database(name)
                 prim = c.primitive(symprec=0.1)
                 self.assertLessEqual(len(prim), len(c))
-    
+
     def test_primitive_preserves_subclass(self):
         """ Check that Crystal returned by Crystal.primitive() preserve subclass """
+
         class TestCrystal(Crystal):
             pass
-        c = TestCrystal.from_database('C')
+
+        c = TestCrystal.from_database("C")
         prim = c.primitive()
         self.assertEqual(TestCrystal, type(prim))
 
@@ -71,9 +73,11 @@ class TestSpglibMethods(unittest.TestCase):
 
     def test_ideal_preserves_subclass(self):
         """ Check that Crystal returned by Crystal.ideal() preserve subclass """
+
         class TestCrystal(Crystal):
             pass
-        c = TestCrystal.from_database('C')
+
+        c = TestCrystal.from_database("C")
         ideal = c.ideal()
         self.assertEqual(TestCrystal, type(ideal))
 
