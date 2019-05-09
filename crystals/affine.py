@@ -3,6 +3,8 @@
 Linear algebra operations and helpers.
 
 Inspired by Christoph Gohlke's transformation.py <http://www.lfd.uci.edu/~gohlke/>
+
+This module is not directly exported by the `crystals` library. Use it with caution.
 """
 
 import math
@@ -106,7 +108,8 @@ def translation_matrix(direction):
 
 def change_of_basis(basis1, basis2=(e1, e2, e3)):
     """
-	Returns the matrix that goes from one basis to the other.
+	Returns the matrix transforms vectors expressed in one basis,
+    to vectors expressed in another basis.
     
 	Parameters
 	----------
@@ -118,8 +121,7 @@ def change_of_basis(basis1, basis2=(e1, e2, e3)):
 	Returns
 	-------
 	cob : `~numpy.ndarray`, shape (3,3)
-		Change-of-basis matrix that, applied to `basis`, will
-		return `basis2`.
+		Change-of-basis matrix.
 	"""
     # Calculate the transform that goes from basis 1 to standard basis
     basis1 = [np.asarray(vector).reshape(3, 1) for vector in basis1]
