@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
-from collections.abc import Collection
 from enum import Enum, unique
 from functools import lru_cache
 from glob import glob
 from itertools import islice, product
 from pathlib import Path
-from copy import deepcopy
 
 import numpy as np
 from spglib import (
