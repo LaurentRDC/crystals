@@ -69,7 +69,9 @@ def symmetry_expansion(atoms, symmetry_operators):
     ----------
     atoms : iterable of ``Atom`` or ``AtomicStructures``
         Assymetric unit cell atoms. It is assumed that the atomic 
-        coordinates are in fractional form.
+        coordinates are in fractional form. Transformations work
+        the same way for ``Atom`` objects and ``AtomicStructures``
+        objects: a copy is made and moved to the symmetric location.
     symmetry_operators : iterable of array_like
         Symmetry operators that generate the full unit cell.
     
@@ -661,7 +663,7 @@ class Supercell(Crystal):
 
     * ``Supercell.from_ase``: create an instance from an ``ase.Atoms`` instance.
 
-    These constructors mirror the equivalent ``Crystal`` constructores.
+    These constructors mirror the equivalent ``Crystal`` constructors.
 
     To iterate over all atoms in the supercell, use this object as an iterable. 
     To iterate over atoms in the unit cell only, iterate over the the ``unitcell`` attribute.
@@ -694,7 +696,7 @@ class Supercell(Crystal):
         n1, n2, n3 = self.dimensions
 
         for atm in self.unitcell:
-            for factors in product(range(0, n1), range(0, n2), range(0, n3)):
+            for factors in product(range(n1), range(n2), range(n3)):
                 offset = np.asarray(factors)
                 yield Atom(
                     element=atm.element,
@@ -827,6 +829,8 @@ class Supercell(Crystal):
             Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
             ``(1, 1, 1)`` represents the trivial supercell.
         """
+        # We're only 'overriding' this method to update the doctstring
+        # Otherwise, there is no change.
         return super().from_pwscf(path=path, dimensions=dimensions, **kwargs)
 
     @classmethod
@@ -871,6 +875,32 @@ class Supercell(Crystal):
         """
         primitive_crystal = super().primitive(symprec=symprec)
         return primitive_crystal.supercell(*self.dimensions)
+
+    def ideal(self, symprec=1e-2):
+        """ 
+        Returns a Supercell object with the same dimensions, but defined with an 
+        idealized unit cell.
+        
+        Parameters
+        ----------
+        symprec : float, optional
+            Symmetry-search distance tolerance in Cartesian coordinates [Angstroms].
+
+        Returns
+        -------
+        ideal : Supercell
+            Supercell with idealized unit cell. 
+
+        Raises
+        ------
+        RuntimeError : If an ideal cell could not be found.
+        
+        Notes
+        -----
+        Optional atomic properties (e.g magnetic moment) might be lost in the symmetrization.
+        """
+        ideal_crystal = super().ideal(symprec=symprec)
+        return ideal_crystal.supercell(*self.dimensions)
 
     def _to_string(self, natoms, **kwargs):
         """ Readable string representation of this object. """

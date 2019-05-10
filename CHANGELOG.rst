@@ -7,6 +7,7 @@ What's new
 
 * ``Crystal.ideal`` and ``Crystal.primitive`` will now preserve subclasses.
 * ``Crystal.primitive`` will now always return a new ``Crystal``, even if the ``Crystal`` already has a primitive cell.
+* Added the ``Supercell.ideal`` method, which works the same way as ``Crystal.ideal``.
 
 0.6.3
 -----
