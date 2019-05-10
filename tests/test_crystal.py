@@ -6,6 +6,7 @@ import unittest
 from contextlib import suppress
 from copy import copy
 from math import radians
+from itertools import islice
 from pathlib import Path
 
 import numpy as np
@@ -173,6 +174,16 @@ class TestCrystalConstructors(unittest.TestCase):
             self.assertFalse(download_dir.exists())
             c = Crystal.from_cod(1521124, download_dir=download_dir)
             self.assertTrue(download_dir.exists())
+
+
+class TestSupercell(unittest.TestCase):
+    def test_constructors(self):
+        """ Test Supercell constructors for varyous 'builtin' structures """
+        for name in islice(Crystal.builtins, 20):
+            with self.subTest(name):
+                s = Crystal.from_database(name).supercell(2, 2, 2)
+
+                self.assertEqual(len(s), 8 * len(s.crystal))
 
 
 if __name__ == "__main__":

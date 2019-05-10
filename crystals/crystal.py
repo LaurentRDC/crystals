@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
+from collections.abc import Collection
 from enum import Enum, unique
 from functools import lru_cache
 from glob import glob
@@ -392,12 +393,7 @@ class Crystal(AtomicStructure, Lattice):
         cell : AtomicStructure
             Iterable of `crystals.Atom` objects following the supercell dimensions.
         """
-        return Supercell(
-            unitcell=iter(self),
-            lattice_vectors=self.lattice_vectors,
-            source=self.source,
-            dimensions=(n1, n2, n3),
-        )
+        return Supercell(crystal=self, dimensions=(n1, n2, n3))
 
     def symmetry(self, symprec=1e-2, angle_tolerance=-1.0):
         """ 
@@ -561,7 +557,7 @@ class Crystal(AtomicStructure, Lattice):
 
     @property
     def international_full(self):
-        """ International Tables of Crystallography space-group full symbo.l """
+        """ International Tables of Crystallography space-group full symbol. """
         return self.symmetry()["international_full"]
 
     @property
@@ -643,282 +639,52 @@ class Crystal(AtomicStructure, Lattice):
         return rep
 
 
-class Supercell(Crystal):
+class Supercell(AtomicStructure):
     """
     The :class:`Supercell` class is a set-like container that represents a 
     supercell of crystalline structures.
 
-    It is recommended that you do not instantiate a :class:`Supercell` by hand. You can make use of the 
-    ``Crystal.supercell`` method, or take advantages of the following constructors:
-
-    * ``Supercell.from_cif``: create an instance from a CIF file;
-    
-    * ``Supercell.from_pdb``: create an instance from a Protein Data Bank entry;
-    
-    * ``Supercell.from_database``: create an instance from the internal database of CIF files;
-    
-    * ``Supercell.from_cod``: create an instance from a Crystallography Open Database entry.
-
-    * ``Supercell.from_pwscf``: create an instance from the output of the PWSCF program.
-
-    * ``Supercell.from_ase``: create an instance from an ``ase.Atoms`` instance.
-
-    These constructors mirror the equivalent ``Crystal`` constructors.
+    It is recommended that you do not instantiate a :class:`Supercell` by hand, but rather
+    create a ``Crystal`` object and use the ``Crystal.supercell`` method.
 
     To iterate over all atoms in the supercell, use this object as an iterable. 
-    To iterate over atoms in the unit cell only, iterate over the the ``unitcell`` attribute.
-    To recover the underlying crystal, use the ``Supercell.crystal`` method.
+    To recover the underlying crystal, use the ``Supercell.crystal`` attribute.
 
     Parameters
     ----------
-    unitcell : iterable of ``Atom`` or ``AtomicStructures``
-        Unit cell atoms or substructures. It is assumed that the atoms are 
-        in fractional coordinates. 
-    lattice_vectors : iterable of array_like
-        Lattice vectors. If ``lattice_vectors`` is provided as a 3x3 array, it 
-        is assumed that each lattice vector is a row.
+    crystal : Crystal
+        Crystal object from which the supercell is assembled.
     dimensions : 3-tuple of ints
         Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
         ``(1, 1, 1)`` represents the trivial supercell.
     """
 
-    def __init__(self, unitcell, lattice_vectors, dimensions, **kwargs):
-        super().__init__(unitcell=unitcell, lattice_vectors=lattice_vectors, **kwargs)
-        self.dimensions = tuple(dimensions)
+    def __init__(self, crystal, dimensions, **kwargs):
+        self.crystal = crystal
+        self.dimensions = dimensions
 
-    @property
-    def unitcell(self):
-        """ Atoms forming the underlying crystal unit cell. """
-        return super().__iter__()
-
-    def __iter__(self):
-        """ Iterable over all atoms in the supercell """
         n1, n2, n3 = self.dimensions
 
-        for atm in self.unitcell:
+        atoms = list()
+        for atm in crystal:
             for factors in product(range(n1), range(n2), range(n3)):
-                offset = np.asarray(factors)
-                yield Atom(
+                fractional_offset = np.asarray(factors)
+                newatm = Atom(
                     element=atm.element,
-                    coords=atm.coords_fractional + offset,
-                    lattice=self,
+                    coords=atm.coords_fractional + fractional_offset,
+                    lattice=self.crystal,
                     displacement=atm.displacement,
                     magmom=atm.magmom,
                     occupancy=atm.occupancy,
                 )
+                atoms.append(newatm)
 
-    def __len__(self):
-        # Length definition inherited from AtomicStructure does not hold in this case
-        # because self.atoms points to the unit cell length
+        super().__init__(atoms=atoms)
+
+    def __repr__(self):
         n1, n2, n3 = self.dimensions
-        return n1 * n2 * n3 * super().__len__()
+        preamble = f"< Supercell object with dimensions ({n1} x {n2} x {n3}) and the following unit cell:\n"
 
-    # Constructors from Crystal superclass are re-defined here for documentation purposes only
-    @classmethod
-    def from_cif(cls, path, dimensions, **kwargs):
-        """
-        Returns a Supercell object created from a CIF 1.0, 1.1 or 2.0 file.
-
-        Parameters
-        ----------
-        path : path-like
-            File path
-        dimensions : 3-tuple of ints
-            Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
-            ``(1, 1, 1)`` represents the trivial supercell.
-        """
-        # We're only 'overriding' this method to update the doctstring
-        # Otherwise, there is no change.
-        return super().from_cif(path, dimensions=dimensions, **kwargs)
-
-    @classmethod
-    def from_database(cls, name, dimensions, **kwargs):
-        """ 
-        Returns a Supercell object create from the internal CIF database.
-
-        Parameters
-        ----------
-        name : path-like
-            Name of the database entry. Available items can be retrieved from `Supercell.builtins`
-        dimensions : 3-tuple of ints
-            Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
-            ``(1, 1, 1)`` represents the trivial supercell.
-        """
-        # We're only 'overriding' this method to update the doctstring
-        # Otherwise, there is no change.
-        return super().from_database(name, dimensions=dimensions, **kwargs)
-
-    @classmethod
-    def from_cod(
-        cls,
-        num,
-        dimensions,
-        revision=None,
-        download_dir=None,
-        overwrite=False,
-        **kwargs,
-    ):
-        """ 
-        Returns a Supercell object built from the Crystallography Open Database. 
-
-        Parameters
-        ----------
-        num : int
-            COD identification number.
-        dimensions : 3-tuple of ints
-            Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
-            ``(1, 1, 1)`` represents the trivial supercell.
-        revision : int or None, optional
-            Revision number. If None (default), the latest revision is used.
-        download_dir : path-like object, optional
-            Directory where to save the CIF file. Default is a local folder in the current directory
-        overwrite : bool, optional
-            Whether or not to overwrite files in cache if they exist. If no revision 
-            number is provided, files will always be overwritten. 
-        """
-        # We're only 'overriding' this method to update the doctstring
-        # Otherwise, there is no change.
-        return super().from_cod(
-            num=num,
-            revision=revision,
-            download_dir=download_dir,
-            overwrite=overwrite,
-            dimensions=dimensions,
-        )
-
-    @classmethod
-    def from_pdb(cls, ID, dimensions, download_dir=None, overwrite=False, **kwargs):
-        """
-        Returns a Supercell object created from a Protein DataBank entry.
-
-        Parameters
-        ----------
-        ID : str
-            Protein DataBank identification. The correct .pdb file will be downloaded,
-            cached and parsed.
-        dimensions : 3-tuple of ints
-            Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
-            ``(1, 1, 1)`` represents the trivial supercell.
-        download_dir : path-like object, optional
-            Directory where to save the PDB file.
-        overwrite : bool, optional
-            Whether or not to overwrite files in cache if they exist. If no revision 
-            number is provided, files will always be overwritten. 
-        """
-        # We're only 'overriding' this method to update the doctstring
-        # Otherwise, there is no change.
-        return super().from_pdb(
-            ID=ID,
-            download_dir=download_dir,
-            overwrite=overwrite,
-            dimensions=dimensions,
-            **kwargs,
-        )
-
-    @classmethod
-    def from_pwscf(cls, path, dimensions, **kwargs):
-        """
-        Returns a Crystal object created from an output file of PWSCF.
-        Keyword arguments are passed the constructor.
-
-        Parameters
-        ----------
-        path : path-like
-            File path
-        dimensions : 3-tuple of ints
-            Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
-            ``(1, 1, 1)`` represents the trivial supercell.
-        """
-        # We're only 'overriding' this method to update the doctstring
-        # Otherwise, there is no change.
-        return super().from_pwscf(path=path, dimensions=dimensions, **kwargs)
-
-    @classmethod
-    def from_ase(cls, atoms, dimensions, **kwargs):
-        """
-        Returns a Supercell object created from an ASE Atoms object.
-        
-        Parameters
-        ----------
-        atoms : ase.Atoms
-            Atoms group.
-        dimensions : 3-tuple of ints
-            Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
-            ``(1, 1, 1)`` represents the trivial supercell.
-        """
-        # We're only 'overriding' this method to update the doctstring
-        # Otherwise, there is no change.
-        return super().from_ase(atoms, dimensions=dimensions, **kwargs)
-
-    def primitive(self, symprec=1e-2):
-        """ 
-        Returns a Supercell object with the same dimensions, but defined on 
-        the primitive unit cell.
-        
-        Parameters
-        ----------
-        symprec : float, optional
-            Symmetry-search distance tolerance in Cartesian coordinates [Angstroms].
-
-        Returns
-        -------
-        primitive : Supercell
-            Supercell defined on a primitive cell.
-
-        Raises
-        ------
-        RuntimeError : If primitive cell could not be found.
-        
-        Notes
-        -----
-        Optional atomic properties (e.g magnetic moment) might be lost in the reduction.
-        """
-        primitive_crystal = super().primitive(symprec=symprec)
-        return primitive_crystal.supercell(*self.dimensions)
-
-    def ideal(self, symprec=1e-2):
-        """ 
-        Returns a Supercell object with the same dimensions, but defined with an 
-        idealized unit cell.
-        
-        Parameters
-        ----------
-        symprec : float, optional
-            Symmetry-search distance tolerance in Cartesian coordinates [Angstroms].
-
-        Returns
-        -------
-        ideal : Supercell
-            Supercell with idealized unit cell. 
-
-        Raises
-        ------
-        RuntimeError : If an ideal cell could not be found.
-        
-        Notes
-        -----
-        Optional atomic properties (e.g magnetic moment) might be lost in the symmetrization.
-        """
-        ideal_crystal = super().ideal(symprec=symprec)
-        return ideal_crystal.supercell(*self.dimensions)
-
-    def _to_string(self, natoms, **kwargs):
-        """ Readable string representation of this object. """
-        s = super()._to_string(natoms, **kwargs)
-
-        # Last 4 lines are chemical composition and source file
-        # we add supercell dimensions just before this
-        lines = s.split("\n")
-        header, footer = "\n".join(lines[0:-4]), "\n".join(lines[-4::])
-
-        n1, n2, n3 = self.dimensions
-        return header + f"\nSupercell dimensions:\n    {n1} x {n2} x {n3}\n" + footer
-
-    @property
-    def crystal(self):
-        """ Get the crystal underlying this supercell """
-        return Crystal(
-            unitcell=self.unitcell,
-            lattice_vectors=self.lattice_vectors,
-            source=self.source,
-        )
+        lines = repr(self.crystal).splitlines(keepends=True)
+        lines[0] = preamble
+        return "".join(lines)
