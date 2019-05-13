@@ -220,18 +220,22 @@ class TestLatticeMillerScattering(unittest.TestCase):
 
     def test_scattering_vector_trivial(self):
         """ Test that Lattice.scattering_vectors is working """
-        self.assertSequenceEqual(self.lattice.scattering_vector(0, 0, 0), (0, 0, 0))
+        self.assertTrue(
+            np.allclose(self.lattice.scattering_vector((0, 0, 0)), ((0, 0, 0)))
+        )
 
     def test_miller_indices_trivial(self):
         """ Test that Lattice.miller_indices is working """
-        self.assertSequenceEqual(self.lattice.miller_indices(0, 0, 0), (0, 0, 0))
+        self.assertTrue(
+            np.allclose(self.lattice.miller_indices((0, 0, 0)), ((0, 0, 0)))
+        )
 
     def test_back_and_forth(self):
         """ Test that Lattice.miller_indices and Lattice.scattering_vector are
         reciprocal to each other """
         h, k, l = np.random.randint(-10, 10, size=(3,))
-        Gx, Gy, Gz = self.lattice.scattering_vector(h, k, l)
-        hp, kp, lp = self.lattice.miller_indices(Gx, Gy, Gz)
+        vector = self.lattice.scattering_vector((h, k, l))
+        hp, kp, lp = self.lattice.miller_indices(vector)
 
         self.assertAlmostEqual(h, float(hp))
         self.assertAlmostEqual(k, float(kp))

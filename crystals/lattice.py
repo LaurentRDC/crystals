@@ -7,7 +7,7 @@ from math import cos, isclose, radians, sin, sqrt, tan
 import numpy as np
 from numpy.linalg import norm
 
-from .affine import change_basis_mesh
+from .affine import change_of_basis, change_basis_mesh
 from .base import Base
 
 
@@ -152,27 +152,24 @@ class Lattice(Base):
         lv = np.abs(np.array(self.lattice_vectors))
         return tuple(lv.sum(axis=0))
 
-    def scattering_vector(self, h, k, l):
+    def scattering_vector(self, reflection):
         """
         Scattering vector from Miller indices.
 
         Parameters
         ----------
-        h, k, l : array_like
+        reflection : array_like, shape (3,)
             Miller indices. 
 
         Returns
         -------
-        Gx, Gy, Gz : `~numpy.ndarray`
-            Components of the scattering vectors, of the same shape 
-            as ``h``, ``k``, and ``l``.
+        G : ndarray, shape (3,)
+            Scattering vector
         """
-        h, k, l = np.atleast_1d(h, k, l)
-        return change_basis_mesh(
-            h, k, l, basis1=self.reciprocal_vectors, basis2=np.eye(3)
-        )
+        COB = change_of_basis(basis1=self.reciprocal_vectors, basis2=np.eye(3))
+        return COB @ np.asarray(reflection)
 
-    def miller_indices(self, Gx, Gy, Gz):
+    def miller_indices(self, scattering_vector):
         """
         Miller indices from scattering vector components.
 
@@ -186,10 +183,8 @@ class Lattice(Base):
         h, k, l : `~numpy.ndarray`
             Miller indices.
         """
-        Gx, Gy, Gz = np.atleast_1d(Gx, Gy, Gz)
-        return change_basis_mesh(
-            Gx, Gy, Gz, basis1=np.eye(3), basis2=self.reciprocal_vectors
-        )
+        COB = change_of_basis(basis1=np.eye(3), basis2=self.reciprocal_vectors)
+        return COB @ np.asarray(scattering_vector)
 
     @staticmethod
     def frac_mesh(*xi, indexing="xy"):
