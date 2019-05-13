@@ -451,9 +451,10 @@ The conversion between Miller indices and scattering vectors is available::
     >>> graphite = Crystal.from_database('C')
     >>>
     >>> # Behavior inherited from Lattice superclass
-    >>> G = graphite.scattering_vector(1,0,0)
-    >>> graphite.miller_indices(*G)
-    (array([1.]), array([0.]), array([0.]))
+    >>> e1 = (1, 0, 0)
+    >>> G = graphite.scattering_vector(e1)
+    >>> graphite.miller_indices(G)
+    array([ 1.00000000e+00, -1.11022302e-16,  4.93038066e-32])
 
 Supercells
 ==========
