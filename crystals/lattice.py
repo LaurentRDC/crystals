@@ -164,7 +164,7 @@ class Lattice(Base):
         Returns
         -------
         G : ndarray, shape (3,)
-            Scattering vector
+            Scattering vector in :math:`A^{-1}`.
         """
         COB = change_of_basis(basis1=self.reciprocal_vectors, basis2=np.eye(3))
         return COB @ np.asarray(reflection)
@@ -175,12 +175,12 @@ class Lattice(Base):
 
         Parameters
         ----------
-        Gx, Gy, Gz : `~numpy.ndarray`
-            Scattering vector components, in :math:`A^{-1}`.
+        scattering_vector : array_like, shape (3,)
+            Scattering vector in :math:`A^{-1}`.
         
         Returns
         -------
-        h, k, l : `~numpy.ndarray`
+        reflection : `~numpy.ndarray`, shape (3,)
             Miller indices.
         """
         COB = change_of_basis(basis1=np.eye(3), basis2=self.reciprocal_vectors)
