@@ -242,5 +242,32 @@ class TestLatticeMillerScattering(unittest.TestCase):
         self.assertAlmostEqual(l, float(lp))
 
 
+class TestBoundedReflections(unittest.TestCase):
+    def setUp(self):
+        self.crystal = Crystal.from_database(next(iter(Crystal.builtins)))
+
+    def test_bounded_reflections_negative(self):
+        """ Test that negative reflection bounds raise an Exception.
+        Otherwise, an infinite number of reflections will be generated """
+        with self.assertRaises(ValueError):
+            next(self.crystal.bounded_reflections(-1))
+
+    def test_bounded_reflections_zero(self):
+        """ Check that bounded_reflections returns (000) for a zero bound """
+        reflections = set(self.crystal.bounded_reflections(0))
+        self.assertIn((0, 0, 0), reflections)
+        self.assertTrue(len(reflections), 1)
+
+    def test_bounded_reflections_all_within_bounds(self):
+        """ Check that every reflection is within the bound """
+        bound = 10
+        vectors = (
+            self.crystal.scattering_vector(refl)
+            for refl in self.crystal.bounded_reflections(bound)
+        )
+        for vector in vectors:
+            self.assertLessEqual(np.linalg.norm(vector), bound)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -9,6 +9,7 @@ What's new
 * ``Crystal.primitive`` will now always return a new ``Crystal``, even if the ``Crystal`` already has a primitive cell.
 * ``Supercell`` is no longer a subclass of ``Crystal``. The only recommended way of building supercells is now ``Crystal.supercell``.
 * ``Lattice.scattering_vector`` and ``Lattice.miller_indices`` now work on single vectors of shape (3,).
+* Added the ``Lattice.bounded_reflections`` generator. 
 
 
 0.6.3

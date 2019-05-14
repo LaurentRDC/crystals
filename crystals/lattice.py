@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 from enum import Enum, unique
-from functools import partial
-from itertools import repeat
+from functools import partial, wraps
+from itertools import count, product, repeat, takewhile
 from math import cos, isclose, radians, sin, sqrt, tan
 
 import numpy as np
 from numpy.linalg import norm
 
-from .affine import change_of_basis, change_basis_mesh
+from .affine import change_basis_mesh, change_of_basis
 from .base import Base
+
+
+# Generalized hypotenuse
+def _hypot(*args):
+    return sqrt(sum(map(lambda i: i ** 2, args)))
 
 
 @unique
@@ -254,6 +259,46 @@ class Lattice(Base):
             basis1=np.array(self.lattice_vectors),
             basis2=np.eye(3)
         )
+
+    def bounded_reflections(self, bound):
+        """
+        Generates reflections (hkl) with norm(G) <= bound
+        
+        Parameters
+        ----------
+        bound : float
+            Maximal scattering vector norm :math:`A^{-1}`. 
+
+        Yields
+        ------
+        reflection : 3-tuple of ints
+            Miller indices of a bounded reflection.
+
+        Examples
+        --------
+        >>> cryst = Crystal.from_database('C')
+        >>> refls = cryst.bounded_reflections(1.5) # 1.5 inverse Angstroms
+        >>> list(refls)
+        [(0, 0, -1), (0, 0, 0), (0, 0, 1)]
+        """
+        # TODO: evaluate generator until all checks are pased, e.g. npstreams.primed?
+
+        if bound < 0:
+            raise ValueError("Bound {} is negative.".format(bound))
+
+        # Determine the maximum index such that (i00) family is still within data limits
+        # This provides a (large) upper bound so that we are sure that the overall filtering will terminate
+        bounded = lambda i: any(
+            [np.linalg.norm(i * b) <= bound for b in self.reciprocal_vectors]
+        )
+
+        max_index = max(takewhile(bounded, count(0)))
+        extent = range(-max_index, max_index + 1)
+        refls = product(extent, repeat=3)
+
+        # The above bound was only a first pass. We can refine further
+        in_bounds = lambda refl: _hypot(*self.scattering_vector(refl)) <= bound
+        yield from filter(in_bounds, refls)
 
 
 # TODO: Introduce conventions on ordering a, b, c and angles
