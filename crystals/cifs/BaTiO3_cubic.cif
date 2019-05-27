@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2017-10-15 03:23:08 +0300 (Sun, 15 Oct 2017) $
-#$Revision: 202022 $
+#$Date: 2019-05-21 14:26:13 +0300 (Tue, 21 May 2019) $
+#$Revision: 215354 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/2/10/08/2100862.cif $
 #------------------------------------------------------------------------------
 #
@@ -80,7 +80,6 @@ _cod_data_source_file            as0598.cif
 _cod_data_source_block           as0598e
 _cod_depositor_comments
 ;
-
  The optimal structure CIF was identified and additional refinement
  parameters not present in the original as0598.cif file were added
  after consulting the text of the publication (R.H.Buttner &
@@ -122,11 +121,18 @@ _cod_depositor_comments
 
  Saulius Gra\<zulis
  2010.07.19
+
+ Removed the _cod_suboptimal_structure data item in preparation for
+ its deprecation. The fact that the structure is a suboptimal one
+ should be derived from the presence of the _cod_related_optimal_struct
+ data item.
+
+ Antanas Vaitkus,
+ 2019-05-21
 ;
 _cod_original_cell_volume        64.281
 _cod_original_sg_symbol_H-M      'P m-3m'
 _cod_original_formula_sum        'Ba1 O3 Ti1'
-_cod_suboptimal_structure        yes
 _cod_related_optimal_struct      2100858
 _cod_database_code               2100862
 loop_
