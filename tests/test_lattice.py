@@ -134,7 +134,7 @@ class TestLatticeParameters(unittest.TestCase):
             *triclinic
         ).reciprocal.reciprocal.lattice_parameters
         self.assertTrue(np.allclose(triclinic, triclinic2))
-    
+
     def test_lattice_parameters_back_and_forth(self):
         """ Test that the conversion between lattice vectors and lattice parameters
         is working """
@@ -145,9 +145,7 @@ class TestLatticeParameters(unittest.TestCase):
                 params = c.lattice_parameters
                 lv2 = lattice_vectors_from_parameters(*params)
 
-                self.assertTrue(
-                    np.allclose(lv1, lv2)
-                )
+                self.assertTrue(np.allclose(lv1, lv2))
 
 
 class TestLatticeSystems(unittest.TestCase):
