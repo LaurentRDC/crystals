@@ -6,6 +6,7 @@ What's new
 -----
 
 * New algorithm to determine the lattice vectors from lattice parameters. Results should be the same except in edge cases.
+* Space-group and symmetry information has been inserted into immutable dictionaries
 
 0.6.4
 -----
