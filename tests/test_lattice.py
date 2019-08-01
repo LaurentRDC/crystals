@@ -99,7 +99,7 @@ class TestLatticeParameters(unittest.TestCase):
         self.assertTrue(np.allclose(a3, [0, 0, 5]))
 
     def test_monoclinic(self):
-        """ beta =\= 90 """
+        """ beta =/= 90 """
         a1, a2, a3 = Lattice.from_parameters(1, 2, 3, 90, 120, 90).lattice_vectors
 
         with self.subTest("Lengths"):
@@ -113,7 +113,7 @@ class TestLatticeParameters(unittest.TestCase):
             self.assertAlmostEqual(angle_between(a1, a2), 90)
 
     def test_triclinic(self):
-        """ alpha, beta, gama =\= 90 """
+        """ alpha, beta, gama =/= 90 """
         a1, a2, a3 = Lattice.from_parameters(1, 2, 3, 75, 40, 81).lattice_vectors
 
         with self.subTest("Lengths"):

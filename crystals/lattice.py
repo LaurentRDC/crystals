@@ -374,7 +374,7 @@ def lattice_system(a, b, c, alpha, beta, gamma, atol=1e-2):
     #   or b != c and alpha != 90
     #   or a != b and gamma != 90
     for clengths, cangles in zip(cyclic(lengths), cyclic(angles)):
-        (l1, l2, l3), (a1, a2, a3) = clengths, cangles
+        (l1, _, l3), (a1, a2, a3) = clengths, cangles
         if (
             (not lengthclose(l1, l3))
             and angleclose(a1, 90)
