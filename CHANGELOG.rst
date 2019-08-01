@@ -2,6 +2,11 @@
 What's new
 ==========
 
+0.6.5
+-----
+
+* New algorithm to determine the lattice vectors from lattice parameters. Results should be the same except in edge cases.
+
 0.6.4
 -----
 

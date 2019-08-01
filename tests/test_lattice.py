@@ -7,6 +7,7 @@ import numpy as np
 from numpy.linalg import norm
 
 from crystals import Crystal, Lattice, LatticeSystem
+from crystals.lattice import lattice_vectors_from_parameters
 from crystals.affine import rotation_matrix
 
 np.random.seed(23)
@@ -133,6 +134,20 @@ class TestLatticeParameters(unittest.TestCase):
             *triclinic
         ).reciprocal.reciprocal.lattice_parameters
         self.assertTrue(np.allclose(triclinic, triclinic2))
+    
+    def test_lattice_parameters_back_and_forth(self):
+        """ Test that the conversion between lattice vectors and lattice parameters
+        is working """
+        for name in Crystal.builtins:
+            with self.subTest(name):
+                c = Crystal.from_database(name)
+                lv1 = c.lattice_vectors
+                params = c.lattice_parameters
+                lv2 = lattice_vectors_from_parameters(*params)
+
+                self.assertTrue(
+                    np.allclose(lv1, lv2)
+                )
 
 
 class TestLatticeSystems(unittest.TestCase):

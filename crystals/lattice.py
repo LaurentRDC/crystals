@@ -2,7 +2,7 @@
 from enum import Enum, unique
 from functools import partial, wraps
 from itertools import count, product, repeat, takewhile
-from math import cos, isclose, radians, sin, sqrt, tan
+from math import cos, isclose, radians, degrees, sin, sqrt, tan
 
 import numpy as np
 from numpy.linalg import norm
@@ -301,6 +301,7 @@ class Lattice(Base):
         yield from filter(in_bounds, refls)
 
 
+
 # TODO: Introduce conventions on ordering a, b, c and angles
 #       based on http://atztogo.github.io/spglib/definition.html#def-idealize-cell
 def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
@@ -313,20 +314,21 @@ def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
     alpha, beta, gamma : floats
         Angles between lattice vectors [deg]
     """
-    e1, e2, e3 = np.eye(3)  # Euclidian basis
+    # The algorithm below is a refactoring of the 
+    # one made available in Diffpy.Structure
     alpha, beta, gamma = map(radians, (alpha, beta, gamma))
 
-    a1 = a * e1
-    a2 = b * (cos(gamma) * e1 + sin(gamma) * e2)
+    # The unit cell volume when a = b = c = 1.
+    unit_volume = sqrt(1.0 + 2.0 * cos(alpha) * cos(beta) * cos(gamma) - cos(alpha)**2 - cos(beta)**2 - cos(gamma)**2)
 
-    c1 = cos(beta)
-    c2 = cos(alpha) / sin(gamma) - cos(beta) / tan(gamma)
-    try:
-        c3 = sqrt(1 - c1 ** 2 - c2 ** 2)  #
-    except ValueError:
-        raise ValueError("Invalid lattice parameters")
-    a3 = c * (c1 * e1 + c2 * e2 + c3 * e3)
+    # reciprocal lattice
+    a_recip = sin(alpha) / (a * unit_volume)
+    cos_gamma_recip = (cos(alpha) * cos(beta) - cos(gamma)) / (sin(alpha) * sin(beta))
+    sin_gamma_recip = sqrt(1 - cos_gamma_recip**2)
 
+    a1 = np.asfarray([1 / a_recip, -cos_gamma_recip / sin_gamma_recip / a_recip, cos(beta) * a])
+    a2 = np.asfarray([0, b * sin(alpha), b * cos(alpha)])
+    a3 = np.asfarray([0, 0, c])
     return a1, a2, a3
 
 

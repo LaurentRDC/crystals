@@ -232,16 +232,10 @@ class TestCIFParser(unittest.TestCase):
         vo2 = Crystal.from_cif(VO2_path)
 
         self.assertEqual(len(vo2), 12)
-        self.assertSequenceEqual(
-            vo2.lattice_parameters,
-            (
-                5.743_000_000_000_000_3,
-                4.517_000_000_000_000_3,
-                5.375,
-                90.0,
-                122.600_000_000_000_01,
-                90.0,
-            ),
+        self.assertTrue(
+            np.allclose(
+                vo2.lattice_parameters, (5.743, 4.517, 5.375, 90.0, 122.6, 90.0)
+            )
         )
         self.assertAlmostEqual(vo2.volume, 117.466_153_0)  # from cif2cell
 
