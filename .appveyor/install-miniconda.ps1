@@ -87,9 +87,6 @@ if ($env:CONDA_CHANNELS) {
    rm env:CONDA_CHANNELS
 }
 
-# Install the build and runtime dependencies of the project.
-conda install -q conda
-
 if (! $env:CONDA_CHANNEL_PRIORITY) {
    $CONDA_CHANNEL_PRIORITY="false"
 } else {
