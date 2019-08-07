@@ -301,8 +301,6 @@ class Lattice(Base):
         yield from filter(in_bounds, refls)
 
 
-# TODO: Introduce conventions on ordering a, b, c and angles
-#       based on http://atztogo.github.io/spglib/definition.html#def-idealize-cell
 def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
     """
 
