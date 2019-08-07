@@ -275,7 +275,7 @@ class Lattice(Base):
             basis1=np.array(self.lattice_vectors),
             basis2=np.eye(3)
         )
-    
+
     # Primed generators allows for checks on creation
     # All lines of code before the first 'yield' will run at first
     @primed
@@ -302,7 +302,7 @@ class Lattice(Base):
         """
         if bound < 0:
             raise ValueError("Bound {} is negative.".format(bound))
-        
+
         # Determine the maximum index such that (i00) family is still within data limits
         # This provides a (large) upper bound so that we are sure that the overall filtering will terminate
         bounded = lambda i: any(
@@ -312,8 +312,8 @@ class Lattice(Base):
         max_index = max(takewhile(bounded, count(0)))
         extent = range(-max_index, max_index + 1)
         refls = product(extent, repeat=3)
-        
-        yield # Priming the generator ends here
+
+        yield  # Priming the generator ends here
 
         # The above bound was only a first pass. We can refine further
         in_bounds = lambda refl: _hypot(*self.scattering_vector(refl)) <= bound
