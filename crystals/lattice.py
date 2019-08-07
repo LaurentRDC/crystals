@@ -16,6 +16,22 @@ def _hypot(*args):
     return sqrt(sum(map(lambda i: i ** 2, args)))
 
 
+def primed(gen):
+    """ 
+    Decorator that primes a generator function, i.e. runs the function
+    until the first ``yield`` statement. Useful in cases where there 
+    are preliminary checks when creating the generator.
+    """
+
+    @wraps(gen)
+    def primed_gen(*args, **kwargs):
+        generator = gen(*args, **kwargs)
+        next(generator)
+        return generator
+
+    return primed_gen
+
+
 @unique
 class LatticeSystem(Enum):
     """
@@ -259,7 +275,10 @@ class Lattice(Base):
             basis1=np.array(self.lattice_vectors),
             basis2=np.eye(3)
         )
-
+    
+    # Primed generators allows for checks on creation
+    # All lines of code before the first 'yield' will run at first
+    @primed
     def bounded_reflections(self, bound):
         """
         Generates reflections (hkl) with norm(G) <= bound
@@ -281,11 +300,9 @@ class Lattice(Base):
         >>> list(refls)
         [(0, 0, -1), (0, 0, 0), (0, 0, 1)]
         """
-        # TODO: evaluate generator until all checks are pased, e.g. npstreams.primed?
-
         if bound < 0:
             raise ValueError("Bound {} is negative.".format(bound))
-
+        
         # Determine the maximum index such that (i00) family is still within data limits
         # This provides a (large) upper bound so that we are sure that the overall filtering will terminate
         bounded = lambda i: any(
@@ -295,6 +312,8 @@ class Lattice(Base):
         max_index = max(takewhile(bounded, count(0)))
         extent = range(-max_index, max_index + 1)
         refls = product(extent, repeat=3)
+        
+        yield # Priming the generator ends here
 
         # The above bound was only a first pass. We can refine further
         in_bounds = lambda refl: _hypot(*self.scattering_vector(refl)) <= bound

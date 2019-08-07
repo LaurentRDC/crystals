@@ -125,7 +125,7 @@ class Atom(Element):
         self.coords_fractional = np.asfarray(coords)
         self.lattice = lattice or Lattice(
             np.eye(3)
-        )  # TODO: how to ensure this is never modified afterwards? Maybe emit a warning on modification?
+        ) 
         self.displacement = np.asfarray(
             displacement if displacement is not None else (0, 0, 0)
         )
