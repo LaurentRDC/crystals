@@ -14,5 +14,6 @@ You can also take a look at the short :ref:`user guide <user_guide>` for some us
     
     data-structures
     biological
+    conversion
     base-classes
     utilities
