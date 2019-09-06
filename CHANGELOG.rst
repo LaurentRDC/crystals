@@ -9,6 +9,7 @@ What's new
 * Space-group and symmetry information has been inserted into immutable dictionaries
 * Fixed an issue where the parsing of CIF files without Hall symbol would fail because the International Table number was parsed as a string, not an integer.
 * Updated minimum dependency bound on PyCifRW to 4.4.1 because of potential issues with Python 3.7.
+* Refactoring of internal string handling to use f-strings.
 
 0.6.4
 -----
