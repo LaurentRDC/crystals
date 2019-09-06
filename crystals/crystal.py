@@ -187,9 +187,7 @@ class Crystal(AtomicStructure, Lattice):
         """
         if name not in cls.builtins:
             raise ValueError(
-                "Entry {} is not available in the database. See `Crystal.builtins` for valid entries.".format(
-                    name
-                )
+                f"Entry {name} is not available in the database. See `Crystal.builtins` for valid entries."
             )
 
         path = Path(__file__).parent / "cifs" / (name + ".cif")
@@ -219,7 +217,7 @@ class Crystal(AtomicStructure, Lattice):
                     parser.atoms(), parser.symmetry_operators()
                 ),
                 lattice_vectors=parser.lattice_vectors(),
-                source="COD num:{n} rev:{r}".format(n=num, r=revision),
+                source=f"COD num:{num} rev:{revision}",
                 **kwargs,
             )
 
@@ -469,9 +467,7 @@ class Crystal(AtomicStructure, Lattice):
         err_msg = get_error_message()
         if err_msg != "no error":
             raise RuntimeError(
-                "[SPGLIB] Symmetry-determination has returned the following error: {}".format(
-                    err_msg
-                )
+                "[SPGLIB] Symmetry-determination has returned the following error: {err_msg}"
             )
 
         return info
@@ -602,9 +598,7 @@ class Crystal(AtomicStructure, Lattice):
 
         # Note : Crystal subclasses need not override this method
         # since the class name is dynamically determined
-        rep = "< {clsname} object with following unit cell:".format(
-            clsname=self.__class__.__name__
-        )
+        rep = f"< {self.__class__.__name__} object with following unit cell:"
         atoms = islice(self.itersorted(), natoms)
 
         # Note that repr(Atom(...)) includes these '< ... >'
@@ -616,24 +610,21 @@ class Crystal(AtomicStructure, Lattice):
 
         num_omitted_atms = len(self) - natoms
         if num_omitted_atms > 0:
-            rep += "\n      ... omitting {:d} atoms ...".format(num_omitted_atms)
+            rep += f"\n      ... omitting {num_omitted_atms:d} atoms ..."
             rep += "\n      ... use repr() to show the full cell ... "
 
         # Lattice parameters are split between lengths and angles
+        a, b, c, alpha, beta, gamma = self.lattice_parameters
         rep += "\nLattice parameters:"
-        rep += "\n    a={:.3f}Å, b={:.3f}Å, c={:.3f}Å".format(
-            *self.lattice_parameters[0:3]
-        )
-        rep += "\n    α={:.3f}°, β={:.3f}°, γ={:.3f}°".format(
-            *self.lattice_parameters[3::]
-        )
+        rep += f"\n    a={a:.3f}Å, b={b:.3f}Å, c={c:.3f}Å"
+        rep += f"\n    α={alpha:.3f}°, β={beta:.3f}°, γ={gamma:.3f}°"
 
         # Show stochiometric information
         rep += "\nChemical composition:"
         for chem_symbol, composition in self.chemical_composition.items():
-            rep += "\n    {s}: {p:.3f}%".format(s=chem_symbol, p=100 * composition)
+            rep += f"\n    {chem_symbol}: {100 * composition:.3f}%"
 
-        rep += "\nSource: \n    {} >".format(self.source or "N/A")
+        rep += f"\nSource: \n    {self.source or 'N/A'} >"
         return rep
 
 

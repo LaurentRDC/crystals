@@ -33,7 +33,6 @@ def write_xyz(crystal, fname, comment=None):
     # Format is specified here:
     #   http://openbabel.org/wiki/XYZ_%28format%29
     comment = comment or ""
-    atom_format_str = "  {:<2}       {:10.5f}       {:10.5f}       {:10.5f}"
 
     with open(fname, "wt", encoding="ascii") as file:
         # First two lines are:
@@ -46,7 +45,8 @@ def write_xyz(crystal, fname, comment=None):
         # For easier human readability, atoms are sorted
         # by element
         for atom in crystal.itersorted():
-            row = atom_format_str.format(atom.element, *atom.coords_cartesian)
+            x, y, z = atom.coords_cartesian
+            row = f"  {atom.element:<2}       {x:10.5f}       {y:10.5f}       {z:10.5f}"
             file.write(row + "\n")
 
 

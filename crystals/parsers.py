@@ -148,12 +148,9 @@ class PDBParser(AbstractStructureParser):
         """
         # Get the compressed PDB structure
         code = pdb_code.lower()
-        archive_fn = Path("pdb{}.ent.gz".format(code))
+        archive_fn = Path(f"pdb{code}.ent.gz")
         pdb_dir = "divided"
-        url = server + "/pub/pdb/data/structures/{}/pdb/{}/{}".format(
-            pdb_dir, code[1:3], archive_fn
-        )
-
+        url = server + f"/pub/pdb/data/structures/{pdb_dir}/pdb/{code[1:3]}/{archive_fn}"
         # Where does the final PDB file get saved?
         if download_dir is None:
             path = STRUCTURE_CACHE
@@ -163,7 +160,7 @@ class PDBParser(AbstractStructureParser):
         path.mkdir(exist_ok=True)
 
         filename = path / archive_fn
-        final_file = path / "pdb{}.ent".format(code)  # (decompressed)
+        final_file = path / f"pdb{code}.ent"  # (decompressed)
 
         # Skip download if the file already exists
         if (not overwrite) and (final_file.exists()):
@@ -416,7 +413,7 @@ class PDBParser(AbstractStructureParser):
 
         if not sym_ops:
             raise ParseError(
-                "No symmetry could be parsed from file {}".format(self._handle.filename)
+                f"No symmetry could be parsed from file {self._handle.filename}"
             )
 
         operators = list()

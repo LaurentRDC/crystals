@@ -108,9 +108,7 @@ class AtomicStructure(Base):
         """ Verbose string representation of this instance. """
         # AtomicStructure subclasses need not override this method
         # since the class name is dynamically determined
-        rep = "< {clsname} object with following orphan atoms:".format(
-            clsname=self.__class__.__name__
-        )
+        rep = f"< {self.__class__.__name__} object with following orphan atoms:"
 
         # Note that repr(Atom(...)) includes these '< ... >'
         # We remove those for cleaner string representation

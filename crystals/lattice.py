@@ -72,9 +72,8 @@ class Lattice(Base):
         super().__init__(**kwargs)
 
     def __repr__(self):
-        return "< Lattice object with parameters {:.3f}Å, {:.3f}Å, {:.3f}Å, {:.2f}°, {:.2f}°, {:.2f}° >".format(
-            *self.lattice_parameters
-        )
+        a, b, c, alpha, beta, gamma = self.lattice_parameters
+        return f"< Lattice object with parameters {a:.3f}Å, {b:.3f}Å, {c:.3f}Å, {alpha:.2f}°, {beta:.2f}°, {gamma:.2f}° >"
 
     def __hash__(self):
         return hash(self.lattice_parameters) | super().__hash__()
@@ -238,7 +237,7 @@ class Lattice(Base):
             xi = tuple(repeat(xi[0], times=3))
         elif len(xi) != 3:
             raise ValueError(
-                "1 or 3 coordinate arrays are required, but received {}".format(len(xi))
+                f"1 or 3 coordinate arrays are required, but received {len(xi)}"
             )
 
         return np.meshgrid(*xi, indexing=indexing)
@@ -301,7 +300,7 @@ class Lattice(Base):
         [(0, 0, -1), (0, 0, 0), (0, 0, 1)]
         """
         if bound < 0:
-            raise ValueError("Bound {} is negative.".format(bound))
+            raise ValueError(f"Bound {bound} is negative.")
 
         # Determine the maximum index such that (i00) family is still within data limits
         # This provides a (large) upper bound so that we are sure that the overall filtering will terminate

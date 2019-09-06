@@ -132,10 +132,9 @@ class Atom(Element):
         self.tag = tag
 
     def __repr__(self):
-        return "< Atom {:<2} @ ({:.2f}, {:.2f}, {:.2f}) >".format(
-            self.element, *tuple(self.coords_fractional)
-        )
-
+        x, y, z = tuple(self.coords_fractional)
+        return f"< Atom {self.element:<2} @ ({x:.2f}, {y:.2f}, {z:.2f}) >"
+        
     def __eq__(self, other):
         if type(other) is type(self):
             return (

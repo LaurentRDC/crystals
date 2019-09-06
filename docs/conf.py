@@ -19,7 +19,7 @@ master_doc = "index"
 project = "crystals"
 year = datetime.now().year
 author = crystals.__author__
-copyright = "{0}, {1}".format(year, author)
+copyright = f"{year}, {author}"
 version = release = crystals.__version__
 
 pygments_style = "sphinx"
