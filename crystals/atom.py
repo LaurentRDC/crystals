@@ -134,7 +134,7 @@ class Atom(Element):
     def __repr__(self):
         x, y, z = tuple(self.coords_fractional)
         return f"< Atom {self.element:<2} @ ({x:.2f}, {y:.2f}, {z:.2f}) >"
-        
+
     def __eq__(self, other):
         if type(other) is type(self):
             return (

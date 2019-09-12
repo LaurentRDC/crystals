@@ -272,7 +272,7 @@ class Lattice(Base):
         return change_basis_mesh(
             *self.frac_mesh(*xi, indexing=indexing),
             basis1=np.array(self.lattice_vectors),
-            basis2=np.eye(3)
+            basis2=np.eye(3),
         )
 
     # Primed generators allows for checks on creation

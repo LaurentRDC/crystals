@@ -150,7 +150,9 @@ class PDBParser(AbstractStructureParser):
         code = pdb_code.lower()
         archive_fn = Path(f"pdb{code}.ent.gz")
         pdb_dir = "divided"
-        url = server + f"/pub/pdb/data/structures/{pdb_dir}/pdb/{code[1:3]}/{archive_fn}"
+        url = (
+            server + f"/pub/pdb/data/structures/{pdb_dir}/pdb/{code[1:3]}/{archive_fn}"
+        )
         # Where does the final PDB file get saved?
         if download_dir is None:
             path = STRUCTURE_CACHE

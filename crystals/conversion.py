@@ -83,5 +83,5 @@ def ase_atoms(crystal, **kwargs):
             for atom in crystal
         ],
         cell=np.array(crystal.lattice_vectors),
-        **kwargs
+        **kwargs,
     )
