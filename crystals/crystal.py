@@ -8,12 +8,11 @@ from pathlib import Path
 
 import numpy as np
 from spglib import (
-    find_primitive,
     get_error_message,
     get_spacegroup_type,
     get_symmetry,
     get_symmetry_dataset,
-    refine_cell,
+    standardize_cell,
 )
 
 from .affine import affine_map, change_of_basis
@@ -294,6 +293,28 @@ class Crystal(AtomicStructure, Lattice):
         unitcell = np.stack([np.asarray(atm) for atm in self.unitcell])
         return np.array(self.lattice_vectors), unitcell[:, 1:], unitcell[:, 0]
 
+    @classmethod
+    def _from_spglib_cell(cls, lattice_vectors, scaled_positions, numbers, **kwargs):
+        """
+        Build a Crystal object from the return value of many SPGLIB routines.
+
+        Parameters
+        ----------
+        lattice_vectors : ndarray, shape (3,3)
+            Lattice vectors
+        scaled_positions : ndarray, shape (N, 3)
+            Fractional atomic positions, row-wise.
+        numbers : ndarray, shape (N,)
+            Atomic numbers, associated with each row of `scaled_positions`
+        """
+        atoms = [
+            Atom(int(Z), coords=coords) for Z, coords in zip(numbers, scaled_positions)
+        ]
+        # Preserve whatever subclass this object already is
+        # This is important because some properties can be extracted from
+        # source files (e.g. PWSCF output files)
+        return cls(unitcell=atoms, lattice_vectors=lattice_vectors, **kwargs)
+
     def primitive(self, symprec=1e-2):
         """ 
         Returns a Crystal object in the primitive unit cell.
@@ -317,21 +338,13 @@ class Crystal(AtomicStructure, Lattice):
         -----
         Optional atomic properties (e.g magnetic moment) might be lost in the reduction.
         """
-        search = find_primitive(self._spglib_cell(), symprec=symprec)
+        search = standardize_cell(
+            self._spglib_cell(), to_primitive=True, no_idealize=True, symprec=symprec
+        )
         if search is None:
             raise RuntimeError("Primitive cell could not be found.")
 
-        lattice_vectors, scaled_positions, numbers = search
-        atoms = [
-            Atom(int(Z), coords=coords) for Z, coords in zip(numbers, scaled_positions)
-        ]
-
-        # Preserve whatever subclass this object already is
-        # This is important because some properties can be extracted from
-        # source files (e.g. PWSCF output files)
-        return type(self)(
-            unitcell=atoms, lattice_vectors=lattice_vectors, source=self.source
-        )
+        return self._from_spglib_cell(*search, source=self.source)
 
     def ideal(self, symprec=1e-2):
         """ 
@@ -355,23 +368,13 @@ class Crystal(AtomicStructure, Lattice):
         -----
         Optional atomic properties (e.g magnetic moment) might be lost in the symmetrization.
         """
-        search = refine_cell(self._spglib_cell(), symprec=symprec)
+        search = standardize_cell(
+            self._spglib_cell(), to_primitive=True, no_idealize=False, symprec=symprec
+        )
         if search is None:
             raise RuntimeError("Ideal cell could not be found.")
 
-        lattice_vectors, scaled_positions, numbers = search
-
-        # Preserve whatever subclass this object already is
-        # This is important because some properties can be extracted from
-        # source files (e.g. PWSCF output files)
-        return type(self)(
-            unitcell=(
-                Atom(int(Z), coords=coords)
-                for Z, coords in zip(numbers, scaled_positions)
-            ),
-            lattice_vectors=lattice_vectors,
-            source=self.source,
-        )
+        return self._from_spglib_cell(*search, source=self.source)
 
     def supercell(self, n1, n2, n3):
         """
