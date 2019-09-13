@@ -9,6 +9,7 @@ References
     88(3), pp. 265-291. Retrieved 30 Nov. 2016, doi:10.1515/pac-2015-0305
 """
 from math import nan
+from .frozendict import frozendict
 
 chemical_symbols = [
     # 1
@@ -260,8 +261,8 @@ atomic_names = [
     "Oganesson",
 ]
 
-NUM_TO_ELEM = dict(enumerate(chemical_symbols, 1))
-ELEM_TO_NAME = dict(zip(chemical_symbols, atomic_names))
+NUM_TO_ELEM = frozendict(enumerate(chemical_symbols, 1))
+ELEM_TO_NAME = frozendict(zip(chemical_symbols, atomic_names))
 ELEM_TO_NUM = {v: k for k, v in NUM_TO_ELEM.items()}
 
 # Atomic masses are based on:
@@ -403,7 +404,7 @@ atomic_masses = [
 
 
 # set atomic_masses to most recent version
-ELEM_TO_MASS = dict(zip(chemical_symbols, atomic_masses))
+ELEM_TO_MASS = frozendict(zip(chemical_symbols, atomic_masses))
 
 # http://www.webelements.com
 ground_state_magnetic_moments = [
@@ -512,4 +513,4 @@ ground_state_magnetic_moments = [
     nan,  # Lr
 ]
 
-ELEM_TO_MAGMOM = dict(zip(chemical_symbols, ground_state_magnetic_moments))
+ELEM_TO_MAGMOM = frozendict(zip(chemical_symbols, ground_state_magnetic_moments))
