@@ -397,7 +397,7 @@ a primitive ``Crystal`` can be created using the ``Crystal.primitive`` method::
 
 Notice how the primitive structure is much simpler.
 
-Idealized versions of ``Crystal``s are also made available. Let's take the example of graphite::
+Idealized versions of ``Crystal``s are also made available. Let's take the example of iron arsenide::
 
     >>> iron_arsenide = Crystal.from_database('FeAs')
     >>> print(iron_arsenide)
