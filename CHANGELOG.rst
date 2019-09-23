@@ -4,6 +4,7 @@ What's new
 
 0.6.6
 -----
+* Added command-line utilities, including the `crystals info` script.
 
 0.6.5
 -----

@@ -56,6 +56,7 @@ if __name__ == "__main__":
         data_files=[("crystals\\cifs", CIF_FILES)],
         include_package_data=True,
         zip_safe=False,
+        entry_points={"console_scripts": ["crystals = crystals.__main__:main"]},
         # list of possible classifiers:
         #  https://pypi.python.org/pypi?%3Aaction=list_classifiers
         classifiers=[
