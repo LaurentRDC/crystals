@@ -16,6 +16,34 @@ constructors = {
     "pdb": Crystal.from_pdb,
 }
 
+INFO_HELP = "Display the crystallographic information related to a crystal file or database input."
+
+INFO_EXAMPLES = """
+Example of a local CIF file:
+> crystals info vo2.cif 
+> crystals info vo2.cif --type cif
+
+Example of a local PWSCF file:
+> crystals info ..\graphite.pwscf
+> crystals info ..\graphite.pwscf --type pwscf
+
+Example of internal database entry:
+> crystals info diamond
+> crystals info diamond --type database
+
+Example of Crystallography Open Database (COD) entry:
+> crystals info 5000215 # Bismuth
+> crystals info 5000215 --type cod
+
+Example of Protein DataBank entry
+> crystals info 1fbb # Bacteriorhodopsin
+> crystals info 1fbb --type pdb
+"""
+
+INPUT_HELP = """Path to a file, or database ID. CIF files (*.cif) and PWSCF (*.pwscf) files are supported. 
+Database IDs from the internal database, Crystallography Open Database (COD) and the Protein 
+DataBank (PDB) are supported. """
+
 parser = argparse.ArgumentParser(
     prog="crystals", description=f"crystals {__version__} command-line utilities"
 )
@@ -23,9 +51,9 @@ parser = argparse.ArgumentParser(
 subparsers = parser.add_subparsers(title="command", dest="command")
 
 info_parser = subparsers.add_parser(
-    "info", help="Display the crystallographic information related to a crystal file or database input"
+    "info", description=INFO_HELP, epilog=INFO_EXAMPLES, formatter_class = argparse.RawDescriptionHelpFormatter
 )
-info_parser.add_argument("input", nargs=1, help="Path to a file, or database input.")
+info_parser.add_argument("input", nargs=1, help=INPUT_HELP)
 
 info_parser.add_argument(
     "--type",
