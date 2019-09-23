@@ -36,6 +36,7 @@ Table of content
     installation
     guide
     api/reference
+    cmdline
     whatsnew
     contributing
 
