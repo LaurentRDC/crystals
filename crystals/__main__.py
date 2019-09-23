@@ -16,7 +16,7 @@ constructors = {
     "pdb": Crystal.from_pdb,
 }
 
-INFO_HELP = "Display the crystallographic information related to a crystal file or database input."
+INFO_HELP = "Display the crystallographic information related to a crystal file or database entry."
 
 INFO_EXAMPLES = """
 Example of a local CIF file:
@@ -51,7 +51,7 @@ parser = argparse.ArgumentParser(
 subparsers = parser.add_subparsers(title="command", dest="command")
 
 info_parser = subparsers.add_parser(
-    "info", description=INFO_HELP, epilog=INFO_EXAMPLES, formatter_class = argparse.RawDescriptionHelpFormatter
+    "info", help=INFO_HELP, description=INFO_HELP, epilog=INFO_EXAMPLES, formatter_class = argparse.RawDescriptionHelpFormatter
 )
 info_parser.add_argument("input", nargs=1, help=INPUT_HELP)
 
@@ -103,8 +103,8 @@ def guess_constructor(i):
     return cryst
 
 
-def main():
-    args = parser.parse_args()
+def main(args=None):
+    args = parser.parse_args(args)
 
     if args.command == "info":
         if args.type is not None:
