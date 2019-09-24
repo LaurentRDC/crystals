@@ -51,7 +51,11 @@ parser = argparse.ArgumentParser(
 subparsers = parser.add_subparsers(title="command", dest="command")
 
 info_parser = subparsers.add_parser(
-    "info", help=INFO_HELP, description=INFO_HELP, epilog=INFO_EXAMPLES, formatter_class = argparse.RawDescriptionHelpFormatter
+    "info",
+    help=INFO_HELP,
+    description=INFO_HELP,
+    epilog=INFO_EXAMPLES,
+    formatter_class=argparse.RawDescriptionHelpFormatter,
 )
 info_parser.add_argument("input", nargs=1, help=INPUT_HELP)
 
