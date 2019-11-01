@@ -93,8 +93,8 @@ class Atom(Element):
         Magnetic moment. If None (default), the ground-state magnetic moment is used.
     occupancy : float, optional
         Fractional occupancy. If None (default), occupancy is set to 1.0.
-    tag : object, optional
-        Tag an atom with an object. Useful to keep track of atom order, for example 
+    tag : int or None, optional
+        Tag an atom with a unique identifier. Useful to keep track of atom order, for example 
         in PWSCF output files. This is mostly for internal use.
     """
 
