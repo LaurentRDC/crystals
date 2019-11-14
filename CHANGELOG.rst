@@ -2,6 +2,11 @@
 What's new
 ==========
 
+0.6.7
+-----
+
+* Added the method ``Crystal.indexed_by``, which allows to index reflections of a crystal by using another lattice.
+
 0.6.6
 -----
 
