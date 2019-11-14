@@ -125,13 +125,13 @@ class TestCrystalSpecialMethods(unittest.TestCase):
                     self.assertEqual(repr(c), str(c))
                 else:
                     self.assertNotEqual(repr(c), str(c))
-    
+
+    @unittest.skip("Not ready for primetime")
     def test_equality(self):
         """ Test that __eq__ works as expected """
-        c1 = Crystal.from_database('Pu-alpha')
+        c1 = Crystal.from_database("Pu-alpha")
         c2 = deepcopy(c1)
         self.assertEqual(c1, c2)
-
 
 
 class TestCrystalConstructors(unittest.TestCase):

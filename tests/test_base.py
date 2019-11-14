@@ -174,6 +174,13 @@ class TestAtomicStructure(unittest.TestCase):
         self.assertEqual(self.structure, deepcopy(self.structure))
         self.assertNotEqual(self.structure, self.substructure)
 
+        # Special case: make structures from Crystals
+        c1 = Crystal.from_database("vo2-m1")
+        c2 = deepcopy(c1)
+        s1 = AtomicStructure(atoms=c1)
+        s2 = AtomicStructure(atoms=c2.atoms)
+        self.assertEqual(s1, s2)
+
     def test_array(self):
         """ Test AtomicStructure.__array__ """
         arr = np.array(self.structure)

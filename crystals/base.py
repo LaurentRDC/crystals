@@ -11,25 +11,7 @@ import numpy as np
 from .affine import affine_map
 
 
-class Base:
-    """ 
-    Base class that overrides the builtin behavior:
-    >>> object() == object()
-    False
-
-    This allows for transparent multiple inheritance of subclasses.
-    """
-
-    def __eq__(self, other):
-        if isinstance(other, self.__class__):
-            return True
-        return NotImplemented
-
-    def __hash__(self):
-        return 0
-
-
-class AtomicStructure(Base):
+class AtomicStructure:
     """
     Base class for atomic structures. These structures can be made
     out of :class:`Atom` objects, or other AtomicStructure subclasses.
@@ -92,15 +74,12 @@ class AtomicStructure(Base):
         )
 
     def __hash__(self):
-        return hash((self.atoms, self.substructures, super().__hash__()))
+        return hash((self.atoms, self.substructures))
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            return (
-                set(self.atoms) == set(other.atoms)
-                and set(self.substructures) == set(other.substructures)
-                # Subclasses (like Crystal via Lattice) might have extra requirements for equality
-                and super().__eq__(other)
+            return (self.atoms == other.atoms) and (
+                self.substructures == other.substructures
             )
         return NotImplemented
 

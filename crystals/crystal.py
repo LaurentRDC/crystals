@@ -586,7 +586,7 @@ class Crystal(AtomicStructure, Lattice):
     def centering(self):
         """ Centering type of this crystals. """
         return self.symmetry()["centering"]
-    
+
     def indexed_by(self, lattice):
         """
         Return a crystal structure, indexed by another lattice.
@@ -612,11 +612,10 @@ class Crystal(AtomicStructure, Lattice):
 
         cob = change_of_basis(old_basis, new_basis)
         return self.__class__(
-            unitcell = (atm.transform(cob) for atm in self),
-            lattice_vectors = new_basis,
-            source = self.source
+            unitcell=(atm.transform(cob) for atm in self),
+            lattice_vectors=new_basis,
+            source=self.source,
         )
-
 
     def __str__(self):
         """ String representation of this instance. Atoms may be omitted. """

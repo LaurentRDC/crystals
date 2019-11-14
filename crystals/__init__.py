@@ -20,7 +20,6 @@ from .atom_data import ELEM_TO_NAME
 from .atom_data import ELEM_TO_NUM
 from .atom_data import NUM_TO_ELEM
 from .base import AtomicStructure
-from .base import Base
 from .biological import Residue
 from .biological import Helix
 from .biological import Sheet

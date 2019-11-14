@@ -8,7 +8,6 @@ import numpy as np
 from numpy.linalg import norm
 
 from .affine import change_basis_mesh, change_of_basis
-from .base import Base
 
 
 # Generalized hypotenuse
@@ -51,7 +50,7 @@ class LatticeSystem(Enum):
     cubic = 7
 
 
-class Lattice(Base):
+class Lattice:
     """
     Container class for lattice information and manipulations.
 
@@ -76,10 +75,10 @@ class Lattice(Base):
         return f"< Lattice object with parameters {a:.3f}Å, {b:.3f}Å, {c:.3f}Å, {alpha:.2f}°, {beta:.2f}°, {gamma:.2f}° >"
 
     def __hash__(self):
-        return hash(self.lattice_parameters) | super().__hash__()
+        return hash(self.lattice_parameters)
 
     def __eq__(self, other):
-        if isinstance(other, self.__class__):
+        if isinstance(other, Lattice):
             return np.allclose(self.lattice_vectors, other.lattice_vectors, atol=1e-3)
         return NotImplemented
 
