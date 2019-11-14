@@ -4,7 +4,7 @@ import socket
 import tempfile
 import unittest
 from contextlib import suppress
-from copy import copy
+from copy import copy, deepcopy
 from math import radians
 from itertools import islice
 from pathlib import Path
@@ -125,6 +125,13 @@ class TestCrystalSpecialMethods(unittest.TestCase):
                     self.assertEqual(repr(c), str(c))
                 else:
                     self.assertNotEqual(repr(c), str(c))
+    
+    def test_equality(self):
+        """ Test that __eq__ works as expected """
+        c1 = Crystal.from_database('Pu-alpha')
+        c2 = deepcopy(c1)
+        self.assertEqual(c1, c2)
+
 
 
 class TestCrystalConstructors(unittest.TestCase):
