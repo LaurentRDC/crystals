@@ -599,7 +599,7 @@ class Crystal(AtomicStructure, Lattice):
 
     def indexed_by(self, lattice):
         """
-        Return a crystal structure, indexed by another lattice.
+        Return a crystal structure, indexed by another lattice/crystal structure.
         
         Parameters
         ----------
@@ -613,7 +613,6 @@ class Crystal(AtomicStructure, Lattice):
             New crystal, indexed by ``lattice``.
         """
         # TODO: example
-        # TODO: tests
         if not isinstance(lattice, (Crystal, Lattice)):
             lattice = Lattice(lattice)
 

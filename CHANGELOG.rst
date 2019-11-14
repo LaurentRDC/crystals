@@ -6,6 +6,7 @@ What's new
 -----
 
 * Added the method ``Crystal.indexed_by``, which allows to index reflections of a crystal by using another lattice.
+* Re-organized the ``Crystal`` class hierarchy to be more specific. This change should not affect anyone.
 
 0.6.6
 -----
