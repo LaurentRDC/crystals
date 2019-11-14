@@ -73,15 +73,15 @@ class AtomicStructure:
             substructures=copy(self.substructures) | copy(other.substructures),
         )
 
-    def __hash__(self):
-        return hash((self.atoms, self.substructures))
-
     def __eq__(self, other):
-        if isinstance(other, self.__class__):
+        if isinstance(other, AtomicStructure):
             return (self.atoms == other.atoms) and (
                 self.substructures == other.substructures
             )
         return NotImplemented
+
+    def __hash__(self):
+        return hash(self.atoms) | hash(self.substructures)
 
     def __repr__(self):
         """ Verbose string representation of this instance. """

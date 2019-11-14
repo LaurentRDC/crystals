@@ -89,11 +89,11 @@ def symmetry_expansion(atoms, symmetry_operators):
             new.coords_fractional[:] = np.mod(new.coords_fractional, 1)
             unique_atoms.add(new)
 
-    unique_structures = set([])
+    unique_structures = list()
     for structure in filter(is_structure, atoms):
         for sym_op in symmetry_operators:
             new = structure.transform(sym_op)
-            unique_structures.add(new)
+            unique_structures.append(new)
 
     yield from unique_atoms
     yield from unique_structures
@@ -146,13 +146,23 @@ class Crystal(AtomicStructure, Lattice):
 
         self.source = source
 
+    def __eq__(self, other):
+        if isinstance(other, Crystal):
+            return super(Lattice, self).__eq__(other) and super(
+                AtomicStructure, self
+            ).__eq__(other)
+        return NotImplemented
+
+    def __hash__(self):
+        return super(AtomicStructure, self).__hash__() | super(Lattice, self).__hash__()
+
     @property
     def unitcell(self):
         """ Generator of atoms forming the crystal unit cell. """
-        return self.__iter__()
+        return super().__iter__()
 
     @classmethod
-    @lru_cache(maxsize=len(builtins), typed=True)  # saves a lot of time in tests
+    @lru_cache(maxsize=len(builtins))
     def from_cif(cls, path, **kwargs):
         """
         Returns a Crystal object created from a CIF 1.0, 1.1 or 2.0 file.
@@ -586,7 +596,7 @@ class Crystal(AtomicStructure, Lattice):
     def centering(self):
         """ Centering type of this crystals. """
         return self.symmetry()["centering"]
-    
+
     def indexed_by(self, lattice):
         """
         Return a crystal structure, indexed by another lattice.
@@ -612,11 +622,10 @@ class Crystal(AtomicStructure, Lattice):
 
         cob = change_of_basis(old_basis, new_basis)
         return self.__class__(
-            unitcell = (atm.transform(cob) for atm in self),
-            lattice_vectors = new_basis,
-            source = self.source
+            unitcell=(atm.transform(cob) for atm in self),
+            lattice_vectors=new_basis,
+            source=self.source,
         )
-
 
     def indexed_by(self, lattice):
         """
@@ -725,7 +734,7 @@ class Supercell(AtomicStructure):
                 newatm = Atom(
                     element=atm.element,
                     coords=atm.coords_fractional + fractional_offset,
-                    lattice=self.crystal,
+                    lattice=Lattice(self.crystal.lattice_vectors),
                     displacement=atm.displacement,
                     magmom=atm.magmom,
                     occupancy=atm.occupancy,
