@@ -198,10 +198,11 @@ class TestSupercell(unittest.TestCase):
 class TestIndexedBy(unittest.TestCase):
     def test_trivial_reindexing(self):
         """ Test re-indexing a crystal by itself """
-        c1 = Crystal.from_database('Pu-gamma')
+        c1 = Crystal.from_database("Pu-gamma")
         c2 = c1.indexed_by(c1)
 
         self.assertEqual(c1, c2)
+
 
 if __name__ == "__main__":
     unittest.main()
