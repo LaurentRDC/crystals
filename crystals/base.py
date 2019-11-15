@@ -14,13 +14,13 @@ from .affine import affine_map
 class AtomicStructure:
     """
     Base class for atomic structures. These structures can be made
-    out of :class:`Atom` objects, or other AtomicStructure subclasses.
+    out of :class:`Atom` objects, or other :class:`AtomicStructures` subclasses.
 
-    The AtomicStructure class provides an abstraction over structure with and without
+    The :class:`AtomicStructures` class provides an abstraction over structure with and without
     substructure. Subclasses can be iterated over as an iterable of atoms. Order of iteration
     is not guaranteed.
     
-    Hierarchical containership of AtomicStructures is implemented, as well as 
+    Hierarchical containership of :class:`AtomicStructures` is implemented, as well as 
     containership of :class:`Atom` instances.
 
     Parameters
