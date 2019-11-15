@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from collections import namedtuple
 from enum import Enum, unique
+from operator import attrgetter
 from functools import lru_cache
 from glob import glob
 from itertools import islice, product
@@ -130,7 +131,7 @@ class Crystal(AtomicStructure, Lattice):
         Provenance, e.g. filename. Only used for bookkeeping.
     """
 
-    builtins = frozenset(map(lambda fn: fn.stem, CIF_ENTRIES))
+    builtins = frozenset(map(attrgetter("stem"), CIF_ENTRIES))
 
     def __init__(self, unitcell, lattice_vectors, source=None, **kwargs):
         unitcell = list(unitcell)

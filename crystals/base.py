@@ -2,6 +2,7 @@
 
 from collections import Counter, OrderedDict
 from copy import deepcopy
+from operator import attrgetter, itemgetter
 from functools import reduce
 from itertools import chain
 from math import gcd
@@ -107,7 +108,7 @@ class AtomicStructure:
         Atoms are ordered by atomic number. 
         """
         arr = np.empty(shape=(len(self), 4), *args, **kwargs)
-        atoms = self.itersorted(key=lambda atm: atm.atomic_number)
+        atoms = self.itersorted(key=attrgetter("atomic_number"))
         for row, atm in enumerate(atoms):
             arr[row, :] = np.array(atm, *args, **kwargs)
         return arr
@@ -128,7 +129,7 @@ class AtomicStructure:
         atm : `Atom` 
         """
         if key is None:
-            key = lambda atm: atm.element
+            key = attrgetter("element")
         yield from sorted(iter(self), key=key, reverse=reverse)
 
     def satisfying(self, predicate):
@@ -171,9 +172,7 @@ class AtomicStructure:
         counter = Counter(atm.element for atm in self)
         # For display reasons, it makes more sense to sort elements in descending percentage
         # i.e. more prevalent elemts are inserted in the dictionary first
-        sorted_by_percentage = sorted(
-            counter.items(), key=lambda tup: tup[-1], reverse=True
-        )
+        sorted_by_percentage = sorted(counter.items(), key=itemgetter(-1), reverse=True)
         return OrderedDict((k, v / number_atoms) for k, v in sorted_by_percentage)
 
     @property
