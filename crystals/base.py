@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from collections import Counter, OrderedDict
-from copy import deepcopy as copy
+from copy import deepcopy
 from functools import reduce
 from itertools import chain
 from math import gcd
@@ -69,8 +69,8 @@ class AtomicStructure:
         # We defer construction to the current class. Therefore, subclasses of AtomicStructure
         # will add into their own class
         return self.__class__(
-            atoms=copy(self.atoms) | copy(other.atoms),
-            substructures=copy(self.substructures) | copy(other.substructures),
+            atoms=deepcopy(self.atoms) | deepcopy(other.atoms),
+            substructures=deepcopy(self.substructures) | deepcopy(other.substructures),
         )
 
     def __eq__(self, other):
