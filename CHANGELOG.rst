@@ -5,7 +5,7 @@ What's new
 0.6.7
 -----
 
-* Added the ``Crystal.from_materialsproject`` constructor to create crystals through the Materials Project API.
+* Added the ``Crystal.from_mpj`` constructor to create crystals through the Materials Project API.
 * Added the method ``Crystal.indexed_by``, which allows to index reflections of a crystal by using another lattice.
 * Re-organized the ``Crystal`` class hierarchy to be more specific. This change should not affect anyone.
 

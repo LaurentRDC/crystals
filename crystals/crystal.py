@@ -115,7 +115,7 @@ class Crystal(AtomicStructure, Lattice):
     
     * ``Crystal.from_cod``: create an instance from a Crystallography Open Database entry.
 
-    * ``Crystal.from_materialsproject``: create an instance from the Materials Project database.
+    * ``Crystal.from_mpj``: create an instance from the Materials Project database.
 
     * ``Crystal.from_pwscf``: create an instance from the output of the PWSCF program.
 
@@ -234,7 +234,7 @@ class Crystal(AtomicStructure, Lattice):
             )
 
     @classmethod
-    def from_materialsproject(cls, api_key, query, download_dir=None, **kwargs):
+    def from_mpj(cls, api_key, query, download_dir=None, **kwargs):
         """ 
         Returns a Crystal object built from the Materials Project. 
         Keyword arguments are passed to the class constructor.

@@ -249,7 +249,7 @@ class TestCIFParser(unittest.TestCase):
 class TestMPJParser(unittest.TestCase):
     def test_example(self):
         """ Test that the API example given on the Materials Project website is working as expected. """
-        cryst = Crystal.from_materialsproject(api_key=MPJ_API_KEY, query="Fe2O3")
+        cryst = Crystal.from_mpj(api_key=MPJ_API_KEY, query="Fe2O3")
         self.assertIsInstance(cryst, Crystal)
 
 
