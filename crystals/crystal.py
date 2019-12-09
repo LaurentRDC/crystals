@@ -20,7 +20,7 @@ from .affine import affine_map, change_of_basis
 from .atom import Atom
 from .base import AtomicStructure
 from .lattice import Lattice
-from .parsers import CIFParser, CODParser, PDBParser, PWSCFParser
+from .parsers import CIFParser, CODParser, MPJParser, PDBParser, PWSCFParser
 from .spg_data import Hall2HM
 
 CIF_ENTRIES = frozenset((Path(__file__).parent / "cifs").glob("*.cif"))
@@ -114,6 +114,8 @@ class Crystal(AtomicStructure, Lattice):
     * ``Crystal.from_database``: create an instance from the internal database of CIF files;
     
     * ``Crystal.from_cod``: create an instance from a Crystallography Open Database entry.
+
+    * ``Crystal.from_materialsproject``: create an instance from the Materials Project database.
 
     * ``Crystal.from_pwscf``: create an instance from the output of the PWSCF program.
 
@@ -228,6 +230,36 @@ class Crystal(AtomicStructure, Lattice):
                 ),
                 lattice_vectors=parser.lattice_vectors(),
                 source=f"COD num:{num} rev:{revision}",
+                **kwargs,
+            )
+
+    @classmethod
+    def from_materialsproject(cls, api_key, query, download_dir=None, **kwargs):
+        """ 
+        Returns a Crystal object built from the Materials Project. 
+        Keyword arguments are passed to the class constructor.
+
+        Parameters
+        ----------
+        num : int
+            COD identification number.
+        revision : int or None, optional
+            Revision number. If None (default), the latest revision is used.
+        download_dir : path-like object, optional
+            Directory where to save the CIF file. Default is a local folder in the current directory
+        overwrite : bool, optional
+            Whether or not to overwrite files in cache if they exist. If no revision 
+            number is provided, files will always be overwritten. 
+        """
+        with MPJParser(
+            api_key=api_key, query=query, download_dir=download_dir, **kwargs
+        ) as parser:
+            return cls(
+                unitcell=symmetry_expansion(
+                    parser.atoms(), parser.symmetry_operators()
+                ),
+                lattice_vectors=parser.lattice_vectors(),
+                source=f"Materials Project: {query}",
                 **kwargs,
             )
 

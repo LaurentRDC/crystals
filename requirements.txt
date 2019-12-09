@@ -1,3 +1,4 @@
 numpy        >= 1.13, < 2
 spglib       >= 1.14, < 2
 pycifrw      >= 4.4.1, < 5
+requests     >= 2, < 3

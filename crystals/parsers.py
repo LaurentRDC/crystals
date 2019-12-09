@@ -14,13 +14,15 @@ from platform import system
 from string import digits, punctuation
 from tempfile import gettempdir
 from urllib.error import URLError
-from urllib.request import urlretrieve
+from urllib.request import Request, urlopen, urlretrieve
 from warnings import warn
 
 import numpy as np
+import requests
 from CifFile import ReadCif, get_number_with_esd
 from numpy.linalg import inv
 
+from . import __version__
 from .affine import affine_map, transform
 from .atom import Atom, frac_coords
 from .biological import Helix, Residue, Sheet
@@ -815,6 +817,79 @@ class CODParser(CIFParser):
                     break
 
         return download_path
+
+
+class MPJParser(CIFParser):
+    """
+    Collection of methods that parses CIF files retrieved from the Materials Project. 
+    The preferred method of using this object is as a context manager.
+
+    Parameters
+    ----------
+    api_key : str
+        An API key for accessing the Materials Project REST interface. 
+        Please obtain your API key at https://www.materialsproject.org/dashboard.
+    query : str
+        The query can be a Materials Project material id (e.g., mp-1234), a 
+        formula, e.g. (Fe2O3), or a chemical system ("-" separated list of elemments, 
+        e.g., Li-Fe-O).
+    download_dir : path-like object or None, optional
+        Directory where to save the CIF file. This is used for caching.
+    """
+
+    def __init__(self, api_key, query, download_dir=None, **kwargs):
+        if download_dir is None:
+            download_dir = STRUCTURE_CACHE
+
+        super().__init__(
+            filename=self.download_cif(api_key, query, download_dir), **kwargs
+        )
+
+    def download_cif(self, api_key, query, download_dir):
+        """
+        Download a CIF file from the Materials Project Database. 
+
+        Parameters
+        ----------
+        api_key : str
+            API key
+        download_dir : path-like object
+            Directory where to save the CIF file.
+        num : int
+            COD identification number.
+        revision : int or None, optional
+            Revision number. If None (default), the latest revision is used.
+        overwrite : bool, optional
+            Whether or not to overwrite files in cache if they exist. If no revision 
+            number is provided, files will always be overwritten. 
+
+        Returns
+        -------
+        path : pathlib.Path
+            Path to the downloaded file.
+        
+        Raises
+        ------
+        RuntimeError : If the file could not be downloaded from any of the mirrors.
+        
+        Notes
+        -----
+        This function will try three download mirrors. Warnings will be emitted in case
+        the file cannot be found in a mirror.
+        """
+        download_dir = Path(download_dir)
+        download_dir.mkdir(exist_ok=True)
+        target_filename = download_dir / f"{query}.cif"
+
+        endpoint = f"https://materialsproject.org/rest/v2/materials/{query}/vasp/cif"
+        headers = {"x-api-key": api_key, "user-agent": f"crystals {__version__}"}
+
+        with requests.get(endpoint, headers=headers) as response:
+            body = response.json()["response"][0]["cif"]
+            with open(target_filename, "w") as f:
+                f.write(body)
+
+        return target_filename
 
 
 class PWSCFParser(AbstractStructureParser):

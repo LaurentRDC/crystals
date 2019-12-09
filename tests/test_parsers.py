@@ -25,6 +25,9 @@ except ImportError:
 else:
     WITH_BIOPYTHON = True
 
+# API key to test Materails Project-related things
+MPJ_API_KEY = os.environ.get("MPJ_API_KEY", None)
+
 # Used to compare crystals.Atom instances and Bio.PDB.Atom instances
 GenericAtom = namedtuple("GenericAtom", ["element", "coords"])
 
@@ -238,6 +241,15 @@ class TestCIFParser(unittest.TestCase):
             )
         )
         self.assertAlmostEqual(vo2.volume, 117.466_153_0)  # from cif2cell
+
+
+@unittest.skipIf(MPJ_API_KEY is None, "Materials Project API key not defined in the environment.")
+class TestMPJParser(unittest.TestCase):
+
+    def test_example(self):
+        """ Test that the API example given on the Materials Project website is working as expected. """
+        cryst = Crystal.from_materialsproject(api_key=MPJ_API_KEY, query="Fe2O3")
+        self.assertIsInstance(cryst, Crystal)
 
 
 class TestPWSCFParser(unittest.TestCase):
