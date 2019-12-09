@@ -17,7 +17,7 @@ environment:
       CONDA_CHANNELS: "conda-forge"
       # ase and biopython are only required for tests
       # black is for code formatting
-      CONDA_DEPENDENCIES: "numpy spglib pycifrw ase biopython"
+      CONDA_DEPENDENCIES: "numpy spglib pycifrw ase biopython requests"
       PIP_DEPENDENCIES: "black"
 
   matrix:
