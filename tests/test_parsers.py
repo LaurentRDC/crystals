@@ -243,9 +243,10 @@ class TestCIFParser(unittest.TestCase):
         self.assertAlmostEqual(vo2.volume, 117.466_153_0)  # from cif2cell
 
 
-@unittest.skipIf(MPJ_API_KEY is None, "Materials Project API key not defined in the environment.")
+@unittest.skipIf(
+    MPJ_API_KEY is None, "Materials Project API key not defined in the environment."
+)
 class TestMPJParser(unittest.TestCase):
-
     def test_example(self):
         """ Test that the API example given on the Materials Project website is working as expected. """
         cryst = Crystal.from_materialsproject(api_key=MPJ_API_KEY, query="Fe2O3")
