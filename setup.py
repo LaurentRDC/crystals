@@ -61,7 +61,7 @@ if __name__ == "__main__":
         #  https://pypi.python.org/pypi?%3Aaction=list_classifiers
         classifiers=[
             "Environment :: Console",
-            "Development Status :: 4 - Beta",
+            "Development Status :: 5 - Production",
             "Intended Audience :: Developers",
             "Intended Audience :: Science/Research",
             "License :: OSI Approved :: BSD License",

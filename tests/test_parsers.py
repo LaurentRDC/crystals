@@ -252,7 +252,7 @@ class TestMPJParser(unittest.TestCase):
         """ Test that the API example given on the Materials Project website is working as expected. """
         cryst = Crystal.from_mp(api_key=MPJ_API_KEY, query="Fe2O3", overwrite=True)
         self.assertIsInstance(cryst, Crystal)
-    
+
     def test_material_id(self):
         """ Test that that material ID for Fe2O3 is as expected. """
         with MPJParser(api_key=MPJ_API_KEY, query="Fe2O3", overwrite=True) as parser:
