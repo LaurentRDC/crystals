@@ -166,13 +166,13 @@ is available here: <https://crystals.readthedocs.io/>
 Development
 -----------
 
-Tests can be run with the standard library\'s [unittest]{.title-ref}
+Tests can be run with the standard library\'s `unittest`
 module:
 
     python -m unittest discover
 
 Some optional tests might be skipped if dependencies are not installed,
-e.g. [ASE]{.title-ref}.
+e.g. [ASE](https://wiki.fysik.dtu.dk/ase/).
 
 Citations
 ---------
