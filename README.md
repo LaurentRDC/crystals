@@ -40,6 +40,7 @@ sources:
 Here\'s a quick example of building a crystal from the internal
 database:
 
+```python
     >>> from crystals import Crystal
     >>>
     >>> vo2 = Crystal.from_database('vo2-m1')
@@ -64,9 +65,11 @@ database:
         V: 33.333%
     Source:
         (...omitted...)\crystals\cifs\vo2-m1.cif >
+```
 
 Symmetry information is also readily available:
 
+```python
     >>> print(vo2.symmetry())
     {'international_symbol': 'P2_1/c', 
      'hall_symbol': '-P 2ybc', 
@@ -75,6 +78,7 @@ Symmetry information is also readily available:
      'hall_number': 81, 
      'international_full': 'P 1 2_1/c 1', 
      'pointgroup': 'C2h'}
+```
 
 ### Command-line script
 
@@ -84,6 +88,7 @@ information on a crystal.
 
 For example, the equivalent of the usage example above is as follows:
 
+```bash
     > crystals info vo2-m1
     Crystal object with following unit cell:
         Atom O  @ (0.10, 0.29, 0.70)
@@ -115,6 +120,7 @@ For example, the equivalent of the usage example above is as follows:
         Pointgroup .............. C2h
         Hall Number ............. 81
         Centering ............... CenteringType.primitive
+```
 
 `crystals` will guess what the input means. You can pass a filename, or
 database entry. See `crystals --help` for more details.
