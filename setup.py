@@ -63,6 +63,7 @@ if __name__ == "__main__":
             "Environment :: Console",
             "Development Status :: 5 - Production/Stable",
             "Intended Audience :: Developers",
+            "Intended Audience :: Education",
             "Intended Audience :: Science/Research",
             "License :: OSI Approved :: BSD License",
             "Natural Language :: English",
