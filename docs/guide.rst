@@ -88,6 +88,33 @@ Another convenient way to construct a :class:`Crystal` is through the `Crystallo
     >>> # Revisions are accessible as well
     >>> old_vo2 = Crystal.from_cod(1521124, revision = 140771)
 
+the `Materials Project <https://materialsproject.org/>`_ provides another avenue where to get crystal structures.
+You will need an API key from your `account dashboard <https://materialsproject.org/dashboard>`_:: 
+
+    >>> fe2o3 = Crystal.from_mp(api_key="xxxxxxxxxxxxxxxx", query = "Fe2O3")
+    >>> print(fe2o3)
+    < Crystal object with following unit cell:
+        Atom Fe @ (0.89, 0.37, 0.67)
+        Atom Fe @ (0.99, 0.75, 0.96)
+        Atom Fe @ (0.49, 0.75, 0.79)
+        Atom Fe @ (0.25, 0.51, 0.71)
+        Atom Fe @ (0.13, 0.39, 0.92)
+        Atom Fe @ (0.88, 0.12, 0.59)
+        Atom Fe @ (0.38, 0.38, 0.84)
+        Atom Fe @ (0.62, 0.62, 0.66)
+        Atom Fe @ (0.61, 0.87, 0.58)
+        Atom Fe @ (0.38, 0.38, 0.16)
+        ... omitting 150 atoms ...
+        ... use repr() to show the full cell ...
+    Lattice parameters:
+        a=8.525Å, b=8.525Å, c=25.593Å
+        α=90.000°, β=90.000°, γ=90.000°
+    Chemical composition:
+        O: 60.000%
+        Fe: 40.000%
+    Source:
+        Materials Project: Fe2O3 >
+
 Other constructors are supported. See the reference for the :class:`Crystal` class for more details.
 
 Constructing a :class:`Crystal` object by hand
