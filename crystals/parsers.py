@@ -850,6 +850,16 @@ class MPJParser(CIFParser):
             filename=self.download_cif(api_key, query, download_dir), **kwargs
         )
 
+    @property
+    def material_id(self):
+        """ Returns the Materials Project material ID from this file. """
+        # A comment of the form "Material ID: xxxxxxx" will have been inserted in the first
+        # line of the file after download.
+        self._handle.seek(0)
+        firstline = next(iter(self._handle))
+        *_, material_id = firstline.split(":")
+        return material_id.strip()
+
     def download_cif(self, api_key, query, download_dir, overwrite=False):
         """
         Download a CIF file from the Materials Project Database. 
@@ -897,9 +907,14 @@ class MPJParser(CIFParser):
                     f"Would not connect: status code {response.status_code}"
                 )
 
-            body = response.json()["response"][0]["cif"]
+            body = response.json()["response"][0]
+            material_id = body["material_id"]
+
             with open(target_filename, "w") as f:
-                f.write(body)
+                # We write the material ID as a comment at the top of the CIF file
+                # so we can inform the user in the Crystal.source property
+                f.write(f"# Material ID: {material_id}\n")
+                f.write(body["cif"])
 
         return target_filename
 

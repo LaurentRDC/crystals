@@ -113,7 +113,7 @@ You will need an API key from your `account dashboard <https://materialsproject.
         O: 60.000%
         Fe: 40.000%
     Source:
-        Materials Project: Fe2O3 >
+        Materials Project: mp-1456 >
 
 Other constructors are supported. See the reference for the :class:`Crystal` class for more details.
 

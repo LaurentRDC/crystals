@@ -266,7 +266,7 @@ class Crystal(AtomicStructure, Lattice):
                     parser.atoms(), parser.symmetry_operators()
                 ),
                 lattice_vectors=parser.lattice_vectors(),
-                source=f"Materials Project: {query}",
+                source=f"Materials Project ID: {parser.material_id}",
                 **kwargs,
             )
 
