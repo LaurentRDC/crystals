@@ -115,7 +115,7 @@ class Crystal(AtomicStructure, Lattice):
     
     * ``Crystal.from_cod``: create an instance from a Crystallography Open Database entry.
 
-    * ``Crystal.from_mpj``: create an instance from the Materials Project database.
+    * ``Crystal.from_mp``: create an instance from the Materials Project database.
 
     * ``Crystal.from_pwscf``: create an instance from the output of the PWSCF program.
 
@@ -234,25 +234,28 @@ class Crystal(AtomicStructure, Lattice):
             )
 
     @classmethod
-    def from_mpj(cls, api_key, query, download_dir=None, **kwargs):
+    def from_mp(cls, api_key, query, download_dir=None, overwrite=False, **kwargs):
         """ 
         Returns a Crystal object built from the Materials Project. 
         Keyword arguments are passed to the class constructor.
 
         Parameters
         ----------
-        num : int
-            COD identification number.
-        revision : int or None, optional
-            Revision number. If None (default), the latest revision is used.
-        download_dir : path-like object, optional
-            Directory where to save the CIF file. Default is a local folder in the current directory
+        api_key : str
+            An API key for accessing the Materials Project REST interface. 
+            Please obtain your API key at https://www.materialsproject.org/dashboard.
+        query : str
+            The query can be a Materials Project material id (e.g., `"mp-1234"`), a 
+            formula, e.g. (`"Fe2O3"`), or a chemical system ("-" separated list of elemments, 
+            e.g., `"Li-Fe-O"`).
+        download_dir : path-like object or None, optional
+            Directory where to save the CIF file. This is used for caching.
         overwrite : bool, optional
-            Whether or not to overwrite files in cache if they exist. If no revision 
-            number is provided, files will always be overwritten. 
+            Whether or not to overwrite files in cache if they exist. If True, 
+            a new file will be downloaded, possibly overwriting previously-downloaded file.
         """
         with MPJParser(
-            api_key=api_key, query=query, download_dir=download_dir, **kwargs
+            api_key=api_key, query=query, download_dir=download_dir, overwrite=overwrite, **kwargs
         ) as parser:
             return cls(
                 unitcell=symmetry_expansion(

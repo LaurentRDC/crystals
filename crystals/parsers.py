@@ -4,6 +4,7 @@ Atomic structure parsers.
 """
 import gzip
 import re
+import sys
 import warnings
 from abc import abstractmethod
 from contextlib import AbstractContextManager, suppress
@@ -830,14 +831,17 @@ class MPJParser(CIFParser):
         An API key for accessing the Materials Project REST interface. 
         Please obtain your API key at https://www.materialsproject.org/dashboard.
     query : str
-        The query can be a Materials Project material id (e.g., mp-1234), a 
-        formula, e.g. (Fe2O3), or a chemical system ("-" separated list of elemments, 
-        e.g., Li-Fe-O).
+        The query can be a Materials Project material id (e.g., `"mp-1234"`), a 
+        formula, e.g. (`"Fe2O3"`), or a chemical system ("-" separated list of elemments, 
+        e.g., `"Li-Fe-O"`).
     download_dir : path-like object or None, optional
         Directory where to save the CIF file. This is used for caching.
+    overwrite : bool, optional
+        Whether or not to overwrite files in cache if they exist. If True, 
+        a new file will be downloaded, possibly overwriting previously-downloaded file.
     """
 
-    def __init__(self, api_key, query, download_dir=None, **kwargs):
+    def __init__(self, api_key, query, download_dir=None, overwrite=False, **kwargs):
         if download_dir is None:
             download_dir = STRUCTURE_CACHE
 
@@ -845,23 +849,24 @@ class MPJParser(CIFParser):
             filename=self.download_cif(api_key, query, download_dir), **kwargs
         )
 
-    def download_cif(self, api_key, query, download_dir):
+    def download_cif(self, api_key, query, download_dir, overwrite=False):
         """
         Download a CIF file from the Materials Project Database. 
 
         Parameters
         ----------
         api_key : str
-            API key
-        download_dir : path-like object
-            Directory where to save the CIF file.
-        num : int
-            COD identification number.
-        revision : int or None, optional
-            Revision number. If None (default), the latest revision is used.
+            An API key for accessing the Materials Project REST interface. 
+            Please obtain your API key at https://www.materialsproject.org/dashboard.
+        query : str
+            The query can be a Materials Project material id (e.g., `"mp-1234"`), a 
+            formula, e.g. (`"Fe2O3"`), or a chemical system ("-" separated list of elemments, 
+            e.g., `"Li-Fe-O"`).
+        download_dir : path-like object or None, optional
+            Directory where to save the CIF file. This is used for caching.
         overwrite : bool, optional
-            Whether or not to overwrite files in cache if they exist. If no revision 
-            number is provided, files will always be overwritten. 
+            Whether or not to overwrite files in cache if they exist. If True, 
+            a new file will be downloaded, possibly overwriting previously-downloaded file.
 
         Returns
         -------
@@ -870,21 +875,23 @@ class MPJParser(CIFParser):
         
         Raises
         ------
-        RuntimeError : If the file could not be downloaded from any of the mirrors.
-        
-        Notes
-        -----
-        This function will try three download mirrors. Warnings will be emitted in case
-        the file cannot be found in a mirror.
+        ConnectionError : If the file could not be downloaded.
         """
         download_dir = Path(download_dir)
         download_dir.mkdir(exist_ok=True)
         target_filename = download_dir / f"{query}.cif"
 
+        if target_filename.exists() and (not overwrite):
+            return target_filename
+
         endpoint = f"https://materialsproject.org/rest/v2/materials/{query}/vasp/cif"
-        headers = {"x-api-key": api_key, "user-agent": f"crystals {__version__}"}
+        headers = {"x-api-key": api_key, 
+                   "user-agent": f"crystals {__version__}, Python {sys.version}"}
 
         with requests.get(endpoint, headers=headers) as response:
+            if response.status_code != 200:
+                raise ConnectionError(f"Would not connect: status code {response.status_code}")
+
             body = response.json()["response"][0]["cif"]
             with open(target_filename, "w") as f:
                 f.write(body)
