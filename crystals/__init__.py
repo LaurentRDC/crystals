@@ -34,6 +34,7 @@ from .lattice import LatticeSystem
 from .lattice import lattice_system
 from .parsers import CIFParser
 from .parsers import CODParser
+from .parsers import MPJParser
 from .parsers import ParseError
 from .parsers import PDBParser
 from .parsers import PWSCFParser
