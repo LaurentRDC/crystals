@@ -246,6 +246,7 @@ class TestCIFParser(unittest.TestCase):
 @unittest.skipIf(
     MPJ_API_KEY is None, "Materials Project API key not defined in the environment."
 )
+@unittest.skipUnless(connection_available(), "Internet connection is required.")
 class TestMPJParser(unittest.TestCase):
     def test_example(self):
         """ Test that the API example given on the Materials Project website is working as expected. """
