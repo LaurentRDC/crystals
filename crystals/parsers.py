@@ -797,25 +797,26 @@ class CODParser(CIFParser):
 
         download_path = download_dir / base
 
-        if (not download_path.is_file()) or overwrite:
+        if download_path.exists() and (not overwrite):
+            return download_path
+        
+        for index, mirror in enumerate(cls.mirrors, start=1):
+            url = mirror + url_suffix
+            try:
+                urlretrieve(url, download_path)
+            except URLError as e:
+                warn(f"The file {url} could not be downloaded because: {e.reason}")
 
-            for index, mirror in enumerate(cls.mirrors, start=1):
-                url = mirror + url_suffix
-                try:
-                    urlretrieve(url, download_path)
-                except URLError as e:
-                    warn(f"The file {url} could not be downloaded because: {e.reason}")
+                # If this is the last mirror, then the file could not
+                # be downloaded at all
+                if index == len(cls.mirrors):
+                    raise RuntimeError(
+                        f"Crystallography Open Database ID {num} could not be downloaded from any mirror."
+                    ) from None
 
-                    # If this is the last mirror, then the file could not
-                    # be downloaded at all
-                    if index == len(cls.mirrors):
-                        raise RuntimeError(
-                            f"Crystallography Open Database ID {num} could not be downloaded from any mirror."
-                        ) from None
-
-                    continue
-                else:
-                    break
+                continue
+            else:
+                break
 
         return download_path
 
