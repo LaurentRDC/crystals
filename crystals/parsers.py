@@ -885,12 +885,16 @@ class MPJParser(CIFParser):
             return target_filename
 
         endpoint = f"https://materialsproject.org/rest/v2/materials/{query}/vasp/cif"
-        headers = {"x-api-key": api_key, 
-                   "user-agent": f"crystals {__version__}, Python {sys.version}"}
+        headers = {
+            "x-api-key": api_key,
+            "user-agent": f"crystals {__version__}, Python {sys.version}",
+        }
 
         with requests.get(endpoint, headers=headers) as response:
             if response.status_code != 200:
-                raise ConnectionError(f"Would not connect: status code {response.status_code}")
+                raise ConnectionError(
+                    f"Would not connect: status code {response.status_code}"
+                )
 
             body = response.json()["response"][0]["cif"]
             with open(target_filename, "w") as f:

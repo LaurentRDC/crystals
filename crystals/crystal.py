@@ -255,7 +255,11 @@ class Crystal(AtomicStructure, Lattice):
             a new file will be downloaded, possibly overwriting previously-downloaded file.
         """
         with MPJParser(
-            api_key=api_key, query=query, download_dir=download_dir, overwrite=overwrite, **kwargs
+            api_key=api_key,
+            query=query,
+            download_dir=download_dir,
+            overwrite=overwrite,
+            **kwargs,
         ) as parser:
             return cls(
                 unitcell=symmetry_expansion(
