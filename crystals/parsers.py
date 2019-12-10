@@ -799,7 +799,7 @@ class CODParser(CIFParser):
 
         if download_path.exists() and (not overwrite):
             return download_path
-        
+
         for index, mirror in enumerate(cls.mirrors, start=1):
             url = mirror + url_suffix
             try:
