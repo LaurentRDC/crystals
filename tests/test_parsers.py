@@ -13,7 +13,7 @@ from warnings import catch_warnings, filterwarnings
 import numpy as np
 from spglib import get_symmetry_dataset
 
-from crystals import CIFParser, Crystal, PDBParser, frac_coords
+from crystals import CIFParser, Crystal, MPJParser, PDBParser, frac_coords
 from crystals.affine import transform
 from crystals.parsers import STRUCTURE_CACHE, PWSCFParser
 from crystals.spg_data import Hall2Number
@@ -252,6 +252,11 @@ class TestMPJParser(unittest.TestCase):
         """ Test that the API example given on the Materials Project website is working as expected. """
         cryst = Crystal.from_mp(api_key=MPJ_API_KEY, query="Fe2O3", overwrite=True)
         self.assertIsInstance(cryst, Crystal)
+    
+    def test_material_id(self):
+        """ Test that that material ID for Fe2O3 is as expected. """
+        with MPJParser(api_key=MPJ_API_KEY, query="Fe2O3", overwrite=True) as parser:
+            self.assertEqual(parser.material_id, "mp-1456")
 
 
 class TestPWSCFParser(unittest.TestCase):
