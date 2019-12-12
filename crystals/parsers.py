@@ -44,7 +44,6 @@ as the `MATERIALS_PROJECT_API_KEY` environment variable.
 """
 
 
-
 class ParseError(IOError):
     """ General parsing error type. """
 
@@ -854,13 +853,15 @@ class MPJParser(CIFParser):
     ValueError : if `api_key` is None and it could not be found in the environment variables.
     """
 
-    def __init__(self, query, api_key=None, download_dir=None, overwrite=False, **kwargs):
+    def __init__(
+        self, query, api_key=None, download_dir=None, overwrite=False, **kwargs
+    ):
         if download_dir is None:
             download_dir = STRUCTURE_CACHE
 
         if api_key is None:
             api_key = environ.get("MATERIALS_PROJECT_API_KEY", None)
-        
+
             if api_key is None:
                 raise ValueError(MISSING_MP_API_KEY_MESSAGE)
         super().__init__(
