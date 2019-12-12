@@ -250,13 +250,15 @@ class TestCIFParser(unittest.TestCase):
 class TestMPJParser(unittest.TestCase):
     def test_example(self):
         """ Test that the API example given on the Materials Project website is working as expected. """
-        cryst = Crystal.from_mp(api_key=MPJ_API_KEY, query="Fe2O3", overwrite=True)
-        self.assertIsInstance(cryst, Crystal)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            cryst = Crystal.from_mp(api_key=MPJ_API_KEY, query="Fe2O3", download_dir=temp_dir, overwrite=True)
+            self.assertIsInstance(cryst, Crystal)
 
     def test_material_id(self):
         """ Test that that material ID for Fe2O3 is as expected. """
-        with MPJParser(api_key=MPJ_API_KEY, query="Fe2O3", overwrite=True) as parser:
-            self.assertEqual(parser.material_id, "mp-1456")
+        with tempfile.TemporaryDirectory() as temp_dir:
+            with MPJParser(api_key=MPJ_API_KEY, query="Fe2O3", download_dir=temp_dir, overwrite=True) as parser:
+                self.assertEqual(parser.material_id, "mp-1456")
 
 
 class TestPWSCFParser(unittest.TestCase):
