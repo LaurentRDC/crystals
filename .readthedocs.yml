@@ -2,7 +2,7 @@
 #     https://docs.readthedocs.io/en/latest/yaml-config.html
 
 build:
-  image: latest # required for Python 3.6 at this time
+  image: stable
 
 python:
   version: 3.6
