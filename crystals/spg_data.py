@@ -41,13 +41,11 @@
 #
 # ******************************************************************************************
 
-from .frozendict import frozendict
-
 # Convert Hermann-Mauguin symbol to Hall symbol
 # Just keep adding new HM string representations until we support everything.
 # The ICSD convention of denoting setting shifted from the origin with S and
 # the non-shifted with Z is fully supported.
-HM2Hall = frozendict(
+HM2Hall = dict(
     {
         #   1
         "P1": "P 1",
@@ -1340,7 +1338,7 @@ HM2Hall = frozendict(
 )
 
 # Space group number for each Hall symbol
-Hall2Number = frozendict(
+Hall2Number = dict(
     {
         "Unknown": 0,
         #   1
@@ -2141,7 +2139,7 @@ Hall2Number = frozendict(
 )
 
 # The space groups that has only one possible "standard" setting
-Number2Hall = frozendict(
+Number2Hall = dict(
     {
         1: "P 1",
         2: "-P 1",
@@ -2286,7 +2284,7 @@ Number2Hall = frozendict(
     }
 )
 
-Hall2HM = frozendict(
+Hall2HM = dict(
     {
         "Unknown": "Unknown",
         #   1
@@ -3089,7 +3087,7 @@ Hall2HM = frozendict(
     }
 )
 
-Rhomb2HexHall = frozendict(
+Rhomb2HexHall = dict(
     {
         "P 3*": "R 3",
         "-P 3*": "-R 3",
@@ -3101,10 +3099,10 @@ Rhomb2HexHall = frozendict(
     }
 )
 
-Hex2RhombHall = frozendict({v: k for (v, k) in Rhomb2HexHall.items()})
+Hex2RhombHall = dict({v: k for (v, k) in Rhomb2HexHall.items()})
 
 # A. Perlov's numbering -> international tables numbers
-AP2Number = frozendict(
+AP2Number = dict(
     {
         1: 1,
         2: 2,
@@ -3612,7 +3610,7 @@ AP2Number = frozendict(
 )
 
 # international tables numbers -> A. Perlovs numbering
-Number2AP = frozendict(
+Number2AP = dict(
     {
         1: 1,
         2: 2,
@@ -3848,7 +3846,7 @@ Number2AP = frozendict(
 )
 
 # Symmetry operations in XYZ form from Hall symbol
-SymOpsHall = frozendict(
+SymOpsHall = dict(
     {
         "P 1": [["x", " y", " z"]],
         "-P 1": [["x", " y", " z"], ["-x", " -y", " -z"]],
