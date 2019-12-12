@@ -234,20 +234,22 @@ class Crystal(AtomicStructure, Lattice):
             )
 
     @classmethod
-    def from_mp(cls, api_key, query, download_dir=None, overwrite=False, **kwargs):
+    def from_mp(cls, query, api_key=None, download_dir=None, overwrite=False, **kwargs):
         """ 
         Returns a Crystal object built from the Materials Project. 
         Keyword arguments are passed to the class constructor.
 
         Parameters
         ----------
-        api_key : str
-            An API key for accessing the Materials Project REST interface. 
-            Please obtain your API key at https://www.materialsproject.org/dashboard.
         query : str
             The query can be a Materials Project material id (e.g., `"mp-1234"`), a 
             formula, e.g. (`"Fe2O3"`), or a chemical system ("-" separated list of elemments, 
             e.g., `"Li-Fe-O"`).
+        api_key : str or None, optional
+            An API key for accessing the Materials Project REST interface. 
+            Please obtain your API key at https://www.materialsproject.org/dashboard.
+            If `None` (default), ``crystals`` will look for your API key in the
+            `MATERIALS_PROJECT_API_KEY` environment variable.
         download_dir : path-like object or None, optional
             Directory where to save the CIF file. This is used for caching.
         overwrite : bool, optional
@@ -255,8 +257,8 @@ class Crystal(AtomicStructure, Lattice):
             a new file will be downloaded, possibly overwriting previously-downloaded file.
         """
         with MPJParser(
-            api_key=api_key,
             query=query,
+            api_key=api_key,
             download_dir=download_dir,
             overwrite=overwrite,
             **kwargs,

@@ -2,6 +2,12 @@
 What's new
 ==========
 
+1.0.0
+-----
+
+* Added the ability to set a Materials Project API key as environment variable `MATERIALS_PROJECT_API_KEY`.
+* Added the Materials Project constructor to the `crystals info` script.
+
 0.6.7
 -----
 

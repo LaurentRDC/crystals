@@ -14,6 +14,7 @@ constructors = {
     "pwscf": Crystal.from_pwscf,
     "cod": Crystal.from_cod,
     "pdb": Crystal.from_pdb,
+    "mp" : Crystal.from_mp, # REQUIRES API_KEY in environment
 }
 
 INFO_HELP = "Display the crystallographic information related to a crystal file or database entry."
@@ -38,6 +39,10 @@ Example of Crystallography Open Database (COD) entry:
 Example of Protein DataBank entry
 > crystals info 1fbb # Bacteriorhodopsin
 > crystals info 1fbb --type pdb
+
+Exanoke of Materials Project entry (requires API key)
+> crystals info Fe2O3 
+> crystals info Fe2O3 --type mp
 """
 
 INPUT_HELP = """Path to a file, or database ID. CIF files (*.cif) and PWSCF (*.pwscf) files are supported. 
@@ -85,6 +90,8 @@ def guess_constructor(i):
         return Crystal.from_cif(i)
     elif str(i).endswith(".pwscf"):
         return Crystal.from_pwscf(i)
+    elif str(i).startswith("mp-"):
+        return Crystal.from_mp(i)
 
     # We iterate over constructors that don't require network access first
     cryst = None
@@ -94,6 +101,7 @@ def guess_constructor(i):
         Crystal.from_database,
         Crystal.from_cod,
         Crystal.from_pdb,
+        Crystal.from_mp,
     ):
         try:
             cryst = constructor(i)

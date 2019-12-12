@@ -26,7 +26,7 @@ else:
     WITH_BIOPYTHON = True
 
 # API key to test Materails Project-related things
-MPJ_API_KEY = os.environ.get("MPJ_API_KEY", None)
+MPJ_API_KEY = os.environ.get("MATERIALS_PROJECT_API_KEY", None)
 
 # Used to compare crystals.Atom instances and Bio.PDB.Atom instances
 GenericAtom = namedtuple("GenericAtom", ["element", "coords"])

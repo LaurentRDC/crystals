@@ -9,7 +9,7 @@ import warnings
 from abc import abstractmethod
 from contextlib import AbstractContextManager, suppress
 from functools import lru_cache
-from os import remove
+from os import environ, remove
 from pathlib import Path
 from platform import system
 from string import digits, punctuation
@@ -37,6 +37,12 @@ from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 STRUCTURE_CACHE = (
     Path("/tmp" if system() == "Darwin" else gettempdir()) / "crystals_cache"
 )
+
+MISSING_MP_API_KEY_MESSAGE = """
+You have not provided a Materials Project API key. Either provide it, or set it 
+as the `MATERIALS_PROJECT_API_KEY` environment variable.
+"""
+
 
 
 class ParseError(IOError):
@@ -828,24 +834,35 @@ class MPJParser(CIFParser):
 
     Parameters
     ----------
-    api_key : str
-        An API key for accessing the Materials Project REST interface. 
-        Please obtain your API key at https://www.materialsproject.org/dashboard.
     query : str
         The query can be a Materials Project material id (e.g., `"mp-1234"`), a 
         formula, e.g. (`"Fe2O3"`), or a chemical system ("-" separated list of elemments, 
         e.g., `"Li-Fe-O"`).
+    api_key : str or None, optional
+        An API key for accessing the Materials Project REST interface. 
+        Please obtain your API key at https://www.materialsproject.org/dashboard.
+        If `None` (default), ``crystals`` will look for your API key in the
+        `MATERIALS_PROJECT_API_KEY` environment variable.
     download_dir : path-like object or None, optional
         Directory where to save the CIF file. This is used for caching.
     overwrite : bool, optional
         Whether or not to overwrite files in cache if they exist. If True, 
         a new file will be downloaded, possibly overwriting previously-downloaded file.
+    
+    Raises
+    ------
+    ValueError : if `api_key` is None and it could not be found in the environment variables.
     """
 
-    def __init__(self, api_key, query, download_dir=None, overwrite=False, **kwargs):
+    def __init__(self, query, api_key=None, download_dir=None, overwrite=False, **kwargs):
         if download_dir is None:
             download_dir = STRUCTURE_CACHE
 
+        if api_key is None:
+            api_key = environ.get("MATERIALS_PROJECT_API_KEY", None)
+        
+            if api_key is None:
+                raise ValueError(MISSING_MP_API_KEY_MESSAGE)
         super().__init__(
             filename=self.download_cif(api_key, query, download_dir), **kwargs
         )
