@@ -171,16 +171,26 @@ Citations
 As this package is a spinoff from `scikit-ued`, please consider citing
 the following publication if you find `crystals` useful:
 
+> L. P. René de Cotret, M. R. Otto, M. J. Stern. and B. J. Siwick, *An open-source software ecosystem for the interactive exploration of ultrafast electron scattering data*, Advanced Structural and Chemical Imaging 4:11 (2018) [DOI: 10.1186/s40679-018-0060-y.](https://ascimaging.springeropen.com/articles/10.1186/s40679-018-0060-y)
+
 Underlying algorithms provided by `spglib` are described in the
 following publication:
+
+> A. Togo and I. Tanaka, *spglib: a software library for crystal symmetry search*. [https://arxiv.org/abs/1808.01590](https://arxiv.org/abs/1808.01590) (written at version 1.10.4).
 
 Structure parsing from CIF files has been tested for correctness against
 CIF2CELL, detailed here:
 
+> Torbjorn Bjorkman, *CIF2Cell: Generating geometries for electronic structure programs*, Computer Physics Communications 182, 1183-1186 (2011) [DOI: 10.1016/j.cpc.2011.01.013](https://doi.org/10.1016/j.cpc.2011.01.013)
+
 Structure parsing from PDB files has been tested for correctness against
 `Bio.PDB`, detailed here:
 
+> Hamelryck, T., Manderick, B. *PDB parser and structure class implemented in Python*. Bioinformatics 19: 2308–2310 (2003)
+
 Atomic weights are reported in the following publication:
+
+> Meija, J., Coplen, T., Berglund, M., et al. (2016). *Atomic weights of the elements 2013* (IUPAC Technical Report). Pure and Applied Chemistry, 88(3), pp. 265-291. Retrieved 30 Nov. 2016, [DOI:10.1515/pac-2015-0305](https://doi.org/10.1515/pac-2015-0305)
 
 Aknowledgements
 ---------------
@@ -198,8 +208,7 @@ License
 -------
 
 `crystals` is made available under the BSD 3-clause license. For more
-details, see
-[LICENSE](https://github.com/LaurentRDC/crystals/blob/master/LICENSE).
+details, see [LICENSE](https://github.com/LaurentRDC/crystals/blob/master/LICENSE).
 
 Related projects
 ----------------
