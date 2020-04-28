@@ -2,6 +2,7 @@
 import unittest
 from copy import deepcopy
 from random import randint, random, seed
+import pickle
 
 import numpy as np
 
@@ -195,7 +196,11 @@ class TestElectronicStructure(unittest.TestCase):
         """ Test that an error is raised for impossible electronic structures. """
         with self.assertRaises(ValueError):
             ElectronicStructure({"1s": 3})
-
+    
+    def test_pickable(self):
+        """ Test that ElectronicStructure instances are pickable. """
+        structure = ElectronicStructure.ground_state('Ar')
+        self.assertEqual(structure, pickle.loads(pickle.dumps(structure)))
 
 if __name__ == "__main__":
     unittest.main()

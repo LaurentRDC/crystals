@@ -98,6 +98,9 @@ class Atom(Element):
     tag : int or None, optional
         Tag an atom with a unique identifier. Useful to keep track of atom order, for example 
         in PWSCF output files. This is mostly for internal use.
+    electronic_structure : ElectronicStructure or None, optional
+        Electronic orbital structure for this atom. If `None` (default), the ground
+        state for this element will be used.
     """
 
     # Because of the possibility of a large number of atoms (> 1e6), we use the __slots__
@@ -109,6 +112,7 @@ class Atom(Element):
         "magmom",
         "occupancy",
         "lattice",
+        "electronic_structure"
     )
 
     def __init__(
@@ -120,6 +124,7 @@ class Atom(Element):
         magmom=None,
         occupancy=1.0,
         tag=None,
+        electronic_structure=None,
         **kwargs,
     ):
         super().__init__(element=element)
@@ -132,10 +137,11 @@ class Atom(Element):
         self.magmom = magmom or self.magnetic_moment_ground
         self.occupancy = occupancy
         self.tag = tag
+        self.electronic_structure = electronic_structure or ElectronicStructure.ground_state(element)
 
     def __repr__(self):
         x, y, z = tuple(self.coords_fractional)
-        return f"< Atom {self.element:<2} @ ({x:.2f}, {y:.2f}, {z:.2f}) >"
+        return f"< Atom {self.element:<2} @ ({x:.2f}, {y:.2f}, {z:.2f}) | [{str(self.electronic_structure)}] >"
 
     def __eq__(self, other):
         if isinstance(other, Atom):
@@ -147,6 +153,7 @@ class Atom(Element):
                 )
                 and (self.lattice == other.lattice)
                 and np.allclose(self.displacement, other.displacement, atol=1e-3)
+                and (self.electronic_structure == other.electronic_structure)
             )
         return NotImplemented
 
@@ -158,6 +165,7 @@ class Atom(Element):
                 tuple(np.round(self.coords_fractional, 3)),
                 self.lattice,
                 tuple(np.round(self.displacement, 3)),
+                hash(self.electronic_structure)
             )
         )
 
@@ -224,6 +232,8 @@ class Atom(Element):
             displacement=self.displacement,
             magmom=self.magmom,
             occupancy=self.occupancy,
+            tag=self.tag,
+            electronic_structure=self.electronic_structure
         )
 
     def __array__(self, *args, **kwargs):
@@ -424,7 +434,7 @@ superscript_trans = str.maketrans(
 )
 
 
-class ElectronicStructure(OrderedDict):
+class ElectronicStructure:
     """
     Description of the atomic orbital structure.
 
@@ -444,7 +454,10 @@ class ElectronicStructure(OrderedDict):
     """
 
     def __init__(self, shells):
-        super().__init__([])
+        # Subclassing OrderedDict causes problems with pickling
+        # Instead, we dress this class on top of an OrderedDict property.
+        self._structure = OrderedDict([])
+
         # We first normalize all keys to the Subshell class,
         # then we insert them in order
         shells = {Subshell(k): v for k, v in shells.items()}
@@ -463,15 +476,25 @@ class ElectronicStructure(OrderedDict):
             raise ValueError(
                 f"There cannot be {value} electrons in subshell {str(shell)}"
             )
+        self._structure.__setitem__(shell, value)
+    
+    def __getitem__(self, key):
+        return self._structure.__getitem__(key)
 
     def __str__(self):
         result = ""
-        for shell, occ in self.items():
+        for shell, occ in self._structure.items():
             result += shell.value + f"{occ}".translate(superscript_trans)
         return result
 
     def __repr__(self):
         return f"< ElectronicStructure: {str(self)} >"
+    
+    def __hash__(self):
+        return hash(str(self))
+    
+    def __eq__(self, other):
+        return str(self) == str(other)
 
     @classmethod
     def ground_state(cls, element):
@@ -505,4 +528,4 @@ class ElectronicStructure(OrderedDict):
             if num_elec == 0:
                 break
 
-        return ElectronicStructure(structure)
+        return cls(structure)
