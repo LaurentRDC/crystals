@@ -2,6 +2,11 @@
 What's new
 ==========
 
+1.1.0
+-----
+
+* Added the ability to describe the electronic structure of atoms using the `ElectronicStructure` class.
+
 1.0.0
 -----
 
