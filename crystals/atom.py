@@ -447,6 +447,18 @@ class ElectronicStructure:
     ------
     ValueError : if the electronic structure is not representable
 
+    Examples
+    --------
+    Electronic structures can be specified by hand:
+    
+    >>> ElectronicStructure({"1s":2, "2s":2, "2p":2})
+    < ElectronicStructure: 1s²2s²2p² >
+
+    A shortcut exists for atomic ground states:
+
+    >>> ElectronicStructure.ground_state("Ti")
+    < ElectronicStructure: 1s²2s²2p⁶3s²3p⁶4s²3d² >
+
     Notes
     -----
     Shells are allowed to not be filled in order deliberately, given that unusual 
