@@ -3,6 +3,9 @@
 from datetime import datetime
 import os
 
+currentpath = os.path.dirname(__file__)
+sys.path.append(os.path.join(currentpath, ".."))
+
 import crystals
 
 extensions = [
