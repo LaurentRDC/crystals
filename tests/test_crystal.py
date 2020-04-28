@@ -32,7 +32,7 @@ class TestSpglibMethods(unittest.TestCase):
     def test_symmetry_graphite(self):
         """ Test that Crystal.symmetry() works correctly for graphite """
         c = Crystal.from_database("C")
-        info = c.symmetry()
+        info = c.symmetry(1e-1)
 
         supposed = {
             "international_number": 194,
@@ -42,7 +42,7 @@ class TestSpglibMethods(unittest.TestCase):
             "hall_symbol": "-P 6c 2c",
             "hm_symbol": "P63/mmc",
             "centering": CenteringType("P"),
-            "pointgroup": "D6h",
+            "pointgroup": "6/mmm",
         }
 
         self.assertDictEqual(info, supposed)

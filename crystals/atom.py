@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+from enum import Enum, auto, unique
+from collections import namedtuple, OrderedDict
 
 from .affine import change_of_basis, transform
 from .atom_data import (
@@ -349,3 +351,158 @@ def is_element(element):
         return atm.atomic_number == element.atomic_number
 
     return _is_element
+
+
+@unique
+class Subshell(Enum):
+    """
+    Enumeration of electronic sub shell, used to described atomic 
+    orbital structure.
+    """
+
+    # It is important that the subshells are listed in the order that they
+    # are filled (Madelung rule)
+    one_s = "1s"
+    two_s = "2s"
+    two_p = "2p"
+    three_s = "3s"
+    three_p = "3p"
+    four_s = "4s"
+    three_d = "3d"
+    four_p = "4p"
+    five_s = "5s"
+    four_d = "4d"
+    five_p = "5p"
+    six_s = "6s"
+    four_f = "4f"
+    five_d = "5d"
+    six_p = "6p"
+    seven_s = "7s"
+    five_f = "5f"
+    six_d = "6d"
+    seven_p = "7p"
+
+    @classmethod
+    def maximum_electrons(cls, shell):
+        """ 
+        Maximum number of electrons that can be placed in a subshell. 
+        
+        Parameters
+        ----------
+        shell : Subshell or str
+
+        Returns
+        -------
+        max : int
+        """
+        shell = Subshell(shell)
+        maxima = {
+            "s": 2,
+            "p": 6,
+            "d": 10,
+            "f": 14,
+        }
+        return maxima[shell.value[-1]]
+
+
+# To print superscript in electronic structures.
+# Note that this requires UTF-8 output.
+superscript_map = {
+    "0": "⁰",
+    "1": "¹",
+    "2": "²",
+    "3": "³",
+    "4": "⁴",
+    "5": "⁵",
+    "6": "⁶",
+    "7": "⁷",
+    "8": "⁸",
+    "9": "⁹",
+}
+superscript_trans = str.maketrans(
+    "".join(superscript_map.keys()), "".join(superscript_map.values())
+)
+
+
+class ElectronicStructure(OrderedDict):
+    """
+    Description of the atomic orbital structure.
+
+    Parameters
+    ----------
+    shells : dict[Subshell,int]
+        Dictionary containing the number of electrons in each subshell, e.g. `{"1s": 2}`.
+    
+    Raises
+    ------
+    ValueError : if the electronic structure is not representable
+
+    Notes
+    -----
+    Shells are allowed to not be filled in order deliberately, given that unusual 
+    electronic structures can arise from ultrafast photoexcitation.
+    """
+
+    def __init__(self, shells):
+        super().__init__([])
+        # We first normalize all keys to the Subshell class,
+        # then we insert them in order
+        shells = {Subshell(k): v for k, v in shells.items()}
+
+        for shell in Subshell:
+            if shell not in shells:
+                continue
+            self[shell] = shells[shell]
+
+    def __setitem__(self, key, value):
+        # We check that the number of electrons in each subshell does not
+        # go above maximum possible.
+        shell = Subshell(key)
+        maximum_allowed_electrons = Subshell.maximum_electrons(shell)
+        if value > maximum_allowed_electrons:
+            raise ValueError(
+                f"There cannot be {value} electrons in subshell {str(shell)}"
+            )
+
+    def __str__(self):
+        result = ""
+        for shell, occ in self.items():
+            result += shell.value + f"{occ}".translate(superscript_trans)
+        return result
+
+    def __repr__(self):
+        return f"< ElectronicStructure: {str(self)} >"
+
+    @classmethod
+    def ground_state(cls, element):
+        """
+        Standard electronic structure for a particular element.
+
+        Parameters
+        ----------
+        element : Element, str, or int
+            Element, Symbol, or atomic number.
+
+        Returns
+        -------
+        structure : ElectronicStructure
+            Return the ground state electronic structure for a particular element.
+        
+        Examples
+        --------
+        >>> ElectronicStructure.ground_state("Ne")
+        < ElectronicStructure: 1s²2s²2p⁶ >
+        """
+        element = Element(element)
+        num_elec = element.atomic_number
+
+        structure = dict()
+        for shell in Subshell:
+            shell_elec = min([Subshell.maximum_electrons(shell), num_elec])
+            structure[shell] = shell_elec
+            num_elec -= shell_elec
+
+            if num_elec == 0:
+                break
+
+        return ElectronicStructure(structure)

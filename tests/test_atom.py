@@ -7,6 +7,8 @@ import numpy as np
 
 from crystals import (
     Atom,
+    Subshell,
+    ElectronicStructure,
     Element,
     Lattice,
     distance_cartesian,
@@ -18,6 +20,29 @@ from crystals.affine import rotation_matrix
 
 seed(23)
 np.random.seed(23)
+
+# Madelung rule
+MADELUNG = [
+    "1s",
+    "2s",
+    "2p",
+    "3s",
+    "3p",
+    "4s",
+    "3d",
+    "4p",
+    "5s",
+    "4d",
+    "5p",
+    "6s",
+    "4f",
+    "5d",
+    "6p",
+    "7s",
+    "5f",
+    "6d",
+    "7p",
+]
 
 
 def random_transform():
@@ -145,6 +170,31 @@ class TestIsElement(unittest.TestCase):
         self.assertTrue(is_element(atm.element)(atm))
         self.assertTrue(is_element(atm.atomic_number)(atm))
         self.assertTrue(is_element(atm)(atm))
+
+
+class TestSubshell(unittest.TestCase):
+    def test_madelung_rule(self):
+        """ Test that the orbitals are listed in the Madelung rule order,
+        which is the filling order. """
+
+        enumeration = [shell.value for shell in Subshell]
+        self.assertEqual(MADELUNG, enumeration)
+
+    def test_maximum_electrons(self):
+        """ That that the maximum number of electrons per subshell is as expected. """
+        maxima = {"s": 2, "p": 6, "d": 10, "f": 14}
+        for shell in Subshell:
+            with self.subTest(str(shell)):
+                self.assertEqual(
+                    maxima[shell.value[-1]], Subshell.maximum_electrons(shell)
+                )
+
+
+class TestElectronicStructure(unittest.TestCase):
+    def test_maximum_electrons(self):
+        """ Test that an error is raised for impossible electronic structures. """
+        with self.assertRaises(ValueError):
+            ElectronicStructure({"1s": 3})
 
 
 if __name__ == "__main__":

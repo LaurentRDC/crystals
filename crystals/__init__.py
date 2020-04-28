@@ -14,6 +14,8 @@ from .atom import is_element
 from .atom import real_coords
 from .atom import distance_fractional
 from .atom import distance_cartesian
+from .atom import Subshell
+from .atom import ElectronicStructure
 from .atom_data import ELEM_TO_MAGMOM
 from .atom_data import ELEM_TO_MASS
 from .atom_data import ELEM_TO_NAME
