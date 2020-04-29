@@ -54,6 +54,7 @@ If you need to specify the orbital structure of atoms by hand, you will need to 
 Electronic orbitals are described by the :class:`Orbital` class:
 
 .. autoclass:: Orbital
+    :members:
 
 ------------
 Enumerations
