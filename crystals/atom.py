@@ -511,7 +511,7 @@ class ElectronicStructure:
     @classmethod
     def ground_state(cls, element):
         """
-        Standard electronic structure for a particular element.
+        Ground state electronic structure for a particular element.
 
         Parameters
         ----------
