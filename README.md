@@ -37,16 +37,16 @@ database:
     >>> vo2 = Crystal.from_database('vo2-m1')
     >>> print(vo2)     # Short string representation
     < Crystal object with following unit cell:
-        Atom O  @ (0.90, 0.79, 0.80)
-        Atom O  @ (0.90, 0.71, 0.30)
-        Atom O  @ (0.61, 0.31, 0.71)
-        Atom O  @ (0.39, 0.69, 0.29)
-        Atom O  @ (0.61, 0.19, 0.21)
-        Atom O  @ (0.10, 0.29, 0.70)
-        Atom O  @ (0.10, 0.21, 0.20)
-        Atom O  @ (0.39, 0.81, 0.79)
-        Atom V  @ (0.76, 0.03, 0.97)
-        Atom V  @ (0.76, 0.48, 0.47)
+        Atom O  @ (0.10, 0.21, 0.20) | [1s²2s²2p⁴]
+        Atom O  @ (0.10, 0.29, 0.70) | [1s²2s²2p⁴]
+        Atom O  @ (0.39, 0.81, 0.79) | [1s²2s²2p⁴]
+        Atom O  @ (0.61, 0.19, 0.21) | [1s²2s²2p⁴]
+        Atom O  @ (0.90, 0.71, 0.30) | [1s²2s²2p⁴]
+        Atom O  @ (0.39, 0.69, 0.29) | [1s²2s²2p⁴]
+        Atom O  @ (0.61, 0.31, 0.71) | [1s²2s²2p⁴]
+        Atom O  @ (0.90, 0.79, 0.80) | [1s²2s²2p⁴]
+        Atom V  @ (0.24, 0.53, 0.53) | [1s²2s²2p⁶3s²3p⁶4s²3d³]
+        Atom V  @ (0.76, 0.03, 0.97) | [1s²2s²2p⁶3s²3p⁶4s²3d³]
         ... omitting 2 atoms ...
     Lattice parameters:
         a=5.743Å, b=4.517Å, c=5.375Å
@@ -82,33 +82,32 @@ For example, the equivalent of the usage example above is as follows:
 ```bash
     > crystals info vo2-m1
     Crystal object with following unit cell:
-        Atom O  @ (0.10, 0.29, 0.70)
-        Atom O  @ (0.90, 0.79, 0.80)
-        Atom O  @ (0.39, 0.69, 0.29)
-        Atom O  @ (0.39, 0.81, 0.79)
-        Atom O  @ (0.61, 0.19, 0.21)
-        Atom O  @ (0.61, 0.31, 0.71)
-        Atom O  @ (0.10, 0.21, 0.20)
-        Atom O  @ (0.90, 0.71, 0.30)
-        Atom V  @ (0.24, 0.97, 0.03)
-        Atom V  @ (0.24, 0.53, 0.53)
-        Atom V  @ (0.76, 0.48, 0.47)
-        Atom V  @ (0.76, 0.03, 0.97)
+        Atom O  @ (0.10, 0.29, 0.70) | [1s²2s²2p⁴]
+        Atom O  @ (0.10, 0.21, 0.20) | [1s²2s²2p⁴]
+        Atom O  @ (0.90, 0.71, 0.30) | [1s²2s²2p⁴]
+        Atom O  @ (0.90, 0.79, 0.80) | [1s²2s²2p⁴]
+        Atom O  @ (0.39, 0.69, 0.29) | [1s²2s²2p⁴]
+        Atom O  @ (0.39, 0.81, 0.79) | [1s²2s²2p⁴]
+        Atom O  @ (0.61, 0.19, 0.21) | [1s²2s²2p⁴]
+        Atom O  @ (0.61, 0.31, 0.71) | [1s²2s²2p⁴]
+        Atom V  @ (0.24, 0.97, 0.03) | [1s²2s²2p⁶3s²3p⁶4s²3d³]
+        Atom V  @ (0.76, 0.03, 0.97) | [1s²2s²2p⁶3s²3p⁶4s²3d³]
+        Atom V  @ (0.24, 0.53, 0.53) | [1s²2s²2p⁶3s²3p⁶4s²3d³]
+        Atom V  @ (0.76, 0.48, 0.47) | [1s²2s²2p⁶3s²3p⁶4s²3d³]
     Lattice parameters:
         a=5.743Å, b=4.517Å, c=5.375Å
         α=90.000°, β=122.600°, γ=90.000°
     Chemical composition:
-        O: 66.667%
         V: 33.333%
-    Source: 
-        (...omitted...)\crystals\cifs\vo2-m1.cif
+    Source:
+        (...omitted...)\crystals\crystals\cifs\vo2-m1.cif
     Symmetry information:
-        International symbol 
+        International symbol
                     (short) ..... P2_1/c
                     (full) ...... P 1 2_1/c 1
         International number .... 14
         Hermann-Mauguin symbol .. P121/c1
-        Pointgroup .............. C2h
+        Pointgroup .............. 2/m
         Hall Number ............. 81
         Centering ............... CenteringType.primitive
 ```
