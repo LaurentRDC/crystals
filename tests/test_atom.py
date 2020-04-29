@@ -199,8 +199,26 @@ class TestElectronicStructure(unittest.TestCase):
     
     def test_pickable(self):
         """ Test that ElectronicStructure instances are pickable. """
-        structure = ElectronicStructure.ground_state('Ar')
+        structure = ElectronicStructure.ground_state('W')
         self.assertEqual(structure, pickle.loads(pickle.dumps(structure)))
+    
+    def test_missing_orbital(self):
+        """ Test that 'missing' orbitals will return 0 electrons """
+        struct = ElectronicStructure.ground_state('He')
+        self.assertEqual(struct["2p"], 0)
+    
+    def test_orbital_keys(self):
+        """ Test that orbital occupancies can be accessed either with strings or Orbital """
+        struct = ElectronicStructure.ground_state('He')
+        self.assertEqual(struct["1s"], struct[Orbital.one_s])
+    
+    def test_modification_in_place(self):
+        """ Test that ElectronicStructure instances can be modified in-place """
+        struct = ElectronicStructure({"1s":2, "2s":2, "2p": 4})
+        expected = ElectronicStructure({"1s":2, "2s":2, "2p": 3, "4s": 1})
+        struct["2p"] -= 1
+        struct["4s"] += 1
+        self.assertEqual(struct, expected)
 
 if __name__ == "__main__":
     unittest.main()

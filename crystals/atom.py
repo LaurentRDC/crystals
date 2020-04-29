@@ -491,8 +491,18 @@ class ElectronicStructure:
         self._structure.__setitem__(shell, value)
     
     def __getitem__(self, key):
-        return self._structure.__getitem__(key)
-
+        # In case the key doesn't exist, we return 0
+        # (i.e. 0 electrons in this orbital) because this allows 
+        # to add electrons in-place, e.g.:
+        # >>> struct = ElectronicStructure({"1s":2})   
+        # >>> struct["2p"] += 1
+        # even though there were no electrons there.
+        key = Orbital(key)
+        try:
+            return self._structure.__getitem__(key)
+        except KeyError:
+            return 0
+    
     def __str__(self):
         result = ""
         for shell, occ in self._structure.items():
