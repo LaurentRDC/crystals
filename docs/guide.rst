@@ -625,4 +625,104 @@ Since :class:`Atom` is a subclass of :class:`Element`, all of the above examples
     >>> Atom("Cu", coords = [0,0,0]).mass
     63.546
 
+Handling the atomic orbital structure of atoms
+==============================================
+
+For certain applications, access to the electronic structure of orbitals is important. To that end, :class:`Atom` instances carry this information in instances of :class:`ElectronicStructure`.
+
+You can create an electronic structure by hand::
+
+    >>> from crystals import ElectronicStructure
+    >>> ElectronicStructure({"1s": 2, "2s": 2, "2p": 2})
+    < ElectronicStructure: 1s²2s²2p² >
+
+It is much more ergonomic to start from the ground state of an element. For example::
+
+    >>> ElectronicStructure.ground_state("C")
+    < ElectronicStructure: 1s²2s²2p² >
+
+Once you have a starting point, the electronic structure can be modified for your application:
+
+    >>> structure = ElectronicStructure.ground_state("C")
+    >>> structure["2p"] -= 1
+    >>> structure["3d]  += 1
+    >>> structure
+    < ElectronicStructure: 1s²2s²2p¹3d¹ >
+
+Note that you cannot create impossible electronic structures, however!
+
+    >>> structure = ElectronicStructure.ground_state("C")
+    >>> structure["2s"] = 3
+    Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+    File "(...omitted...)\crystals\crystals\atom.py", line 489, in __setitem__
+        f"There cannot be {value} electrons in orbital {shell.value}"
+    ValueError: There cannot be 3 electrons in orbital 2s
+
+Finally, you can modify atomic electronic structures on a particular atom. By default, the electronic structure of atoms is set to the ground state. Let's move an electron up from the "2p" to "3d" orbital in one atom of graphite::
+
+    >>> graphite = Crystal.from_database('C')
+    >>> graphite
+    < Crystal object with following unit cell:
+        Atom C  @ (0.00, 0.00, 0.25) | [1s²2s²2p²]
+        Atom C  @ (0.67, 0.33, 0.75) | [1s²2s²2p²]
+        Atom C  @ (0.33, 0.67, 0.25) | [1s²2s²2p²]
+        Atom C  @ (0.00, 0.00, 0.75) | [1s²2s²2p²]
+    Lattice parameters:
+        a=2.464Å, b=2.464Å, c=6.711Å
+        α=90.000°, β=90.000°, γ=120.000°
+    Chemical composition:
+        C: 100.000%
+    Source:
+        (...omitted...)\crystals\crystals\cifs\C.cif >
+    >>> atom, *_ = list(graphite)
+    >>> atom.electronic_structure["2p"] -= 1
+    >>> atom.electronic_structure["3d"] += 1
+    >>> graphite
+    < Crystal object with following unit cell:
+        Atom C  @ (0.00, 0.00, 0.25) | [1s²2s²2p¹3d¹]
+        Atom C  @ (0.67, 0.33, 0.75) | [1s²2s²2p²]
+        Atom C  @ (0.33, 0.67, 0.25) | [1s²2s²2p²]
+        Atom C  @ (0.00, 0.00, 0.75) | [1s²2s²2p²]
+    Lattice parameters:
+        a=2.464Å, b=2.464Å, c=6.711Å
+        α=90.000°, β=90.000°, γ=120.000°
+    Chemical composition:
+        C: 100.000%
+    Source:
+        (...omitted...)\crystals\crystals\cifs\C.cif >
+    
+You could entirely replace the electronic structure of an atom::
+
+    >>> graphite = Crystal.from_database('C')
+    >>> graphite
+    < Crystal object with following unit cell:
+        Atom C  @ (0.00, 0.00, 0.25) | [1s²2s²2p²]
+        Atom C  @ (0.67, 0.33, 0.75) | [1s²2s²2p²]
+        Atom C  @ (0.33, 0.67, 0.25) | [1s²2s²2p²]
+        Atom C  @ (0.00, 0.00, 0.75) | [1s²2s²2p²]
+    Lattice parameters:
+        a=2.464Å, b=2.464Å, c=6.711Å
+        α=90.000°, β=90.000°, γ=120.000°
+    Chemical composition:
+        C: 100.000%
+    Source:
+        (...omitted...)\crystals\crystals\cifs\C.cif >
+    >>> atom, *_ = list(graphite)
+    >>> atom.electronic_structure = ElectronicStructure.ground_state("Ti") # This is just an example.
+    >>> graphite
+    < Crystal object with following unit cell:
+        Atom C  @ (0.00, 0.00, 0.25) | [1s²2s²2p⁶3s²3p⁶4s²3d²]
+        Atom C  @ (0.00, 0.00, 0.75) | [1s²2s²2p²]
+        Atom C  @ (0.33, 0.67, 0.25) | [1s²2s²2p²]
+        Atom C  @ (0.67, 0.33, 0.75) | [1s²2s²2p²]
+    Lattice parameters:
+        a=2.464Å, b=2.464Å, c=6.711Å
+        α=90.000°, β=90.000°, γ=120.000°
+    Chemical composition:
+        C: 100.000%
+    Source:
+        (...omitted...)\crystals\crystals\cifs\C.cif >
+
+
 :ref:`Return to Top <user_guide>`

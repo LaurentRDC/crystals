@@ -3,6 +3,7 @@
 import numpy as np
 from enum import Enum, auto, unique
 from collections import namedtuple, OrderedDict
+from copy import deepcopy
 
 from .affine import change_of_basis, transform
 from .atom_data import (
@@ -223,18 +224,10 @@ class Atom(Element):
         for matrix in matrices:
             coords_fractional = transform(matrix, coords_fractional)
 
-        # We defer construction to the current class. Therefore, subclasses of Atom
-        # will transform into their own class
-        return self.__class__(
-            element=self.element,
-            coords=coords_fractional,
-            lattice=self.lattice,
-            displacement=self.displacement,
-            magmom=self.magmom,
-            occupancy=self.occupancy,
-            tag=self.tag,
-            electronic_structure=self.electronic_structure
-        )
+        new_atom = deepcopy(self)
+        new_atom.coords_fractional = coords_fractional
+
+        return new_atom
 
     def __array__(self, *args, **kwargs):
         """ Returns an array [Z, x, y, z] """
@@ -486,7 +479,7 @@ class ElectronicStructure:
         maximum_allowed_electrons = Orbital.maximum_electrons(shell)
         if value > maximum_allowed_electrons:
             raise ValueError(
-                f"There cannot be {value} electrons in Orbital {str(shell)}"
+                f"There cannot be {value} electrons in orbital {shell.value}"
             )
         self._structure.__setitem__(shell, value)
     
