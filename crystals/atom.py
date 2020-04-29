@@ -364,13 +364,13 @@ def is_element(element):
 
 
 @unique
-class Subshell(Enum):
+class Orbital(Enum):
     """
-    Enumeration of electronic sub shell, used to described atomic 
+    Enumeration of electronic orbitals, used to described atomic 
     orbital structure.
     """
 
-    # It is important that the subshells are listed in the order that they
+    # It is important that the Orbitals are listed in the order that they
     # are filled (Madelung rule)
     one_s = "1s"
     two_s = "2s"
@@ -395,17 +395,17 @@ class Subshell(Enum):
     @classmethod
     def maximum_electrons(cls, shell):
         """ 
-        Maximum number of electrons that can be placed in a subshell. 
+        Maximum number of electrons that can be placed in an orbital. 
         
         Parameters
         ----------
-        shell : Subshell or str
+        shell : Orbital or str
 
         Returns
         -------
         max : int
         """
-        shell = Subshell(shell)
+        shell = Orbital(shell)
         maxima = {
             "s": 2,
             "p": 6,
@@ -440,8 +440,8 @@ class ElectronicStructure:
 
     Parameters
     ----------
-    shells : dict[Subshell,int]
-        Dictionary containing the number of electrons in each subshell, e.g. `{"1s": 2}`.
+    shells : dict[Orbital,int]
+        Dictionary containing the number of electrons in each Orbital, e.g. `{"1s": 2}`.
     
     Raises
     ------
@@ -461,7 +461,7 @@ class ElectronicStructure:
 
     Notes
     -----
-    Shells are allowed to not be filled in order deliberately, given that unusual 
+    Shells are allowed to be filled our of order deliberately, given that unusual 
     electronic structures can arise from ultrafast photoexcitation.
     """
 
@@ -470,23 +470,23 @@ class ElectronicStructure:
         # Instead, we dress this class on top of an OrderedDict property.
         self._structure = OrderedDict([])
 
-        # We first normalize all keys to the Subshell class,
+        # We first normalize all keys to the Orbital class,
         # then we insert them in order
-        shells = {Subshell(k): v for k, v in shells.items()}
+        shells = {Orbital(k): v for k, v in shells.items()}
 
-        for shell in Subshell:
+        for shell in Orbital:
             if shell not in shells:
                 continue
             self[shell] = shells[shell]
 
     def __setitem__(self, key, value):
-        # We check that the number of electrons in each subshell does not
+        # We check that the number of electrons in each Orbital does not
         # go above maximum possible.
-        shell = Subshell(key)
-        maximum_allowed_electrons = Subshell.maximum_electrons(shell)
+        shell = Orbital(key)
+        maximum_allowed_electrons = Orbital.maximum_electrons(shell)
         if value > maximum_allowed_electrons:
             raise ValueError(
-                f"There cannot be {value} electrons in subshell {str(shell)}"
+                f"There cannot be {value} electrons in Orbital {str(shell)}"
             )
         self._structure.__setitem__(shell, value)
     
@@ -532,8 +532,8 @@ class ElectronicStructure:
         num_elec = element.atomic_number
 
         structure = dict()
-        for shell in Subshell:
-            shell_elec = min([Subshell.maximum_electrons(shell), num_elec])
+        for shell in Orbital:
+            shell_elec = min([Orbital.maximum_electrons(shell), num_elec])
             structure[shell] = shell_elec
             num_elec -= shell_elec
 

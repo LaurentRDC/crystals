@@ -50,7 +50,10 @@ Electronic Orbitals
 If you need to specify the orbital structure of atoms by hand, you will need to know about :class:`ElectronicStructure` class:
 
 .. autoclass:: ElectronicStructure
-    :show-inheritance:
+
+Electronic orbitals are described by the :class:`Orbital` class:
+
+.. autoclass:: Orbital
 
 ------------
 Enumerations
