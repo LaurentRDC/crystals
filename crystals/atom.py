@@ -17,6 +17,7 @@ from .atom_data import (
 from .lattice import Lattice
 
 
+# TODO: make this class an enumeration?
 class Element:
     """
     Class representing an abtract chemical element, but no particular atom.
@@ -25,8 +26,8 @@ class Element:
 
     Parameters
     ----------
-    element : str or int
-        Elemental symbol (e.g. "He") or atomic number.
+    element : str, int, or Element
+        Elemental symbol (e.g. "He"), atomic number, or another `Element` instance.
     
     Raises
     ------
@@ -38,14 +39,19 @@ class Element:
     def __init__(self, element, *args, **kwargs):
         if isinstance(element, int):
             element = NUM_TO_ELEM[element]
+        elif isinstance(element, Element):
+            element = element.symbol
 
         element = str(element).title()
         if element not in self.valid_symbols:
             raise ValueError(f"Element {element} is not valid.")
         self.element = element
+    
+    def __str__(self):
+        return self.symbol
 
     def __repr__(self):
-        return f"< {self.element_full} >"
+        return f"< {self.name} >"
 
     def __eq__(self, other):
         if isinstance(other, Element):
@@ -60,7 +66,17 @@ class Element:
     @property
     def element_full(self):
         """ Full element name, e.g. "Hydrogen" """
+        return self.name
+    
+    @property
+    def name(self):
+        """ Full element name, e.g. "Hydrogen" """
         return ELEM_TO_NAME[self.element]
+    
+    @property
+    def symbol(self):
+        """ Elemental symbol, e.g. "He" """
+        return self.element
 
     @property
     def atomic_number(self):

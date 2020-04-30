@@ -2,6 +2,11 @@
 What's new
 ==========
 
+1.1.1
+-----
+
+* The `Element` class can now be initialized from another `Element`. This simplifies the normalization for input types.
+
 1.1.0
 -----
 

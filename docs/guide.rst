@@ -612,16 +612,21 @@ If all you want is access to elemental information, like atomic weights, you can
     < Hydrogen >
     >>> Element("Cu").mass # Atomic mass in [u]
     63.546
-    >>> Element("Cu).atomic_number
+    >>> Element("Cu").atomic_number
     29
-    >>>
-    >>> Element(29)   # You can also specify elements by their number
-    < Element object : Copper >
+
+You can specify elements by their atomic number as well::
+
+    >>> Element(29)
+    < Copper >
+    >>> Element(29).symbol
+    'Cu'
+    >>> Element(29).name
+    'Copper'
 
 Since :class:`Atom` is a subclass of :class:`Element`, all of the above examples also work for :class:`Atom`:
 
     >>> from crystals import Atom
-    >>>
     >>> Atom("Cu", coords = [0,0,0]).mass
     63.546
 

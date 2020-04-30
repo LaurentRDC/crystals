@@ -69,6 +69,15 @@ class TestElement(unittest.TestCase):
             from_number = Element(from_symbol.atomic_number)
             self.assertEqual(from_number, from_symbol)
 
+    def test_input_equivalence(self):
+        """ Test that the constructor for `Element` supports atomic numbers, 
+        strings, and other `Element`s """
+        expected = Element('H')
+
+        self.assertEqual(Element('H'), expected)
+        self.assertEqual(Element(1), expected)
+        self.assertEqual(Element(expected), expected)
+
 
 class TestAtom(unittest.TestCase):
     def setUp(self):
