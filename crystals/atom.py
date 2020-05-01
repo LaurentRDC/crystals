@@ -52,7 +52,8 @@ class Element:
         # At this point, `element` is a string
         element = str(element).title()
 
-        if element not in (self.valid_names.union(self.valid_symbols)):
+        valid_string_inputs = self.valid_names.union(self.valid_symbols)
+        if element not in valid_string_inputs:
             raise ValueError(f"Element {element} is not valid.")
 
         if element in self.valid_symbols:
