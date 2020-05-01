@@ -262,6 +262,7 @@ atomic_names = [
 
 NUM_TO_ELEM = dict(enumerate(chemical_symbols, 1))
 ELEM_TO_NAME = dict(zip(chemical_symbols, atomic_names))
+NAME_TO_ELEM = dict(zip(atomic_names, chemical_symbols))
 ELEM_TO_NUM = {v: k for k, v in NUM_TO_ELEM.items()}
 
 # Atomic masses are based on:

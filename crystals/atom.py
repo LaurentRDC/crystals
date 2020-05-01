@@ -10,9 +10,11 @@ from .atom_data import (
     ELEM_TO_MAGMOM,
     ELEM_TO_MASS,
     ELEM_TO_NAME,
+    NAME_TO_ELEM,
     ELEM_TO_NUM,
     NUM_TO_ELEM,
     chemical_symbols,
+    atomic_names,
 )
 from .lattice import Lattice
 
@@ -21,13 +23,14 @@ from .lattice import Lattice
 class Element:
     """
     Class representing an abtract chemical element, but no particular atom.
-    THis class gives access to elemental properties, like atomic number, 
+    This class gives access to elemental properties, like atomic number, 
     atomic mass, full element name, etc.
 
     Parameters
     ----------
     element : str, int, or Element
-        Elemental symbol (e.g. "He"), atomic number, or another `Element` instance.
+        Elemental symbol (e.g. "He"), element name (e.g. "Helium"), 
+        atomic number, or another `Element` instance.
     
     Raises
     ------
@@ -35,18 +38,28 @@ class Element:
     """
 
     valid_symbols = frozenset(chemical_symbols)
+    valid_names = frozenset(atomic_names)
 
     def __init__(self, element, *args, **kwargs):
         if isinstance(element, int):
-            element = NUM_TO_ELEM[element]
+            try:
+                element = NUM_TO_ELEM[element]
+            except KeyError:
+                raise ValueError(f"Atomic number {element} not supported.")
         elif isinstance(element, Element):
             element = element.symbol
 
+        # At this point, `element` is a string
         element = str(element).title()
-        if element not in self.valid_symbols:
+
+        if element not in (self.valid_names.union(self.valid_symbols)):
             raise ValueError(f"Element {element} is not valid.")
-        self.element = element
-    
+
+        if element in self.valid_symbols:
+            self.element = element
+        elif element in self.valid_names:
+            self.element = NAME_TO_ELEM[element]
+
     def __str__(self):
         return self.symbol
 
@@ -67,12 +80,12 @@ class Element:
     def element_full(self):
         """ Full element name, e.g. "Hydrogen" """
         return self.name
-    
+
     @property
     def name(self):
         """ Full element name, e.g. "Hydrogen" """
         return ELEM_TO_NAME[self.element]
-    
+
     @property
     def symbol(self):
         """ Elemental symbol, e.g. "He" """
@@ -129,7 +142,7 @@ class Atom(Element):
         "magmom",
         "occupancy",
         "lattice",
-        "electronic_structure"
+        "electronic_structure",
     )
 
     def __init__(
@@ -154,7 +167,9 @@ class Atom(Element):
         self.magmom = magmom or self.magnetic_moment_ground
         self.occupancy = occupancy
         self.tag = tag
-        self.electronic_structure = electronic_structure or ElectronicStructure.ground_state(element)
+        self.electronic_structure = (
+            electronic_structure or ElectronicStructure.ground_state(element)
+        )
 
     def __repr__(self):
         x, y, z = tuple(self.coords_fractional)
@@ -182,7 +197,7 @@ class Atom(Element):
                 tuple(np.round(self.coords_fractional, 3)),
                 self.lattice,
                 tuple(np.round(self.displacement, 3)),
-                hash(self.electronic_structure)
+                hash(self.electronic_structure),
             )
         )
 
@@ -498,12 +513,12 @@ class ElectronicStructure:
                 f"There cannot be {value} electrons in orbital {shell.value}"
             )
         self._structure.__setitem__(shell, value)
-    
+
     def __getitem__(self, key):
         # In case the key doesn't exist, we return 0
-        # (i.e. 0 electrons in this orbital) because this allows 
+        # (i.e. 0 electrons in this orbital) because this allows
         # to add electrons in-place, e.g.:
-        # >>> struct = ElectronicStructure({"1s":2})   
+        # >>> struct = ElectronicStructure({"1s":2})
         # >>> struct["2p"] += 1
         # even though there were no electrons there.
         key = Orbital(key)
@@ -511,7 +526,7 @@ class ElectronicStructure:
             return self._structure.__getitem__(key)
         except KeyError:
             return 0
-    
+
     def __str__(self):
         result = ""
         for shell, occ in self._structure.items():
@@ -520,10 +535,10 @@ class ElectronicStructure:
 
     def __repr__(self):
         return f"< ElectronicStructure: {str(self)} >"
-    
+
     def __hash__(self):
         return hash(str(self))
-    
+
     def __eq__(self, other):
         return str(self) == str(other)
 

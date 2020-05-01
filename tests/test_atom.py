@@ -69,12 +69,19 @@ class TestElement(unittest.TestCase):
             from_number = Element(from_symbol.atomic_number)
             self.assertEqual(from_number, from_symbol)
 
+    def test_atomic_number_out_of_range(self):
+        """ Test that constructing an Element from an atomic number out-of-range raises a ValueError """
+        with self.assertRaises(ValueError):
+            Element(256)
+
     def test_input_equivalence(self):
         """ Test that the constructor for `Element` supports atomic numbers, 
         strings, and other `Element`s """
-        expected = Element('H')
+        expected = Element("H")
 
-        self.assertEqual(Element('H'), expected)
+        self.assertEqual(Element("H"), expected)
+        self.assertEqual(Element("Hydrogen"), expected)
+        self.assertEqual(Element("hydrogen"), expected) # not case sensitive
         self.assertEqual(Element(1), expected)
         self.assertEqual(Element(expected), expected)
 
@@ -205,29 +212,30 @@ class TestElectronicStructure(unittest.TestCase):
         """ Test that an error is raised for impossible electronic structures. """
         with self.assertRaises(ValueError):
             ElectronicStructure({"1s": 3})
-    
+
     def test_pickable(self):
         """ Test that ElectronicStructure instances are pickable. """
-        structure = ElectronicStructure.ground_state('W')
+        structure = ElectronicStructure.ground_state("W")
         self.assertEqual(structure, pickle.loads(pickle.dumps(structure)))
-    
+
     def test_missing_orbital(self):
         """ Test that 'missing' orbitals will return 0 electrons """
-        struct = ElectronicStructure.ground_state('He')
+        struct = ElectronicStructure.ground_state("He")
         self.assertEqual(struct["2p"], 0)
-    
+
     def test_orbital_keys(self):
         """ Test that orbital occupancies can be accessed either with strings or Orbital """
-        struct = ElectronicStructure.ground_state('He')
+        struct = ElectronicStructure.ground_state("He")
         self.assertEqual(struct["1s"], struct[Orbital.one_s])
-    
+
     def test_modification_in_place(self):
         """ Test that ElectronicStructure instances can be modified in-place """
-        struct = ElectronicStructure({"1s":2, "2s":2, "2p": 4})
-        expected = ElectronicStructure({"1s":2, "2s":2, "2p": 3, "4s": 1})
+        struct = ElectronicStructure({"1s": 2, "2s": 2, "2p": 4})
+        expected = ElectronicStructure({"1s": 2, "2s": 2, "2p": 3, "4s": 1})
         struct["2p"] -= 1
         struct["4s"] += 1
         self.assertEqual(struct, expected)
+
 
 if __name__ == "__main__":
     unittest.main()
