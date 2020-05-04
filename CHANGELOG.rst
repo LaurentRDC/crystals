@@ -6,6 +6,7 @@ What's new
 -----
 
 * The `Element` class can now be initialized from another `Element`, and also from full atomic names (e.g. "hydrogen"). This simplifies the normalization for input types.
+* Added the `ElectronicStructure.outer_shell` method to quickly get the outermost shell.
 
 1.1.0
 -----

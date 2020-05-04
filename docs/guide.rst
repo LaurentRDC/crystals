@@ -659,6 +659,12 @@ Once you have a starting point, the electronic structure can be modified for you
     >>> structure
     < ElectronicStructure: 1s²2s²2p¹3d¹ >
 
+You can always check which orbital is the outermost orbital:: 
+
+    >>> structure = ElectronicStructure.ground_state("Ar")
+    >>> structure.outer_shell
+    <Orbital.three_p: '3p'>
+
 Note that you cannot create impossible electronic structures, however!
 
     >>> structure = ElectronicStructure.ground_state("C")

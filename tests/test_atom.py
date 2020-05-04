@@ -81,7 +81,7 @@ class TestElement(unittest.TestCase):
 
         self.assertEqual(Element("H"), expected)
         self.assertEqual(Element("Hydrogen"), expected)
-        self.assertEqual(Element("hydrogen"), expected) # not case sensitive
+        self.assertEqual(Element("hydrogen"), expected)  # not case sensitive
         self.assertEqual(Element(1), expected)
         self.assertEqual(Element(expected), expected)
 
@@ -235,6 +235,15 @@ class TestElectronicStructure(unittest.TestCase):
         struct["2p"] -= 1
         struct["4s"] += 1
         self.assertEqual(struct, expected)
+    
+    def test_valence_shell(self):
+        """ Test that the outermost shell is as expected """
+        struct = ElectronicStructure({"1s": 2})
+        self.assertEqual(struct.outer_shell, Orbital("1s"))
+
+        # Intentionally omitting 2s
+        struct = ElectronicStructure({"1s": 2, "2p": 4})
+        self.assertEqual(struct.outer_shell, Orbital("2p"))
 
 
 if __name__ == "__main__":

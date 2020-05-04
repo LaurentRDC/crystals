@@ -393,10 +393,20 @@ class Orbital(Enum):
     """
     Enumeration of electronic orbitals, used to described atomic 
     orbital structure.
+
+    We note that `Orbital` instances are ordered according to the Madelung rule.
+
+    Examples
+    --------
+    >>> Orbital("1s")
+    <Orbital.one_s: '1s'>
+    >>> Orbital.four_p == Orbital("4p")
+    True
+
     """
 
     # It is important that the Orbitals are listed in the order that they
-    # are filled (Madelung rule)
+    # are filled (Madelung rule) because this is how __lt__ is defined.
     one_s = "1s"
     two_s = "2s"
     two_p = "2p"
@@ -416,6 +426,10 @@ class Orbital(Enum):
     five_f = "5f"
     six_d = "6d"
     seven_p = "7p"
+
+    def __lt__(self, other):
+        madelung_rule = [v for k, v in Orbital.__members__.items()]
+        return madelung_rule.index(self) < madelung_rule.index(other)
 
     @classmethod
     def maximum_electrons(cls, shell):
@@ -491,18 +505,13 @@ class ElectronicStructure:
     """
 
     def __init__(self, shells):
+        shells = {Orbital(k): v for k, v in shells.items()}
+
         # Subclassing OrderedDict causes problems with pickling
         # Instead, we dress this class on top of an OrderedDict property.
         self._structure = OrderedDict([])
-
-        # We first normalize all keys to the Orbital class,
-        # then we insert them in order
-        shells = {Orbital(k): v for k, v in shells.items()}
-
-        for shell in Orbital:
-            if shell not in shells:
-                continue
-            self[shell] = shells[shell]
+        for k, v in shells.items():
+            self.__setitem__(k, v)
 
     def __setitem__(self, key, value):
         # We check that the number of electrons in each Orbital does not
@@ -514,6 +523,10 @@ class ElectronicStructure:
                 f"There cannot be {value} electrons in orbital {shell.value}"
             )
         self._structure.__setitem__(shell, value)
+
+        # We ensure that orbital order is maintained
+        # by re-creating the OrderedDict, filled
+        self._structure = OrderedDict(sorted(self._structure.items()))
 
     def __getitem__(self, key):
         # In case the key doesn't exist, we return 0
@@ -576,3 +589,9 @@ class ElectronicStructure:
                 break
 
         return cls(structure)
+
+    @property
+    def outer_shell(self):
+        """ The outermost shell, or valence orbital. """
+        shells = list(self._structure.keys())
+        return shells[-1]
