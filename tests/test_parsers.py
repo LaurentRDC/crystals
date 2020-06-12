@@ -13,7 +13,7 @@ from warnings import catch_warnings, filterwarnings
 import numpy as np
 from spglib import get_symmetry_dataset
 
-from crystals import CIFParser, Crystal, MPJParser, PDBParser, frac_coords
+from crystals import CIFParser, Crystal, MPJParser, PDBParser, frac_coords, is_element
 from crystals.affine import transform
 from crystals.parsers import STRUCTURE_CACHE, PWSCFParser
 from crystals.spg_data import Hall2Number
@@ -241,6 +241,17 @@ class TestCIFParser(unittest.TestCase):
             )
         )
         self.assertAlmostEqual(vo2.volume, 117.466_153_0)  # from cif2cell
+
+    def test_site_occupancy(self):
+        """ Test that atom site occupancy is correctly parsed from CIF files. """
+        path = os.path.join("tests", "data", "SiC_partial_site_occ.cif")
+        with CIFParser(path) as parser:
+            atoms = list(parser.atoms())
+        
+        for atm in filter(is_element("Si"), atoms):
+            self.assertEqual(atm.occupancy, 0.75)
+        for atm in filter(is_element("C"), atoms):
+            self.assertEqual(atm.occupancy, 0.85)
 
 
 @unittest.skipIf(

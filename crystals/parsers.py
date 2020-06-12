@@ -695,7 +695,10 @@ class CIFParser(AbstractStructureParser):
 
         occupancies = tmpdata.get("_atom_site_occupancy")
         if not occupancies:
-            occupancies = repeat(1.0)
+            # len(xs) == number of atoms. Therefore, good upper bound for `repeat`, which otherwise
+            # might produce an infinitely long iterable
+            occupancies = repeat(1.0, len(xs))
+        occupancies = map(float, occupancies)
 
         atoms = list()
         for e, x, y, z, occ in zip(elements, xs, ys, zs, occupancies):
