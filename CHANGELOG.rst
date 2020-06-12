@@ -2,6 +2,11 @@
 What's new
 ==========
 
+1.1.2
+-----
+
+* Atom site occupancies are now parsed from CIF files `(#3) <https://github.com/LaurentRDC/crystals/issues/3>`_.
+
 1.1.1
 -----
 
