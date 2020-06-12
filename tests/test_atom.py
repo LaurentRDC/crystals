@@ -235,7 +235,7 @@ class TestElectronicStructure(unittest.TestCase):
         struct["2p"] -= 1
         struct["4s"] += 1
         self.assertEqual(struct, expected)
-    
+
     def test_valence_shell(self):
         """ Test that the outermost shell is as expected """
         struct = ElectronicStructure({"1s": 2})
