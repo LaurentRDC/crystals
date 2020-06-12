@@ -9,6 +9,7 @@ import warnings
 from abc import abstractmethod
 from contextlib import AbstractContextManager, suppress
 from functools import lru_cache
+from itertools import repeat
 from os import environ, remove
 from pathlib import Path
 from platform import system
@@ -692,8 +693,12 @@ class CIFParser(AbstractStructureParser):
                 raise ParseError("Atom symbols could not be found or inferred.")
         elements = map(lambda s: s.strip(punctuation + digits).title(), elements)
 
+        occupancies = tmpdata.get("_atom_site_occupancy")
+        if not occupancies:
+            occupancies = repeat(1.0)
+
         atoms = list()
-        for e, x, y, z in zip(elements, xs, ys, zs):
+        for e, x, y, z, occ in zip(elements, xs, ys, zs, occupancies):
             coords = np.array(
                 [
                     get_number_with_esd(x)[0],
@@ -708,7 +713,7 @@ class CIFParser(AbstractStructureParser):
                 coords = transform(cart_trans_matrix, coords)
                 coords[:] = frac_coords(coords, self.lattice_vectors())
 
-            atoms.append(Atom(element=e, coords=np.mod(coords, 1)))
+            atoms.append(Atom(element=e, coords=np.mod(coords, 1), occupancy=occ))
 
         return atoms
 
