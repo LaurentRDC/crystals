@@ -745,22 +745,36 @@ class Crystal(AtomicStructure, Lattice):
     def to_cif(self, filename):
         """ 
         Convert this `Crystal` instance to a CIF file. 
+
+        Note that some information may be lost in the translation. However, we guarantee that
+        reading a structure from a file, and then writing back to the same format is idempotent.
         
         Parameters
         ----------
         filename : path-like
             Path to a file. If the file already exists, it will be overwritten.
+
+        See also
+        --------
+        Crystal.to_xyz
         """
         write_cif(self, filename)
 
     def to_xyz(self, filename):
         """ 
         Convert this `Crystal` instance to a .xyz file. 
+
+        Note that some information may be lost in the translation. However, we guarantee that
+        reading a structure from a file, and then writing back to the same format is idempotent.
         
         Parameters
         ----------
         filename : path-like
             Path to a file. If the file already exists, it will be overwritten.
+
+        See also
+        --------
+        Crystal.to_cif
         """
         write_xyz(self, filename)
 
