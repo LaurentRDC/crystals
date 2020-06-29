@@ -273,13 +273,14 @@ class TestMPJParser(unittest.TestCase):
     def test_material_id(self):
         """ Test that that material ID for Fe2O3 is as expected. """
         with tempfile.TemporaryDirectory() as temp_dir:
+            # We use the Zr5Te6 formula because it has a single Materials ID
             with MPJParser(
                 api_key=MPJ_API_KEY,
-                query="Fe2O3",
+                query="Zr5Te6",
                 download_dir=temp_dir,
                 overwrite=True,
             ) as parser:
-                self.assertEqual(parser.material_id, "mp-1456")
+                self.assertIn(parser.material_id, "mp-29957")
 
 
 class TestPWSCFParser(unittest.TestCase):
