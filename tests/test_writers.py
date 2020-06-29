@@ -6,7 +6,7 @@ from random import choice, randint
 
 import numpy as np
 from pathlib import Path
-from crystals import Crystal, ase_atoms, write_cif
+from crystals import Crystal, ase_atoms
 
 try:
     import ase
@@ -38,7 +38,7 @@ class TestAseAtoms(unittest.TestCase):
         self.assertEqual(len(self.crystal), len(crystal2))
 
 
-class TestCifConversion(unittest.TestCase):
+class TestCifWriter(unittest.TestCase):
 
     def test_idempotence(self):
         """ Test that conversion to CIF of a structure loaded from CIF is idempotent. """
@@ -50,7 +50,7 @@ class TestCifConversion(unittest.TestCase):
                 cryst = Crystal.from_database(name)
                 with tempfile.TemporaryDirectory() as temp_dir:
                     f = Path(temp_dir) / "temp.cif"
-                    write_cif(cryst, f)
+                    cryst.to_cif(f)
                     cryst2 = Crystal.from_cif(f)
                     self.assertEqual(cryst, cryst2)
 

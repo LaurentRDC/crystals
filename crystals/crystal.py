@@ -22,6 +22,7 @@ from .base import AtomicStructure
 from .lattice import Lattice
 from .parsers import CIFParser, CODParser, MPJParser, PDBParser, PWSCFParser
 from .spg_data import Hall2HM
+from .writers import write_cif, write_xyz
 
 CIF_ENTRIES = frozenset((Path(__file__).parent / "cifs").glob("*.cif"))
 
@@ -740,6 +741,30 @@ class Crystal(AtomicStructure, Lattice):
 
         rep += f"\nSource: \n    {self.source or 'N/A'} >"
         return rep
+
+    def to_cif(self, filename):
+        """ 
+        Convert this `Crystal` instance to a CIF file. 
+        
+        Parameters
+        ----------
+        filename : path-like
+            Path to a file. If the file already exists, it will be overwritten.
+        """
+        write_cif(self, filename)
+
+    def to_xyz(self, filename):
+        """ 
+        Convert this `Crystal` instance to a .xyz file. 
+        
+        Parameters
+        ----------
+        filename : path-like
+            Path to a file. If the file already exists, it will be overwritten.
+        """
+        write_xyz(self, filename)
+
+    
 
 
 class Supercell(AtomicStructure):

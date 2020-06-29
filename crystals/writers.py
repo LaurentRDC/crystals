@@ -10,9 +10,6 @@ import numpy as np
 from CifFile import CifBlock, CifFile
 
 from . import __version__
-from .atom import Atom
-from .crystal import Crystal
-from .lattice import Lattice
 
 try:
     import ase
