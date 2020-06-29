@@ -756,13 +756,13 @@ class Crystal(AtomicStructure, Lattice):
 
         See also
         --------
-        Crystal.to_xyz
+        Crystal.to_xyz : write a structure to an `.xyz` file.
         """
         write_cif(self, filename)
 
     def to_xyz(self, filename):
         """ 
-        Convert this `Crystal` instance to a .xyz file. 
+        Convert this `Crystal` instance to a XYZ file. 
 
         Note that some information may be lost in the translation. However, we guarantee that
         reading a structure from a file, and then writing back to the same format is idempotent.
@@ -774,7 +774,7 @@ class Crystal(AtomicStructure, Lattice):
 
         See also
         --------
-        Crystal.to_cif
+        Crystal.to_cif : write a structure to a `.cif` file.
         """
         write_xyz(self, filename)
 
