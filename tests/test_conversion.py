@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import tempfile
 import unittest
 from random import choice, randint
 
 import numpy as np
-
-from crystals import Crystal, ase_atoms
+from pathlib import Path
+from crystals import Crystal, ase_atoms, write_cif
 
 try:
     import ase
@@ -35,6 +36,24 @@ class TestAseAtoms(unittest.TestCase):
         # rounding beyond 1e-3. Therefore, we cannot compare directly sets
         # self.assertSetEqual(set(self.crystal), set(crystal2))
         self.assertEqual(len(self.crystal), len(crystal2))
+
+
+class TestCifConversion(unittest.TestCase):
+
+    def test_idempotence(self):
+        """ Test that conversion to CIF of a structure loaded from CIF is idempotent. """
+        # Testing on all built-in structure assures us that corner cases
+        # are taken care of.
+        for name in Crystal.builtins:
+            with self.subTest(f"CIF idempotence {name}"):
+                
+                cryst = Crystal.from_database(name)
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    f = Path(temp_dir) / "temp.cif"
+                    write_cif(cryst, f)
+                    cryst2 = Crystal.from_cif(f)
+                    self.assertEqual(cryst, cryst2)
+
 
 
 if __name__ == "__main__":

@@ -27,6 +27,7 @@ from .biological import Helix
 from .biological import Sheet
 from .conversion import ase_atoms
 from .conversion import write_xyz
+from .conversion import write_cif
 from .crystal import Crystal
 from .crystal import Supercell
 from .crystal import CenteringType
