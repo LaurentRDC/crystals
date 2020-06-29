@@ -142,6 +142,22 @@ In the case where atoms are given as an asymmetric unit cell and a set of symmet
 :func:`symmetry_expansion` function to generate a set of *unique* atoms (even if some symmetry operators might be redundant).
 The generated set of atoms can be passed to the constructor of :class:`Crystal`.
 
+Converting a Crystal to other formats
+-------------------------------------
+
+You can use the `crystals` package to convert crystal structures from one format to another. Currently, you can write a structure either to an `.xyz` (:meth:``Crystal.to_xyz`) file or a Crystallography Information Framework `.cif` (:meth:``Crystal.to_cif`). Here is an example::
+
+    >>> from crystals import Crystal
+    >>> import numpy as np
+    >>> # Create a crystal structure by hand
+    >>> lattice_vectors = 3.35 * np.eye(3)
+    >>> unitcell = [Atom('Po', coords = [0,0,0])]
+    >>> polonium = Crystal(unitcell, lattice_vectors)
+    >>> # Convert to CIF
+    >>> polonium.to_cif('polonium.cif')
+
+Would you like to convert to another format that is not supported yet? Please `raise an issue <https://github.com/LaurentRDC/crystals/issues/new>`_!
+
 Crystal attributes
 ------------------
 The :class:`Crystal` object provides some interfaces for easy structure manipulation. First, a :class:`Crystal` is an iterable::
