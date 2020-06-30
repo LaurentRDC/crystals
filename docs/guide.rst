@@ -145,7 +145,9 @@ The generated set of atoms can be passed to the constructor of :class:`Crystal`.
 Converting a Crystal to other formats
 -------------------------------------
 
-You can use the `crystals` package to convert crystal structures from one format to another. Currently, you can write a structure either to an `.xyz` (:meth:``Crystal.to_xyz`) file or a Crystallography Information Framework `.cif` (:meth:``Crystal.to_cif`). Here is an example::
+You can use the `crystals` package to convert crystal structures from one format to another. Currently, you can write a structure 
+either to an `.xyz` (:meth:``Crystal.to_xyz`) file, a Crystallography Information Framework `.cif` (:meth:``Crystal.to_cif`), 
+or to an ``ase.Atoms`` structure (:meth:``Crystal.to_ase`). Here is an example::
 
     >>> from crystals import Crystal
     >>> import numpy as np
@@ -544,10 +546,10 @@ between :class:`ase.Atoms` and :class:`crystals.Crystal` at will.
 To create an :class:`ase.Atoms` object from a :class:`Crystal`, use the :meth:`Crystal.ase_atoms` method::
 
     >>> from ase.calculators.abinit import Abinit
-    >>> from crystals import Crystal, ase_atoms
+    >>> from crystals import Crystal
     >>>
     >>> gold = Crystal.from_database('Au')
-    >>> ase_gold = ase_atoms(gold, calculator = Abinit(...))
+    >>> ase_gold = gold.to_ase(calculator = Abinit(...))
 
 All keywords of the :class:`ase.Atoms` constructor are supported. To get back to a :class:`Crystal` instance::
 

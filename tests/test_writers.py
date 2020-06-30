@@ -6,7 +6,7 @@ from random import choice, randint
 
 import numpy as np
 from pathlib import Path
-from crystals import Crystal, ase_atoms
+from crystals import Crystal
 
 try:
     import ase
@@ -24,12 +24,12 @@ class TestAseAtoms(unittest.TestCase):
 
     def test_construction(self):
         """ Test that ase_atoms returns without error """
-        to_ase = ase_atoms(self.crystal)
+        to_ase = self.crystal.to_ase()
         self.assertEqual(len(self.crystal), len(to_ase))
 
     def test_back_and_forth(self):
         """ Test conversion to and from ase Atoms """
-        to_ase = ase_atoms(self.crystal)
+        to_ase = self.crystal.to_ase()
         crystal2 = Crystal.from_ase(to_ase)
 
         # ase has different handling of coordinates which can lead to

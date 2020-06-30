@@ -22,7 +22,7 @@ from .base import AtomicStructure
 from .lattice import Lattice
 from .parsers import CIFParser, CODParser, MPJParser, PDBParser, PWSCFParser
 from .spg_data import Hall2HM
-from .writers import write_cif, write_xyz
+from .writers import write_cif, write_xyz, ase_atoms
 
 CIF_ENTRIES = frozenset((Path(__file__).parent / "cifs").glob("*.cif"))
 
@@ -726,7 +726,8 @@ class Crystal(AtomicStructure, Lattice):
 
         See also
         --------
-        Crystal.to_xyz : write a structure to an `.xyz` file.
+        Crystal.to_xyz : write a structure to a `.xyz` file.
+        Crystal.to_ase : convert a structure into an ``ase.Atoms`` object.
         """
         write_cif(self, filename)
 
@@ -745,12 +746,33 @@ class Crystal(AtomicStructure, Lattice):
         See also
         --------
         Crystal.to_cif : write a structure to a `.cif` file.
+        Crystal.to_ase : convert a structure into an ``ase.Atoms`` object.
         """
         write_xyz(self, filename)
 
-    def to_ase(self):
+    def to_ase(self, **kwargs):
+        """ 
+        Convert a into an ``ase.Atoms`` object. Keyword arguments are passed 
+        to ``ase.Atoms`` constructor.
 
+        Note that some information may be lost in the translation. However, we guarantee that
+        reading a structure from a file, and then writing back to the same format is idempotent.
     
+        Returns
+        -------
+        atoms : ase.Atoms
+            Group of atoms ready for ASE's routines.
+    
+        Raises
+        ------
+        ImportError : If ASE is not installed
+
+        See also
+        --------
+        Crystal.to_cif : write a structure to a `.cif` file.
+        Crystal.to_xyz : write a structure to a `.xyz` file.
+        """
+        return ase_atoms(self)
 
 
 class Supercell(AtomicStructure):

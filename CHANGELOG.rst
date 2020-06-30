@@ -5,7 +5,7 @@ What's new
 1.2.0
 -----
 
-* Added the ability to write crystal structures to CIF files with the `Crystal.to_cif` method. This can be used to convert crystal structures from one format to another!
+* Added the ability to write crystal structures to CIF/XYZ files with the `Crystal.to_cif` and `Crystal.to_xyz` methods. Also, structures can be converted to ASE's ``Atoms`` class with `Crystal.to_ase`. This can be used to convert crystal structures from one format to another!
 
 1.1.2
 -----

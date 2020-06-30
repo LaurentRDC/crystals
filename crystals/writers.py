@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 Conversion between ``crystals`` data structures and other modules.
+
+These functions are not expected to be used on their own; see the associated
+ `Crystal` methods instead, like `Crystal.to_cif`.
 """
 from abc import abstractmethod
 from contextlib import AbstractContextManager, redirect_stdout
@@ -101,6 +104,10 @@ def write_cif(crystal, fname):
     for key, val in symmetry_items.items():
         block[key] = val
 
+    # Note that we are using all atoms in the unit-cell,
+    # and not the asymmetric unit cell + symmetry operators
+    # This is valid CIF! And it is much simpler to implement
+    # TODO: how to determine asymmetric cell + symmetry operations?
     atoms = list(crystal.primitive().unitcell)
     symbols = [atm.symbol for atm in atoms]
     xf = [atm.coords_fractional[0] for atm in atoms]
