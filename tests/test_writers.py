@@ -39,21 +39,19 @@ class TestAseAtoms(unittest.TestCase):
 
 
 class TestCifWriter(unittest.TestCase):
-
     def test_idempotence(self):
         """ Test that conversion to CIF of a structure loaded from CIF is idempotent. """
         # Testing on all built-in structure assures us that corner cases
         # are taken care of.
         for name in Crystal.builtins:
             with self.subTest(f"CIF idempotence {name}"):
-                
+
                 cryst = Crystal.from_database(name)
                 with tempfile.TemporaryDirectory() as temp_dir:
                     f = Path(temp_dir) / "temp.cif"
                     cryst.to_cif(f)
                     cryst2 = Crystal.from_cif(f)
                     self.assertEqual(cryst, cryst2)
-
 
 
 if __name__ == "__main__":

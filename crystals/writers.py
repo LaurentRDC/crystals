@@ -83,24 +83,24 @@ def write_cif(crystal, fname):
     cf = CifFile(strict=False)
     a, b, c, alpha, beta, gamma = crystal.lattice_parameters
     lattice_items = {
-        "_cell_length_a":a,
-        "_cell_length_b":b,
-        "_cell_length_c":c,
+        "_cell_length_a": a,
+        "_cell_length_b": b,
+        "_cell_length_c": c,
         "_cell_angle_alpha": alpha,
         "_cell_angle_beta": beta,
-        "_cell_angle_gamma":gamma,
+        "_cell_angle_gamma": gamma,
     }
 
     sym = crystal.symmetry()
     symmetry_items = {
         "_symmetry_Int_Tables_number": sym["international_number"],
-        "_symmetry_space_group_name_Hall": sym["hall_symbol"]
+        "_symmetry_space_group_name_Hall": sym["hall_symbol"],
     }
 
     block = CifBlock()
     for key, val in lattice_items.items():
         block[key] = val
-    
+
     for key, val in symmetry_items.items():
         block[key] = val
 
@@ -114,27 +114,31 @@ def write_cif(crystal, fname):
     yf = [atm.coords_fractional[1] for atm in atoms]
     zf = [atm.coords_fractional[2] for atm in atoms]
 
-    block.CreateLoop(datanames=["_atom_site_type_symbol", 
-                                "_atom_site_fract_x", 
-                                "_atom_site_fract_y", 
-                                "_atom_site_fract_z"], 
-                     length_check=False)
+    block.CreateLoop(
+        datanames=[
+            "_atom_site_type_symbol",
+            "_atom_site_fract_x",
+            "_atom_site_fract_y",
+            "_atom_site_fract_z",
+        ],
+        length_check=False,
+    )
     block["_atom_site_type_symbol"] = symbols
     block["_atom_site_fract_x"] = xf
     block["_atom_site_fract_y"] = yf
     block["_atom_site_fract_z"] = zf
 
     # Name of the block cannot be empty!
-    block_name = crystal.chemical_formula.replace(" ","_")
+    block_name = crystal.chemical_formula.replace(" ", "_")
     cf[block_name] = block
 
     # Converting to string writes to stdout for some reason
     with redirect_stdout(StringIO()):
         lines = str(cf).splitlines()
 
-    with open(fname, 'w', encoding="utf-8") as f:    
+    with open(fname, "w", encoding="utf-8") as f:
         f.write(CIF_HEADER)
-        f.write("\n".join(lines[13::])) # Skip the fixed header
+        f.write("\n".join(lines[13::]))  # Skip the fixed header
 
 
 def ase_atoms(crystal, **kwargs):

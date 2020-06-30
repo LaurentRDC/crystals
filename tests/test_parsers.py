@@ -247,7 +247,7 @@ class TestCIFParser(unittest.TestCase):
         path = os.path.join("tests", "data", "SiC_partial_site_occ.cif")
         with CIFParser(path) as parser:
             atoms = list(parser.atoms())
-        
+
         for atm in filter(is_element("Si"), atoms):
             self.assertEqual(atm.occupancy, 0.75)
         for atm in filter(is_element("C"), atoms):
