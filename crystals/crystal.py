@@ -669,36 +669,6 @@ class Crystal(AtomicStructure, Lattice):
             source=self.source,
         )
 
-    def indexed_by(self, lattice):
-        """
-        Return a crystal structure, indexed by another lattice.
-        
-        Parameters
-        ----------
-        lattice : Crystal, Lattice, or array_like, shape (3,3)
-            Lattice or Crystal by which to index the structure. ``lattice`` can also be a 3x3 array,
-            where every row is a lattice vector. 
-        
-        Returns
-        -------
-        crystal : Crystal
-            New crystal, indexed by ``lattice``.
-        """
-        # TODO: example
-        # TODO: tests
-        if not isinstance(lattice, (Crystal, Lattice)):
-            lattice = Lattice(lattice)
-
-        old_basis = self.lattice_vectors
-        new_basis = lattice.lattice_vectors
-
-        cob = change_of_basis(old_basis, new_basis)
-        return self.__class__(
-            unitcell=(atm.transform(cob) for atm in self),
-            lattice_vectors=new_basis,
-            source=self.source,
-        )
-
     def __str__(self):
         """ String representation of this instance. Atoms may be omitted. """
         return self._to_string(natoms=10)
@@ -777,6 +747,8 @@ class Crystal(AtomicStructure, Lattice):
         Crystal.to_cif : write a structure to a `.cif` file.
         """
         write_xyz(self, filename)
+
+    def to_ase(self):
 
     
 
