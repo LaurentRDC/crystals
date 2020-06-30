@@ -12,7 +12,6 @@ from pathlib import Path
 import numpy as np
 
 from crystals import Atom, AtomicStructure, Crystal, Lattice, CenteringType
-from crystals.crystal import SymmetryOperation
 from crystals.affine import rotation_matrix, transform
 
 
@@ -84,33 +83,23 @@ class TestSpglibMethods(unittest.TestCase):
 
     def test_symmetry_operations(self):
         """ Test that the symmetry operations output makes sense """
-        identity = SymmetryOperation(np.eye(3, dtype=np.int32), np.zeros((3,)))
+        identity = np.eye(4)
 
         for name in Crystal.builtins:
             with self.subTest(name):
                 c = Crystal.from_database(name)
                 symops = c.symmetry_operations()
-
-                self.assertTrue(np.allclose(identity.rotation, symops[0].rotation))
-
-                self.assertTrue(
-                    np.allclose(identity.translation, symops[0].translation)
-                )
+                self.assertTrue(np.allclose(identity, symops[0]))
 
     def test_reciprocal_symmetry_operations(self):
         """ Test that the reciprocal symmetry operations output makes sense """
-        identity = SymmetryOperation(np.eye(3, dtype=np.int32), np.zeros((3,)))
+        identity = np.eye(4)
 
         for name in Crystal.builtins:
             with self.subTest(name):
                 c = Crystal.from_database(name)
                 symops = c.reciprocal_symmetry_operations()
-
-                self.assertTrue(np.allclose(identity.rotation, symops[0].rotation))
-
-                self.assertTrue(
-                    np.allclose(identity.translation, symops[0].translation)
-                )
+                self.assertTrue(np.allclose(identity, symops[0]))
 
 
 class TestCrystalSpecialMethods(unittest.TestCase):

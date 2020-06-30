@@ -31,76 +31,6 @@ is_atom = lambda a: isinstance(a, Atom)
 is_structure = lambda s: isinstance(s, AtomicStructure)
 
 
-SymmetryOperation = namedtuple("SymmetryOperation", ("rotation", "translation"))
-
-
-@unique
-class CenteringType(Enum):
-    """
-    Enumeration of possible centering types. Together with the lattice system,
-    these centering types defined all 14 Bravais lattices in 3D.
-
-    The possible centering types are:
-
-    * ``'P'`` : Primitive
-
-    * ``'I'`` : Body-centered
-
-    * ``'F'`` : Face-centered
-
-    * ``'C'`` : Base-centered
-
-    * ``'R'`` : Rhombohedral in hexagonal setting.
-    """
-
-    primitive = "P"
-    base_centered = "C"
-    body_centered = "I"
-    face_centered = "F"
-    rhombohedral = "R"
-
-
-def symmetry_expansion(atoms, symmetry_operators):
-    """
-    Generate a set of unique atoms and structures from an asymmetric cell 
-    and symmetry operators.
-
-    Parameters
-    ----------
-    atoms : iterable of ``Atom`` or ``AtomicStructures``
-        Assymetric unit cell atoms. It is assumed that the atomic 
-        coordinates are in fractional form. Transformations work
-        the same way for ``Atom`` objects and ``AtomicStructures``
-        objects: a copy is made and moved to the symmetric location.
-    symmetry_operators : iterable of array_like
-        Symmetry operators that generate the full unit cell.
-    
-    Yields
-    ------
-    it : ``Atom`` or ``AtomicStructures``
-        Appropriately-transformed object. Original objects are left untouched.
-    """
-    # TODO: provide ability to reduce to primitive, niggli_reduce, etc.
-    #       using spglib?
-    symmetry_operators = tuple(map(affine_map, symmetry_operators))
-
-    unique_atoms = set([])
-    for atm in filter(is_atom, atoms):
-        for sym_op in symmetry_operators:
-            new = atm.transform(sym_op)
-            new.coords_fractional[:] = np.mod(new.coords_fractional, 1)
-            unique_atoms.add(new)
-
-    unique_structures = list()
-    for structure in filter(is_structure, atoms):
-        for sym_op in symmetry_operators:
-            new = structure.transform(sym_op)
-            unique_structures.append(new)
-
-    yield from unique_atoms
-    yield from unique_structures
-
-
 class Crystal(AtomicStructure, Lattice):
     """
     The :class:`Crystal` class is a set-like container that represent 
@@ -540,10 +470,9 @@ class Crystal(AtomicStructure, Lattice):
         
         Returns
         -------
-        sym_ops : iterable of 2-tuples
-            Each symmetry operations is a tuple of ``(rotation, translation)``.
-            A rotation matrix is an array of shape (3,3), while ``translation`` is an array
-            of shape (3,).
+        sym_ops : iterable of array_like, shapes (4,4)
+            Iterable of affine transforms, where ``m[:3,:3]`` is the rotation part,
+            while ``m[:3,-1]`` is the translation.
 
         Raises
         ------
@@ -555,8 +484,15 @@ class Crystal(AtomicStructure, Lattice):
         """
         dataset = get_symmetry(cell=self._spglib_cell(), symprec=symprec)
 
+        def _to_affine(r, t):
+            """ Convert rotation and translation into single 4x4 affine transformation """
+            m = np.eye(4)
+            m[:3,:3] = r
+            m[:3, -1] = t
+            return m
+
         return [
-            SymmetryOperation(r, t)
+            _to_affine(r, t)
             for r, t in zip(dataset["rotations"], dataset["translations"])
         ]
 
@@ -572,10 +508,9 @@ class Crystal(AtomicStructure, Lattice):
         
         Returns
         -------
-        sym_ops : iterable of 2-tuples
-            Each symmetry operations is a tuple of ``(rotation, translation)``.
-            A rotation matrix is an array of shape (3,3), while ``translation`` is an array
-            of shape (3,).  
+        sym_ops : iterable of array_like, shapes (4,4)
+            Iterable of affine transforms, where ``m[:3,:3]`` is the rotation part,
+            while ``m[:3,-1]`` is the translation.
 
         Raises
         ------
@@ -596,9 +531,19 @@ class Crystal(AtomicStructure, Lattice):
 
         cast = lambda m: to_reciprocal @ m @ from_reciprocal
 
-        return [
-            SymmetryOperation(cast(rot), cast(trans)) for rot, trans in transformations
-        ]
+        # Pack and unpack rotation and translation from/to affine transform
+        # TODO: this is ugly
+        def pack(r, t):
+            m = np.eye(4)
+            m[:3,:3] = r
+            m[:3, -1] = t
+            return m
+
+        ops = list()
+        for m in transformations:
+            r, t = m[:3, :3], m[:3, -1]
+            ops.append(pack(cast(r), cast(t)))
+        return ops
 
     @property
     def international_symbol(self):
@@ -824,3 +769,96 @@ class Supercell(AtomicStructure):
         lines = repr(self.crystal).splitlines(keepends=True)
         lines[0] = preamble
         return "".join(lines)
+
+
+@unique
+class CenteringType(Enum):
+    """
+    Enumeration of possible centering types. Together with the lattice system,
+    these centering types defined all 14 Bravais lattices in 3D.
+
+    The possible centering types are:
+
+    * ``'P'`` : Primitive
+
+    * ``'I'`` : Body-centered
+
+    * ``'F'`` : Face-centered
+
+    * ``'C'`` : Base-centered
+
+    * ``'R'`` : Rhombohedral in hexagonal setting.
+    """
+
+    primitive = "P"
+    base_centered = "C"
+    body_centered = "I"
+    face_centered = "F"
+    rhombohedral = "R"
+
+
+def symmetry_expansion(atoms, symmetry_operators):
+    """
+    Generate a set of unique atoms and structures from an asymmetric cell 
+    and symmetry operators.
+
+    Parameters
+    ----------
+    atoms : iterable of ``Atom`` or ``AtomicStructures``
+        Assymetric unit cell atoms. It is assumed that the atomic 
+        coordinates are in fractional form. Transformations work
+        the same way for ``Atom`` objects and ``AtomicStructures``
+        objects: a copy is made and moved to the symmetric location.
+    symmetry_operators : iterable of array_like
+        Symmetry operators that generate the full unit cell.
+    
+    Yields
+    ------
+    it : ``Atom`` or ``AtomicStructures``
+        Appropriately-transformed object. Original objects are left untouched.
+    """
+    # TODO: provide ability to reduce to primitive, niggli_reduce, etc.
+    #       using spglib?
+    symmetry_operators = list(map(affine_map, symmetry_operators))
+
+    unique_atoms = set([])
+    for atm in filter(is_atom, atoms):
+        for sym_op in symmetry_operators:
+            new = atm.transform(sym_op)
+            new.coords_fractional[:] = np.mod(new.coords_fractional, 1)
+            unique_atoms.add(new)
+
+    # TODO: remove equal substructires? set([])
+    unique_structures = list()
+    for structure in filter(is_structure, atoms):
+        for sym_op in symmetry_operators:
+            new = structure.transform(sym_op)
+            unique_structures.append(new)
+
+    yield from unique_atoms
+    yield from unique_structures
+
+
+def asymmetric_cell(unitcell, symmetry_operators):
+    """
+    Determine the asymmetric unit cell from a symmetric unit cell and symmetry operators.
+
+    Parameters
+    ----------
+    unitcell : iterable of ``Atom`` or ``AtomicStructures``
+               Assymetric unit cell atoms. It is assumed that the atomic 
+               coordinates are in fractional form.
+    symmetry_operators : iterable of array_like
+        Symmetry operators that generate the full unit cell.
+    
+    Returns
+    -------
+    asym : iterable of ``Atom`` objects.
+        Asymmetric cell: the collection of atoms which are NOT related by 
+        the symmetry operators in ``symmetry_operators``.
+    """
+    # TODO: test
+    inv_symmetry_operators = [
+        np.linalg.inv(m) for m in map(affine_map, symmetry_operators)
+    ]
+    yield from symmetry_expansion(unitcell, inv_symmetry_operators)

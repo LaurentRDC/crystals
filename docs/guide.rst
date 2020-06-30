@@ -374,34 +374,17 @@ You can get the matrix symmetry operations directly from the :class:`Crystal` cl
     >>> first_symop = cryst.symmetry_operations()[0]
     >>> 
     >>> print(first_symop)
-    SymmetryOperation(
-        rotation=array([[1, 0, 0],
-                        [0, 1, 0],
-                        [0, 0, 1]], dtype=int32), 
-        translation=array([0., 0., 0.]))
+    array([[1, 0, 0, 0],
+           [0, 1, 0, 0],
+           [0, 0, 1, 0]
+           [0, 0, 0, 1]], dtype=int32), 
     
-``SymmetryOperation`` is a namedtuple, which acts like a regular 2-tuple:
+Symmetry operations are described using 4x4 affine matrices, where the rotation is the top 3x3 block,
+and the translation is the right-most column. Example with iteration::
 
-    >>> first_symop[0]     # rotation
-    array([[1, 0, 0],
-           [0, 1, 0],
-           [0, 0, 1]], dtype=int32)
-    >>> first_symop[1]     # translation
-    array([0., 0., 0.])
-
-However, symmetry operations can also be queried by name!
-
-    >>> first_symop.rotation
-    array([[1, 0, 0],
-           [0, 1, 0],
-           [0, 0, 1]], dtype=int32)
-    >>> first_symop.translation
-    array([0., 0., 0.])
-
-Iterating also works like with tuples:
-
-    >>> for (r, t) in cryst.symmetry_operations():
-    ...     pass
+    >>> for m in cryst.symmetry_operations():
+    ...     rotation = m[:3, :3]
+    ...     translation = m[:3, -1]
     ...
     >>>
 
