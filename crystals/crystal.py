@@ -828,12 +828,21 @@ def symmetry_expansion(atoms, symmetry_operators):
             new.coords_fractional[:] = np.mod(new.coords_fractional, 1)
             unique_atoms.add(new)
 
-    # TODO: remove equal substructires? set([])
-    unique_structures = list()
+
+    def _normalize_fractional_coordinates(struct):
+        """ Ensure that all atoms in this structure have fractional coordinates that are valid, i.e.
+        in [0, 1). Atoms are changed in-place. """
+        for atm in struct.atoms:
+            atm.coords_fractional[:] = np.mod(atm.coords_fractional, 1)
+
+        for substruct in struct.substructures:
+            _normalize_fractional_coordinates(substruct)
+
+    unique_structures = set([])
     for structure in filter(is_structure, atoms):
         for sym_op in symmetry_operators:
             new = structure.transform(sym_op)
-            unique_structures.append(new)
+            unique_structures.add(_normalize_fractional_coordinates(new))
 
     yield from unique_atoms
     yield from unique_structures
