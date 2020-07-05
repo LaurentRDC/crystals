@@ -147,7 +147,7 @@ Converting a Crystal to other formats
 
 You can use the `crystals` package to convert crystal structures from one format to another. Currently, you can write a structure 
 either to an `.xyz` (:meth:``Crystal.to_xyz`) file, a Crystallography Information Framework `.cif` (:meth:``Crystal.to_cif`), 
-or to an ``ase.Atoms`` structure (:meth:``Crystal.to_ase`). Here is an example::
+or to an ``ase.Atoms`` structure (:meth:``Crystal.to_ase``). Here is an example::
 
     >>> from crystals import Crystal
     >>> import numpy as np
