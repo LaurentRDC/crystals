@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from collections import namedtuple
 from enum import Enum, unique
 from operator import attrgetter
 from functools import lru_cache
@@ -487,7 +486,7 @@ class Crystal(AtomicStructure, Lattice):
         def _to_affine(r, t):
             """ Convert rotation and translation into single 4x4 affine transformation """
             m = np.eye(4)
-            m[:3,:3] = r
+            m[:3, :3] = r
             m[:3, -1] = t
             return m
 
@@ -535,7 +534,7 @@ class Crystal(AtomicStructure, Lattice):
         # TODO: this is ugly
         def pack(r, t):
             m = np.eye(4)
-            m[:3,:3] = r
+            m[:3, :3] = r
             m[:3, -1] = t
             return m
 
@@ -804,7 +803,7 @@ def symmetry_expansion(atoms, symmetry_operators):
 
     Parameters
     ----------
-    atoms : iterable of ``Atom`` or ``AtomicStructures``
+    atoms : iterable of ``Atom`` and/or ``AtomicStructures``
         Assymetric unit cell atoms. It is assumed that the atomic 
         coordinates are in fractional form. Transformations work
         the same way for ``Atom`` objects and ``AtomicStructures``
@@ -814,20 +813,25 @@ def symmetry_expansion(atoms, symmetry_operators):
     
     Yields
     ------
-    it : ``Atom`` or ``AtomicStructures``
+    it : ``Atom`` and/or ``AtomicStructures``
         Appropriately-transformed object. Original objects are left untouched.
     """
     # TODO: provide ability to reduce to primitive, niggli_reduce, etc.
     #       using spglib?
-    symmetry_operators = list(map(affine_map, symmetry_operators))
+
+    is_identity = lambda op: np.allclose(op, np.eye(4))
+    symmetry_operators = [
+        m for m in map(affine_map, symmetry_operators) if not is_identity(m)
+    ]
 
     unique_atoms = set([])
     for atm in filter(is_atom, atoms):
+        # At least one atom is kept
+        unique_atoms.add(atm)
         for sym_op in symmetry_operators:
             new = atm.transform(sym_op)
             new.coords_fractional[:] = np.mod(new.coords_fractional, 1)
             unique_atoms.add(new)
-
 
     def _normalize_fractional_coordinates(struct):
         """ Ensure that all atoms in this structure have fractional coordinates that are valid, i.e.
@@ -840,34 +844,10 @@ def symmetry_expansion(atoms, symmetry_operators):
 
     unique_structures = set([])
     for structure in filter(is_structure, atoms):
+        unique_structures.add(structure)
         for sym_op in symmetry_operators:
             new = structure.transform(sym_op)
             unique_structures.add(_normalize_fractional_coordinates(new))
 
     yield from unique_atoms
     yield from unique_structures
-
-
-def asymmetric_cell(unitcell, symmetry_operators):
-    """
-    Determine the asymmetric unit cell from a symmetric unit cell and symmetry operators.
-
-    Parameters
-    ----------
-    unitcell : iterable of ``Atom`` or ``AtomicStructures``
-               Assymetric unit cell atoms. It is assumed that the atomic 
-               coordinates are in fractional form.
-    symmetry_operators : iterable of array_like
-        Symmetry operators that generate the full unit cell.
-    
-    Returns
-    -------
-    asym : iterable of ``Atom`` objects.
-        Asymmetric cell: the collection of atoms which are NOT related by 
-        the symmetry operators in ``symmetry_operators``.
-    """
-    # TODO: test
-    inv_symmetry_operators = [
-        np.linalg.inv(m) for m in map(affine_map, symmetry_operators)
-    ]
-    yield from symmetry_expansion(unitcell, inv_symmetry_operators)

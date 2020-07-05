@@ -12,7 +12,8 @@ from pathlib import Path
 import numpy as np
 
 from crystals import Atom, AtomicStructure, Crystal, Lattice, CenteringType
-from crystals.affine import rotation_matrix, transform
+from crystals.affine import rotation_matrix, transform, translation_matrix
+from crystals.crystal import symmetry_expansion
 
 
 def connection_available():

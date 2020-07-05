@@ -257,7 +257,7 @@ class Atom(Element):
             coords_fractional = transform(matrix, coords_fractional)
 
         new_atom = deepcopy(self)
-        new_atom.coords_fractional = coords_fractional
+        new_atom.coords_fractional[:] = coords_fractional
 
         return new_atom
 
