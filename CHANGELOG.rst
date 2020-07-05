@@ -6,7 +6,6 @@ What's new
 -----
 
 * Added the ability to write crystal structures to CIF/XYZ files with the `Crystal.to_cif` and `Crystal.to_xyz` methods. Also, structures can be converted to ASE's ``Atoms`` class with `Crystal.to_ase`. This can be used to convert crystal structures from one format to another!
-* Dropped support for Python 3.6.
 
 1.1.2
 -----

@@ -52,7 +52,7 @@ if __name__ == "__main__":
             "Documentation": "https://crystals.readthedocs.io/",
             "Source": "https://github.com/LaurentRDC/crystals",
         },
-        python_requires=">=3.7",
+        python_requires=">=3.6",
         packages=find_packages(),
         data_files=[("crystals\\cifs", CIF_FILES)],
         include_package_data=True,
