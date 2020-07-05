@@ -803,7 +803,7 @@ def symmetry_expansion(atoms, symmetry_operators):
 
     Parameters
     ----------
-    atoms : iterable of ``Atom`` and/or ``AtomicStructures``
+    atoms : iterable of ``Atom`` and/or ``AtomicStructure``
         Assymetric unit cell atoms. It is assumed that the atomic 
         coordinates are in fractional form. Transformations work
         the same way for ``Atom`` objects and ``AtomicStructures``
@@ -813,7 +813,7 @@ def symmetry_expansion(atoms, symmetry_operators):
     
     Yields
     ------
-    it : ``Atom`` and/or ``AtomicStructures``
+    it : ``Atom`` and/or ``AtomicStructure``
         Appropriately-transformed object. Original objects are left untouched.
     """
     # TODO: provide ability to reduce to primitive, niggli_reduce, etc.
