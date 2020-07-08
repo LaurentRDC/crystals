@@ -3,7 +3,7 @@ from enum import Enum, unique
 from operator import attrgetter
 from functools import lru_cache
 from glob import glob
-from itertools import islice, product
+from itertools import islice, product, chain, combinations
 from pathlib import Path
 
 import numpy as np
@@ -93,6 +93,11 @@ class Crystal(AtomicStructure, Lattice):
     def unitcell(self):
         """ Generator of atoms forming the crystal unit cell. """
         return super().__iter__()
+    
+    @lru_cache(maxsize=1)
+    def asymmetric_cell(self):
+        """ Asymmetric cell """
+        return symmetry_reduction(self.unitcell, self.symmetry_operations)
 
     @classmethod
     @lru_cache(maxsize=len(builtins))
@@ -804,7 +809,7 @@ def symmetry_expansion(atoms, symmetry_operators):
     Parameters
     ----------
     atoms : iterable of ``Atom`` and/or ``AtomicStructure``
-        Assymetric unit cell atoms. It is assumed that the atomic 
+        Asymmetric unit cell atoms. It is assumed that the atomic 
         coordinates are in fractional form. Transformations work
         the same way for ``Atom`` objects and ``AtomicStructures``
         objects: a copy is made and moved to the symmetric location.
@@ -851,3 +856,38 @@ def symmetry_expansion(atoms, symmetry_operators):
 
     yield from unique_atoms
     yield from unique_structures
+
+
+def powerset(it):
+    """ Yields all possible sets made with elements from `it`. """
+    it = list(it)
+    yield from map(set, chain.from_iterable(combinations(it, r) for r in range(len(it) + 1)))
+
+
+def symmetry_reduction(unitcell, symmetry_operators):
+    """
+    Determine the asymmetric cell that generates `unitcell` when combined with
+    symmetry operations. Effectively the reciprocal operation to `symmetry_expansion`.
+
+    Parameters
+    ----------
+    unitcell : iterable of ``Atom`` and/or ``AtomicStructure``
+        Unit cell. It is assumed that the atomic 
+        coordinates are in fractional form. 
+    symmetry_operators : iterable of array_like
+        Symmetry operators that generate the full unit cell.
+    
+    Returns
+    -------
+    asym_cell: Iterable of ``Atom`` and/or ``AtomicStructure``
+        Asymmetric cell.
+    """
+    unitcell = set(unitcell)
+    ps = powerset(unitcell)
+
+    for asym_cell in powerset(unitcell):
+        reconstituted = set(symmetry_expansion(asym_cell, symmetry_operators))
+        if reconstituted == unitcell:
+            return reconstituted
+
+    return unitcell
