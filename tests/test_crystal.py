@@ -198,6 +198,8 @@ class TestIndexedBy(unittest.TestCase):
 
 class TestSymmetryReduction(unittest.TestCase):
     def test_trivial(self):
+        """ Test that the symmetry_reduction function returns the unit cell when
+        there is only one possibility. """
         ucell = set([Atom("H", coords=[0, 0, 0])])
         symops = [np.eye(4)]
         asym_cell = symmetry_reduction(ucell, symops)

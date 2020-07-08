@@ -281,7 +281,7 @@ method::
 
     >>> Crystal.from_database('C').asymmetric_cell()
     {< Atom C  @ (0.00, 0.00, 0.25) | [1s²2s²2p²] >,
-    < Atom C  @ (0.67, 0.33, 0.75) | [1s²2s²2p²] >}
+     < Atom C  @ (0.67, 0.33, 0.75) | [1s²2s²2p²] >}
 
 
 .. table::
