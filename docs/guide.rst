@@ -276,6 +276,14 @@ from the :attr:`source` attribute::
 
 :data:`arr` will contain one row per unit cell atom:
 
+You can calculate what the asymmetric cell of a :class:`Class` is with the :meth:`Crystal.asymmetric_cell()`
+method::
+
+    >>> Crystal.from_database('C').asymmetric_cell()
+    {< Atom C  @ (0.00, 0.00, 0.25) | [1s²2s²2p²] >,
+    < Atom C  @ (0.67, 0.33, 0.75) | [1s²2s²2p²] >}
+
+
 .. table::
     :widths: grid
 

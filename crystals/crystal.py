@@ -93,11 +93,11 @@ class Crystal(AtomicStructure, Lattice):
     def unitcell(self):
         """ Generator of atoms forming the crystal unit cell. """
         return super().__iter__()
-    
+
     @lru_cache(maxsize=1)
     def asymmetric_cell(self):
-        """ Asymmetric cell """
-        return symmetry_reduction(self.unitcell, self.symmetry_operations)
+        """ Calculates the asymmetric cell that generates the crystal unit cell. """
+        return symmetry_reduction(self.unitcell, self.symmetry_operations())
 
     @classmethod
     @lru_cache(maxsize=len(builtins))
@@ -820,6 +820,10 @@ def symmetry_expansion(atoms, symmetry_operators):
     ------
     it : ``Atom`` and/or ``AtomicStructure``
         Appropriately-transformed object. Original objects are left untouched.
+
+    See Also
+    --------
+    symmetry_reduction : Determine the asymmetric cell that can generate a unit cell.
     """
     # TODO: provide ability to reduce to primitive, niggli_reduce, etc.
     #       using spglib?
@@ -858,16 +862,13 @@ def symmetry_expansion(atoms, symmetry_operators):
     yield from unique_structures
 
 
-def powerset(it):
-    """ Yields all possible sets made with elements from `it`. """
-    it = list(it)
-    yield from map(set, chain.from_iterable(combinations(it, r) for r in range(len(it) + 1)))
-
-
 def symmetry_reduction(unitcell, symmetry_operators):
     """
     Determine the asymmetric cell that generates `unitcell` when combined with
-    symmetry operations. Effectively the reciprocal operation to `symmetry_expansion`.
+    symmetry operations. Effectively, this function is the reciprocal operation 
+    to `symmetry_expansion`.
+
+    Note that the resulting asymmetric cell is not unique.
 
     Parameters
     ----------
@@ -879,15 +880,34 @@ def symmetry_reduction(unitcell, symmetry_operators):
     
     Returns
     -------
-    asym_cell: Iterable of ``Atom`` and/or ``AtomicStructure``
+    asym_cell: set of ``Atom`` and/or ``AtomicStructure``
         Asymmetric cell.
-    """
-    unitcell = set(unitcell)
-    ps = powerset(unitcell)
 
-    for asym_cell in powerset(unitcell):
+    See Also
+    --------
+    symmetry_expansion : Expand the asymmetric cell into a unit cell.
+    """
+    # NOTE: This function does the dumb thing of trying to recreate the input
+    #       by searching through all the possibilities.
+    #       By nature, it is very slow; scaling like n^2 (where n is the unit cell length)
+    #       However, other approaches that I tried were not reliable. For example,
+    #       using inverse symmetry operators would result in numerical instabilities.
+    #       If you are reading this and have a better idea, please submit a pull request :).
+
+    unitcell = set(unitcell)
+
+    # The powerset of the unit cell is the set of all possible sets
+    # made from elements in `unitcell`
+    powerset = chain.from_iterable(
+        combinations(unitcell, r) for r in range(1, len(unitcell) + 1)
+    )
+
+    # We sort by length so that the resulting asymmetric cell is the smallest
+    # possible one.
+    for asym_cell in sorted(powerset, key=len):
         reconstituted = set(symmetry_expansion(asym_cell, symmetry_operators))
         if reconstituted == unitcell:
-            return reconstituted
+            return set(asym_cell)
 
+    # Base case
     return unitcell

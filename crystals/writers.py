@@ -66,6 +66,7 @@ def write_xyz(crystal, fname, comment=None):
             file.write(row + "\n")
 
 
+# TODO: write the asymmetric cell + symmetry operatrs
 def write_cif(crystal, fname):
     """
     Generate an atomic coordinates .cif file from a crystal structure.

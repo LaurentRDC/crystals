@@ -6,6 +6,7 @@ What's new
 -----
 
 * Added the ability to write crystal structures to CIF/XYZ files with the `Crystal.to_cif` and `Crystal.to_xyz` methods. Also, structures can be converted to ASE's ``Atoms`` class with `Crystal.to_ase`. This can be used to convert crystal structures from one format to another!
+* Added the `symmetry_reduction` function, and associated method `Crystal.asymmetric_cell()`, to determine the smallest asymmetric cell that generates a unit cell.
 
 1.1.2
 -----

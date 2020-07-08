@@ -13,7 +13,9 @@ import numpy as np
 
 from crystals import Atom, AtomicStructure, Crystal, Lattice, CenteringType
 from crystals.affine import rotation_matrix, transform, translation_matrix
-from crystals.crystal import symmetry_expansion
+from crystals.crystal import symmetry_expansion, symmetry_reduction
+
+np.random.seed(23)
 
 
 def connection_available():
@@ -192,6 +194,42 @@ class TestIndexedBy(unittest.TestCase):
         c2 = c1.indexed_by(c1)
 
         self.assertEqual(c1, c2)
+
+
+class TestSymmetryReduction(unittest.TestCase):
+    def test_trivial(self):
+        ucell = set([Atom("H", coords=[0, 0, 0])])
+        symops = [np.eye(4)]
+        asym_cell = symmetry_reduction(ucell, symops)
+        self.assertEqual(ucell, asym_cell)
+
+    def test_simple_translation(self):
+        """ Test that symmetry_reduction works on a unitcell where two atoms are
+        linked by a translation """
+        symops = [np.eye(4), translation_matrix([0, 0, 1 / 2])]
+        asym_cell = set([Atom("H", coords=[0, 0, 0])])
+        unitcell = set(symmetry_expansion(asym_cell, symmetry_operators=symops))
+
+        asym_cell2 = symmetry_reduction(unitcell, symops)
+        self.assertEqual(asym_cell, asym_cell2)
+
+    def test_graphite(self):
+        """ Test that the asymmetric cell of graphite consists of two atoms """
+        cryst = Crystal.from_database("C")
+        asym_cell = symmetry_reduction(cryst.unitcell, cryst.symmetry_operations())
+        self.assertEqual(len(asym_cell), 2)
+
+    def test_reciprocity_with_symmetry_expansion(self):
+        """ Test that symmetry_reduction is reciprocal to symmetry_expansion """
+        structures = ["Tb", "vo2-m1", "Os", "Na"]  # , 'Nb', 'Pd', 'Zn']
+        for s in structures:
+            with self.subTest("Crystal " + s):
+                cryst = Crystal.from_database(s)
+                asym_cell = symmetry_reduction(
+                    cryst.unitcell, cryst.symmetry_operations()
+                )
+                ucell = set(symmetry_expansion(asym_cell, cryst.symmetry_operations()))
+                self.assertEqual(set(cryst.unitcell), ucell)
 
 
 if __name__ == "__main__":

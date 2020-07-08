@@ -30,6 +30,7 @@ from .crystal import Crystal
 from .crystal import Supercell
 from .crystal import CenteringType
 from .crystal import symmetry_expansion
+from .crystal import symmetry_reduction
 from .lattice import Lattice
 from .lattice import LatticeSystem
 from .lattice import lattice_system
