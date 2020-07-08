@@ -1,5 +1,7 @@
 .. _user_guide:
 
+.. currentmodule:: crystals
+
 **********
 User guide
 **********
