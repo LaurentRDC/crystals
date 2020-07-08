@@ -94,7 +94,7 @@ class Crystal(AtomicStructure, Lattice):
         """ Generator of atoms forming the crystal unit cell. """
         return super().__iter__()
 
-    @lru_cache(maxsize=1)
+    @lru_cache(maxsize=1) # This operation is very heavy; better to cache it than recalculate.
     def asymmetric_cell(self):
         """ Calculates the asymmetric cell that generates the crystal unit cell. """
         return symmetry_reduction(self.unitcell, self.symmetry_operations())
