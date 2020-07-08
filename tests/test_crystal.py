@@ -215,6 +215,12 @@ class TestSymmetryReduction(unittest.TestCase):
         asym_cell2 = symmetry_reduction(unitcell, symops)
         self.assertEqual(asym_cell, asym_cell2)
 
+    def test_graphite(self):
+        """ Test that the asymmetric cell of graphite consists of two atoms """
+        cryst = Crystal.from_database("C")
+        asym_cell = symmetry_reduction(cryst.unitcell, cryst.symmetry_operations())
+        self.assertEqual(len(asym_cell), 2)
+
     def test_reciprocity_with_symmetry_expansion(self):
         """ Test that symmetry_reduction is reciprocal to symmetry_expansion """
         structures = ["Tb", "vo2-m1", "Os", "Na"]  # , 'Nb', 'Pd', 'Zn']
