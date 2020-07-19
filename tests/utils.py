@@ -3,7 +3,6 @@ Utility functions for tests
 """
 
 from functools import wraps
-from time import sleep
 
 def retry_test(max_retries):
     """ Retry the decorated test up to `max_retries` times if failure happens. """
