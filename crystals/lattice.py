@@ -277,19 +277,27 @@ class Lattice:
     # Primed generators allows for checks on creation
     # All lines of code before the first 'yield' will run at first
     @primed
-    def bounded_reflections(self, bound):
+    def bounded_reflections(self, bound, min_bound=0):
         """
         Generates reflections (hkl) with norm(G) <= bound
         
         Parameters
         ----------
         bound : float
-            Maximal scattering vector norm :math:`A^{-1}`. 
+            Maximal scattering vector norm [:math:`A^{-1}`]. 
+        min_bound : float, optional
+            Minimal scattering vector norm [:math:`A^{-1}`].
+
+            .. versionadded:: 1.2.0
 
         Yields
         ------
         reflection : 3-tuple of ints
             Miller indices of a bounded reflection.
+
+        Raises
+        ------
+        ValueError : if `bound` is smaller than `min_bound`.
 
         Examples
         --------
@@ -298,8 +306,8 @@ class Lattice:
         >>> list(refls)
         [(0, 0, -1), (0, 0, 0), (0, 0, 1)]
         """
-        if bound < 0:
-            raise ValueError(f"Bound {bound} is negative.")
+        if bound < min_bound:
+            raise ValueError(f"Bound {bound} is smaller than the minimum {min_bound}.")
 
         # Determine the maximum index such that (i00) family is still within data limits
         # This provides a (large) upper bound so that we are sure that the overall filtering will terminate
@@ -314,7 +322,9 @@ class Lattice:
         yield  # Priming the generator ends here
 
         # The above bound was only a first pass. We can refine further
-        in_bounds = lambda refl: _hypot(*self.scattering_vector(refl)) <= bound
+        in_bounds = (
+            lambda refl: min_bound <= _hypot(*self.scattering_vector(refl)) <= bound
+        )
         yield from filter(in_bounds, refls)
 
 
