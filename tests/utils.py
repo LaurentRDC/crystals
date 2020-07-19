@@ -4,6 +4,7 @@ Utility functions for tests
 
 from functools import wraps
 
+
 def retry_test(max_retries):
     """ Retry the decorated test up to `max_retries` times if failure happens. """
 
@@ -18,10 +19,10 @@ def retry_test(max_retries):
                     tries += 1
                 else:
                     return r
-            
+
             # Final retry.
             return test_item(self, *args, **kwargs)
+
         return new_test_item
 
     return decorator
-
