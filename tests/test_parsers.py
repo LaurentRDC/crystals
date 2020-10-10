@@ -229,6 +229,11 @@ class TestCIFParser(unittest.TestCase):
 
         self.assertEqual(len(si), 8)
 
+    def test_issue_5(self):
+        """ Test that the parsing of MgSiO3 is working. See Issue 5 for details on why this was a problem. """
+        c = Crystal.from_cif(Path(__file__).parent / "data" / "issue5_MgSiO3.cif")
+        self.assertEqual(len(c), 20)
+
     def test_vo2(self):
         """ Test CIFParser on vo2.cif (monoclinic M1) """
         VO2_path = os.path.join("crystals", "cifs", "vo2-m1.cif")
