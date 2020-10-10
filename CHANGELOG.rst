@@ -9,6 +9,7 @@ What's new
 * Added the `symmetry_reduction` function, and associated method `Crystal.asymmetric_cell()`, to determine the smallest asymmetric cell that generates a unit cell.
 * The method `Lattice.bounded_reflections` now takes in an additional parameter, `min_bound`, to find reflections between a lower and upper bound.
 * Fixed an issue where in certain cases, atoms related by symmetry were not pruned appropriately (#5)
+* Official support for Python 3.9.
 
 1.1.2
 -----
