@@ -227,7 +227,7 @@ class TestSymmetryReduction(unittest.TestCase):
     @retry_test(max_retries=5)
     def test_reciprocity_with_symmetry_expansion(self):
         """ Test that symmetry_reduction is reciprocal to symmetry_expansion """
-        structures = ["Tb", "vo2-m1", "Os", "Na"]  # , 'Nb', 'Pd', 'Zn']
+        structures = ["vo2-m1", "Os", "Na"]  # , 'Nb', 'Pd', 'Zn']
         for s in structures:
             with self.subTest("Crystal " + s):
                 cryst = Crystal.from_database(s)

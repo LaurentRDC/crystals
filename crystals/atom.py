@@ -181,9 +181,7 @@ class Atom(Element):
             return (
                 super().__eq__(other)
                 and (self.magmom == other.magmom)
-                and np.allclose(
-                    self.coords_fractional, other.coords_fractional, atol=1e-3
-                )
+                and distance_fractional(self, other) < 1e-3
                 and (self.lattice == other.lattice)
                 and np.allclose(self.displacement, other.displacement, atol=1e-3)
                 and (self.electronic_structure == other.electronic_structure)
@@ -195,7 +193,7 @@ class Atom(Element):
             (
                 super().__hash__(),
                 self.magmom,
-                tuple(np.round(self.coords_fractional, 3)),
+                tuple(np.round(self.coords_fractional, 4)),
                 self.lattice,
                 tuple(np.round(self.displacement, 3)),
                 hash(self.electronic_structure),
