@@ -21,7 +21,7 @@ Secondary Structure
 
 Secondary structures are really all the same, with different names:
 
-.. currentmodule:: crystals.base
+.. currentmodule:: crystals.biological
 
 .. autoclass:: SecondaryStructure
     :show-inheritance:

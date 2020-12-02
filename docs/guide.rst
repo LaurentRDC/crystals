@@ -435,7 +435,7 @@ a primitive :class:`Crystal` can be created using the :meth:`Crystal.primitive` 
 
 Notice how the primitive structure is much simpler.
 
-Idealized versions of :class:`Crystal`s are also made available. Let's take the example of iron arsenide::
+Idealized versions of :class:`Crystal` objects are also made available. Let's take the example of iron arsenide::
 
     >>> iron_arsenide = Crystal.from_database('FeAs')
     >>> print(iron_arsenide)

@@ -15,5 +15,6 @@ Conversion to the Atomic Simulation Environment
 ---------------
 Writing to disk
 ---------------
+.. currentmodule:: crystals.writers
 
 .. autofunction:: write_xyz
