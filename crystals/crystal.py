@@ -81,7 +81,10 @@ class Crystal(AtomicStructure, Lattice):
 
     def __eq__(self, other):
         if isinstance(other, Crystal):
-            return super(Lattice, self).__eq__(other) and super(
+            # The explicit comparison of lattices sidesteps the problem
+            # of evaluating NotImplemented in a bool context, which has been deprecated
+            # as of Python 3.9
+            return (Lattice(self.lattice_vectors) == Lattice(other.lattice_vectors)) and super(
                 AtomicStructure, self
             ).__eq__(other)
         return NotImplemented
