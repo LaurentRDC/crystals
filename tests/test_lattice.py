@@ -283,4 +283,5 @@ class TestBoundedReflections(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    from utils import FutureProofTestRunner
+    unittest.main(testRunner=FutureProofTestRunner)
