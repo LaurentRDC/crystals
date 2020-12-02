@@ -5,7 +5,7 @@ This package allows for manipulation and modelling of atomic structures in cryst
 __author__ = "Laurent P. René de Cotret"
 __email__ = "laurent.renedecotret@mail.mcgill.ca"
 __license__ = "BSD3"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 
 from .atom import Atom
 from .atom import Element

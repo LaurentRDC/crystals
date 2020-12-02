@@ -2,6 +2,11 @@
 What's new
 ==========
 
+1.2.1
+-----
+
+* Fixed deprecations that came with Python 3.9, involving comparison of crystal structures.
+
 1.2.0
 -----
 
