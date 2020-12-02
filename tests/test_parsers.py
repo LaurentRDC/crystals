@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 import os
-import socket
 import tempfile
 import unittest
 from collections import Counter, namedtuple
-from contextlib import suppress
 from itertools import chain
 from pathlib import Path
 from tempfile import gettempdir
 from warnings import catch_warnings, filterwarnings
+from .utils import connection_available
 
 import numpy as np
 from spglib import get_symmetry_dataset
@@ -32,18 +31,6 @@ MPJ_API_KEY = os.environ.get("MATERIALS_PROJECT_API_KEY", None)
 GenericAtom = namedtuple("GenericAtom", ["element", "coords"])
 
 filterwarnings("ignore", category=UserWarning)
-
-
-def connection_available():
-    """ Returns whether or not an internet connection is available """
-    with suppress(OSError):
-        try:
-            socket.create_connection(("www.google.com", 80))
-        except:
-            return False
-        else:
-            return True
-    return False
 
 
 @unittest.skipUnless(connection_available(), "Internet connection is required.")

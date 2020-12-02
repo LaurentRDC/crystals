@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 import pickle
-import socket
 import os
 import tempfile
 import unittest
-from contextlib import suppress
 from copy import copy, deepcopy
 from itertools import islice
 from math import radians
@@ -14,21 +12,9 @@ import numpy as np
 from crystals import Atom, AtomicStructure, CenteringType, Crystal, Lattice
 from crystals.affine import rotation_matrix, transform, translation_matrix
 from crystals.crystal import symmetry_expansion, symmetry_reduction
-from .utils import retry_test
+from .utils import retry_test, connection_available
 
 np.random.seed(23)
-
-
-def connection_available():
-    """ Returns whether or not an internet connection is available """
-    with suppress(OSError):
-        try:
-            socket.create_connection(("www.google.com", 80))
-        except:
-            return False
-        else:
-            return True
-    return False
 
 
 class TestSpglibMethods(unittest.TestCase):
