@@ -217,7 +217,7 @@ class TestSymmetryReduction(unittest.TestCase):
     def test_simple_translation(self):
         """ Test that symmetry_reduction works on a unitcell where two atoms are
         linked by a translation """
-        symops = [np.eye(4), translation_matrix([0, 0, 1 / 2])]
+        symops = [np.eye(4), translation_matrix([0, 0, 1/3])]
         asym_cell = set([Atom("H", coords=[0, 0, 0])])
         unitcell = set(symmetry_expansion(asym_cell, symmetry_operators=symops))
 
