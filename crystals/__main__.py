@@ -74,13 +74,13 @@ info_parser.add_argument(
 
 
 def guess_constructor(i):
-    """ 
+    """
     Try to guess the appropriate Crystal constructor
-    
+
     Returns
     -------
     cryst : Crystal
-    
+
     Raises
     ------
     RuntimeError: if the input type could not be determined.

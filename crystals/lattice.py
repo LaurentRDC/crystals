@@ -16,9 +16,9 @@ def _hypot(*args):
 
 
 def primed(gen):
-    """ 
+    """
     Decorator that primes a generator function, i.e. runs the function
-    until the first ``yield`` statement. Useful in cases where there 
+    until the first ``yield`` statement. Useful in cases where there
     are preliminary checks when creating the generator.
     """
 
@@ -34,10 +34,10 @@ def primed(gen):
 @unique
 class LatticeSystem(Enum):
     """
-    Lattice system enumeration. 
-    
+    Lattice system enumeration.
+
     Equivalent to Crystal family
-    except that the hexagonal crystal family is split between 
+    except that the hexagonal crystal family is split between
     the rhombohedral system and hexagonal system.
     """
 
@@ -88,7 +88,7 @@ class Lattice:
 
     @classmethod
     def from_parameters(cls, a, b, c, alpha, beta, gamma):
-        """ 
+        """
         Create a Lattice instance from three lengths and angles.
 
         Parameters
@@ -97,7 +97,7 @@ class Lattice:
             Lattice vectors lengths [Å]
         alpha, beta, gamma : floats
             Angles between lattice vectors [deg]
-        
+
         Raises
         ------
         ValueError : if lattice parameters are invalid.
@@ -145,7 +145,7 @@ class Lattice:
         .. math::
 
             b_i = 2 \\pi \\frac{a_j \\times a_k}{v}
-        
+
         For :math:`v` the unit cell volume.
         """
         cell_volume = self.volume
@@ -156,10 +156,10 @@ class Lattice:
 
     @property
     def periodicity(self):
-        """ 
+        """
         Crystal periodicity in x, y and z direction from the lattice constants.
-        This is effectively a bounding cube for the unit cell, which is itself a unit cell. 
-        
+        This is effectively a bounding cube for the unit cell, which is itself a unit cell.
+
         Returns
         -------
         x, y, z : float
@@ -178,7 +178,7 @@ class Lattice:
         Parameters
         ----------
         reflection : array_like, shape (3,)
-            Miller indices. 
+            Miller indices.
 
         Returns
         -------
@@ -196,7 +196,7 @@ class Lattice:
         ----------
         scattering_vector : array_like, shape (3,)
             Scattering vector in :math:`A^{-1}`.
-        
+
         Returns
         -------
         reflection : `~numpy.ndarray`, shape (3,)
@@ -217,16 +217,16 @@ class Lattice:
             that ``x1 = x2 = x3``. Otherwise, three coordinate vectors are expected.
         indexing : str, {'ij', 'xy'}
             Cartesian (‘xy’, default) or matrix (‘ij’) indexing of output.
-        
+
         Returns
         -------
         out1, out2, out3 : `~numpy.ndarray`
             Fractional coordinate arrays.
-        
+
         Raises
         ------
         ValueError : if number of input vectors is neither 1 nor 3.
-        
+
         See Also
         --------
         numpy.meshgrid : Coordinate arrays from coordinate vectors
@@ -248,21 +248,21 @@ class Lattice:
         Parameters
         ----------
         x1, x2, x3 : `~numpy.ndarray`, shape (N,)
-            1d coordinate vectors in fractional coordinates. 
-            If only ``x1`` is provided, it is assumed that ``x1 = x2 = x3``. 
+            1d coordinate vectors in fractional coordinates.
+            If only ``x1`` is provided, it is assumed that ``x1 = x2 = x3``.
             Otherwise, three coordinate vectors are expected.
         indexing : str, {'ij', 'xy'}
             Cartesian (‘xy’, default) or matrix (‘ij’) indexing of output.
-        
+
         Returns
         -------
         out1, out2, out3 : `~numpy.ndarray`
             Real-space (cartesian) coordinate arrays.
-        
+
         Raises
         ------
         ValueError : if number of input vectors is neither 1 nor 3.
-        
+
         See Also
         --------
         numpy.meshgrid : Coordinate arrays from coordinate vectors
@@ -280,11 +280,11 @@ class Lattice:
     def bounded_reflections(self, bound, min_bound=0):
         """
         Generates reflections (hkl) with norm(G) <= bound
-        
+
         Parameters
         ----------
         bound : float
-            Maximal scattering vector norm [:math:`A^{-1}`]. 
+            Maximal scattering vector norm [:math:`A^{-1}`].
         min_bound : float, optional
             Minimal scattering vector norm [:math:`A^{-1}`].
 
@@ -379,7 +379,7 @@ def lattice_system(a, b, c, alpha, beta, gamma, atol=1e-2):
         Angles between lattice vectors [deg]
     atol : float, optional
         Absolute tolerance (in Angstroms)
-    
+
     Returns
     -------
     system : LatticeSystem
@@ -450,7 +450,7 @@ def _two_equal(iterable, atol):
 
 
 def cyclic(iterable):
-    """ 
+    """
     Yields cyclic permutations of an iterable.
 
     Examples

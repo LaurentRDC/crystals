@@ -68,9 +68,9 @@ class AbstractStructureParser(AbstractContextManager):
 
     @abstractmethod
     def lattice_vectors(self):
-        """ 
+        """
         Returns the lattice vectors associated to a structure.
-        
+
         Returns
         -------
         lv : iterable of ndarrays, shape (3,)
@@ -106,7 +106,7 @@ class AbstractStructureParser(AbstractContextManager):
 class PDBParser(AbstractStructureParser):
     """
     Collection of methods that parses Protein DataBank (PDB) files. This object should be used as a context manager.
-    
+
     Parameters
     ----------
     ID : str
@@ -115,8 +115,8 @@ class PDBParser(AbstractStructureParser):
     download_dir : path-like object or None, optional
         Directory where to save the PDB file.
     overwrite : bool, optional
-        Whether or not to overwrite files in cache if they exist. If no revision 
-        number is provided, files will always be overwritten. 
+        Whether or not to overwrite files in cache if they exist. If no revision
+        number is provided, files will always be overwritten.
     """
 
     def __init__(self, ID, download_dir=None, overwrite=False):
@@ -135,7 +135,7 @@ class PDBParser(AbstractStructureParser):
     def download_pdb_file(
         pdb_code, download_dir=None, server="ftp://ftp.wwpdb.org", overwrite=False
     ):
-        """ 
+        """
         Retrieves a PDB structure file from a PDB server and
         stores it in a local file tree.
 
@@ -194,13 +194,13 @@ class PDBParser(AbstractStructureParser):
 
     @lru_cache(maxsize=1)
     def lattice_vectors(self):
-        """ 
+        """
         Returns the lattice vectors associated to a PDB structure.
-        
+
         Returns
         -------
         lv : list of ndarrays, shape (3,)
-        
+
         Raises
         ------
         ParseError
@@ -223,13 +223,13 @@ class PDBParser(AbstractStructureParser):
         return Lattice.from_parameters(a, b, c, alpha, beta, gamma).lattice_vectors
 
     def helices(self, ignored=("HOH", "LI1", "SQU")):
-        """ Returns an iterable of helices present in the protein. 
+        """Returns an iterable of helices present in the protein.
 
         Parameters
         ----------
         ignored : iterable of str, optional
             3-letter string code for residues to ignore.
-        
+
         Returns
         -------
         hex : iterable of Helix instances
@@ -255,13 +255,13 @@ class PDBParser(AbstractStructureParser):
         return helices
 
     def sheets(self, ignored=("HOH", "LI1", "SQU")):
-        """ Returns an iterable of sheets present in the protein. 
+        """Returns an iterable of sheets present in the protein.
 
         Parameters
         ----------
         ignored : iterable of str, optional
             3-letter string code for residues to ignore.
-        
+
         Returns
         -------
         sheets : iterable of Sheet instances
@@ -287,13 +287,13 @@ class PDBParser(AbstractStructureParser):
         return sheets
 
     def secondary_structures(self, ignored=("HOH", "LI1", "SQU")):
-        """ Iterable of all secondary structures present in this file. 
-        
+        """Iterable of all secondary structures present in this file.
+
         Parameters
         ----------
         ignored : iterable of str, optional
             3-letter string code for residues to ignore.
-        
+
         Returns
         -------
         structures : iterable of SecondaryStructure instances
@@ -301,14 +301,14 @@ class PDBParser(AbstractStructureParser):
         return list(self.sheets()) + list(self.helices())
 
     def residues(self, ignored=("HOH", "LI1", "SQU")):
-        """ 
+        """
         Iterable of residues present in the structure.
 
         Parameters
         ----------
         ignored : iterable of str, optional
             3-letter string code for residues to ignore.
-        
+
         Returns
         -------
         res : iterable of Residue instances
@@ -362,7 +362,7 @@ class PDBParser(AbstractStructureParser):
 
     def atoms(self):
         """
-        Returns a list of atoms associated with a PDB structure in fractional coordinates. 
+        Returns a list of atoms associated with a PDB structure in fractional coordinates.
         These atoms form the asymmetric unit cell.
 
         Returns
@@ -463,14 +463,14 @@ class CIFParser(AbstractStructureParser):
 
     @staticmethod
     def sym_ops_from_equiv(equiv_site):
-        """ Parse a symmetry operator from an equivalent-site representation 
-        
+        """Parse a symmetry operator from an equivalent-site representation
+
         Parameters
         ----------
         equiv_site : str or iterable of strings
             Either comma-separated string e.g. "+y, +x, -z + 1/2" or an
-            iterable of the comma-separated values, e.g. ["+y", "+x", "-z + 1/2"] 
-        
+            iterable of the comma-separated values, e.g. ["+y", "+x", "-z + 1/2"]
+
         Returns
         -------
         sym_ops : ndarray, shape (4,4)
@@ -562,7 +562,7 @@ class CIFParser(AbstractStructureParser):
 
     @lru_cache(maxsize=1)
     def lattice_parameters(self):
-        """ 
+        """
         Returns the lattice parameters associated to a CIF structure.
 
         Returns
@@ -570,7 +570,7 @@ class CIFParser(AbstractStructureParser):
         a, b, c : float
             Lengths of lattice vectors [Angstroms]
         alpha, beta, gamma : float
-            Angles of lattice vectors [degrees]. 
+            Angles of lattice vectors [degrees].
         """
         block = self.structure_block
 
@@ -592,9 +592,9 @@ class CIFParser(AbstractStructureParser):
 
     @lru_cache(maxsize=1)
     def lattice_vectors(self):
-        """ 
+        """
         Returns the lattice vectors associated to a CIF structure.
-        
+
         Returns
         -------
         lv : list of ndarrays, shape (3,)
@@ -723,7 +723,7 @@ class CIFParser(AbstractStructureParser):
 
 class CODParser(CIFParser):
     """
-    Collection of methods that parses CIF files retrieved from the Crystallography Open Database. 
+    Collection of methods that parses CIF files retrieved from the Crystallography Open Database.
     The preferred method of using this object is as a context manager.
 
     Parameters
@@ -735,9 +735,9 @@ class CODParser(CIFParser):
     download_dir : path-like object or None, optional
         Directory where to save the CIF file.
     overwrite : bool, optional
-        Whether or not to overwrite files in cache if they exist. If no revision 
-        number is provided, files will always be overwritten. 
-    
+        Whether or not to overwrite files in cache if they exist. If no revision
+        number is provided, files will always be overwritten.
+
     Raises
     ------
     RuntimeError : If the file could not be downloaded from any of the mirrors.
@@ -764,7 +764,7 @@ class CODParser(CIFParser):
     @classmethod
     def download_cif(cls, download_dir, num, revision=None, overwrite=False):
         """
-        Download a CIF file from the Crystallography Open Database. 
+        Download a CIF file from the Crystallography Open Database.
 
         Parameters
         ----------
@@ -775,18 +775,18 @@ class CODParser(CIFParser):
         revision : int or None, optional
             Revision number. If None (default), the latest revision is used.
         overwrite : bool, optional
-            Whether or not to overwrite files in cache if they exist. If no revision 
-            number is provided, files will always be overwritten. 
+            Whether or not to overwrite files in cache if they exist. If no revision
+            number is provided, files will always be overwritten.
 
         Returns
         -------
         path : pathlib.Path
             Path to the downloaded file.
-        
+
         Raises
         ------
         RuntimeError : If the file could not be downloaded from any of the mirrors.
-        
+
         Notes
         -----
         This function will try three download mirrors. Warnings will be emitted in case
@@ -836,26 +836,26 @@ class CODParser(CIFParser):
 
 class MPJParser(CIFParser):
     """
-    Collection of methods that parses CIF files retrieved from the Materials Project. 
+    Collection of methods that parses CIF files retrieved from the Materials Project.
     The preferred method of using this object is as a context manager.
 
     Parameters
     ----------
     query : str
-        The query can be a Materials Project material id (e.g., `"mp-1234"`), a 
-        formula, e.g. (`"Fe2O3"`), or a chemical system ("-" separated list of elemments, 
+        The query can be a Materials Project material id (e.g., `"mp-1234"`), a
+        formula, e.g. (`"Fe2O3"`), or a chemical system ("-" separated list of elemments,
         e.g., `"Li-Fe-O"`).
     api_key : str or None, optional
-        An API key for accessing the Materials Project REST interface. 
+        An API key for accessing the Materials Project REST interface.
         Please obtain your API key at https://www.materialsproject.org/dashboard.
         If `None` (default), ``crystals`` will look for your API key in the
         `MATERIALS_PROJECT_API_KEY` environment variable.
     download_dir : path-like object or None, optional
         Directory where to save the CIF file. This is used for caching.
     overwrite : bool, optional
-        Whether or not to overwrite files in cache if they exist. If True, 
+        Whether or not to overwrite files in cache if they exist. If True,
         a new file will be downloaded, possibly overwriting previously-downloaded file.
-    
+
     Raises
     ------
     ValueError : if `api_key` is None and it could not be found in the environment variables.
@@ -888,28 +888,28 @@ class MPJParser(CIFParser):
 
     def download_cif(self, api_key, query, download_dir, overwrite=False):
         """
-        Download a CIF file from the Materials Project Database. 
+        Download a CIF file from the Materials Project Database.
 
         Parameters
         ----------
         api_key : str
-            An API key for accessing the Materials Project REST interface. 
+            An API key for accessing the Materials Project REST interface.
             Please obtain your API key at https://www.materialsproject.org/dashboard.
         query : str
-            The query can be a Materials Project material id (e.g., `"mp-1234"`), a 
-            formula, e.g. (`"Fe2O3"`), or a chemical system ("-" separated list of elemments, 
+            The query can be a Materials Project material id (e.g., `"mp-1234"`), a
+            formula, e.g. (`"Fe2O3"`), or a chemical system ("-" separated list of elemments,
             e.g., `"Li-Fe-O"`).
         download_dir : path-like object or None, optional
             Directory where to save the CIF file. This is used for caching.
         overwrite : bool, optional
-            Whether or not to overwrite files in cache if they exist. If True, 
+            Whether or not to overwrite files in cache if they exist. If True,
             a new file will be downloaded, possibly overwriting previously-downloaded file.
 
         Returns
         -------
         path : pathlib.Path
             Path to the downloaded file.
-        
+
         Raises
         ------
         ConnectionError : If the file could not be downloaded.
@@ -947,9 +947,9 @@ class MPJParser(CIFParser):
 
 class PWSCFParser(AbstractStructureParser):
     """
-    Collection of methods that parses output files from the Plane-Wave Self-Consistent 
+    Collection of methods that parses output files from the Plane-Wave Self-Consistent
     Field (PWSCF) program, part of the Quantum Espresso suite.
-    
+
     The preferred method of using this object is as a context manager.
 
     Parameters
@@ -1005,14 +1005,14 @@ class PWSCFParser(AbstractStructureParser):
 
     @property
     def celldm(self):
-        """ Crystallographic constants as defined by INPUT_PW. They are, in order:
+        """Crystallographic constants as defined by INPUT_PW. They are, in order:
 
         * a,b,c in ANGSTROM
 
         * cosAB = cosine of the angle between axis a and b (gamma)
 
         * cosAC = cosine of the angle between axis a and c (beta)
-        
+
         * cosBC = cosine of the angle between axis b and c (alpha)
 
         The constants are placed in a dictionary, indexed between 1 and 6.
@@ -1030,10 +1030,10 @@ class PWSCFParser(AbstractStructureParser):
         return params
 
     def lattice_vectors_alat(self):
-        """ 
-        Returns the lattice vectors associated to a structure. These lattice vectors are in 
+        """
+        Returns the lattice vectors associated to a structure. These lattice vectors are in
         units of `lattice parameters` [alat].
-        
+
         Returns
         -------
         lv : iterable of ndarrays, shape (3,)
@@ -1051,9 +1051,9 @@ class PWSCFParser(AbstractStructureParser):
         return tuple(np.array(tuple(map(float, a))) for a in (a1, a2, a3))
 
     def reciprocal_vectors_alat(self):
-        """ 
+        """
         Returns the reciprocal lattice vectors associated to a structure, in units of :math:`2 \pi / alat`.
-        
+
         Returns
         -------
         lv : iterable of ndarrays, shape (3,)
@@ -1071,9 +1071,9 @@ class PWSCFParser(AbstractStructureParser):
         return tuple(np.array(tuple(map(float, b))) for b in (b1, b2, b3))
 
     def lattice_vectors(self):
-        """ 
+        """
         Returns the lattice vectors associated to a structure [:math:`\AA`].
-        
+
         Returns
         -------
         lv : iterable of ndarrays, shape (3,)

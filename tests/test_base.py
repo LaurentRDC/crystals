@@ -94,8 +94,8 @@ class TestAtomicStructure(unittest.TestCase):
         self.assertEqual(transformed2, self.structure)
 
     def test_transform_subclass(self):
-        """ Test that the object returned by the transform() method is the 
-        same class as the method caller. """
+        """Test that the object returned by the transform() method is the
+        same class as the method caller."""
 
         class NewAtomicStructure(AtomicStructure):
             pass
@@ -187,8 +187,8 @@ class TestAtomicStructure(unittest.TestCase):
         self.assertSequenceEqual(arr.shape, (len(self.structure), 4))
 
     def test_picklable(self):
-        """ Test that Crystal instances can be pickled, and that the unpickled instance
-        is identical to the source """
+        """Test that Crystal instances can be pickled, and that the unpickled instance
+        is identical to the source"""
         pickled = pickle.dumps(self.structure)
         unpickled = pickle.loads(pickled)
         self.assertEqual(self.structure, unpickled)

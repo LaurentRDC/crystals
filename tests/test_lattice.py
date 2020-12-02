@@ -127,8 +127,8 @@ class TestLatticeParameters(unittest.TestCase):
             self.assertAlmostEqual(angle_between(a1, a2), 81)
 
     def test_reciprocal_and_back(self):
-        """ Create lattice from parameters, take reciprocal twice, 
-        and see if the parameters have changed. """
+        """Create lattice from parameters, take reciprocal twice,
+        and see if the parameters have changed."""
         triclinic = (3, 4, 20, 45, 90, 126)
         triclinic2 = Lattice.from_parameters(
             *triclinic
@@ -136,8 +136,8 @@ class TestLatticeParameters(unittest.TestCase):
         self.assertTrue(np.allclose(triclinic, triclinic2))
 
     def test_lattice_parameters_back_and_forth(self):
-        """ Test that the conversion between lattice vectors and lattice parameters
-        is working """
+        """Test that the conversion between lattice vectors and lattice parameters
+        is working"""
         for name in Crystal.builtins:
             with self.subTest(name):
                 c = Crystal.from_database(name)
@@ -166,8 +166,8 @@ class TestLatticeSystems(unittest.TestCase):
         self.assertEqual(l.lattice_system, LatticeSystem.rhombohedral)
 
     def test_monoclinic_lattice_system(self):
-        """ Test that the Lattice.lattice_system attribute is working properly for monoclinic lattice
-        including all possible permutations. """
+        """Test that the Lattice.lattice_system attribute is working properly for monoclinic lattice
+        including all possible permutations."""
         with self.subTest("permutation 1"):
             parameters = (1, 2, 3, 90, 115, 90)
             l = Lattice.from_parameters(*parameters)
@@ -184,8 +184,8 @@ class TestLatticeSystems(unittest.TestCase):
             self.assertEqual(l.lattice_system, LatticeSystem.monoclinic)
 
     def test_hexagonal_lattice_system(self):
-        """ Test that the Lattice.lattice_system attribute is working properly for hexagonal lattice,
-        including all possible permutations of lattice parameters. """
+        """Test that the Lattice.lattice_system attribute is working properly for hexagonal lattice,
+        including all possible permutations of lattice parameters."""
         with self.subTest("Gamma = 120deg"):
             parameters = (2, 2, 3, 90, 90, 120)
             l = Lattice.from_parameters(*parameters)
@@ -244,8 +244,8 @@ class TestLatticeMillerScattering(unittest.TestCase):
         )
 
     def test_back_and_forth(self):
-        """ Test that Lattice.miller_indices and Lattice.scattering_vector are
-        reciprocal to each other """
+        """Test that Lattice.miller_indices and Lattice.scattering_vector are
+        reciprocal to each other"""
         h, k, l = np.random.randint(-10, 10, size=(3,))
         vector = self.lattice.scattering_vector((h, k, l))
         hp, kp, lp = self.lattice.miller_indices(vector)
@@ -260,8 +260,8 @@ class TestBoundedReflections(unittest.TestCase):
         self.crystal = Crystal.from_database(next(iter(Crystal.builtins)))
 
     def test_bounded_reflections_negative(self):
-        """ Test that negative reflection bounds raise an Exception.
-        Otherwise, an infinite number of reflections will be generated """
+        """Test that negative reflection bounds raise an Exception.
+        Otherwise, an infinite number of reflections will be generated"""
         with self.assertRaises(ValueError):
             next(self.crystal.bounded_reflections(-1))
 

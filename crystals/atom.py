@@ -23,15 +23,15 @@ from .lattice import Lattice
 class Element:
     """
     Class representing an abtract chemical element, but no particular atom.
-    This class gives access to elemental properties, like atomic number, 
+    This class gives access to elemental properties, like atomic number,
     atomic mass, full element name, etc.
 
     Parameters
     ----------
     element : str, int, or Element
-        Elemental symbol (e.g. "He"), element name (e.g. "Helium"), 
+        Elemental symbol (e.g. "He"), element name (e.g. "Helium"),
         atomic number, or another `Element` instance.
-    
+
     Raises
     ------
     ValueError : if the element is not valid.
@@ -110,7 +110,7 @@ class Element:
 
 class Atom(Element):
     """
-    Container object for atomic data. 
+    Container object for atomic data.
 
     Parameters
     ----------
@@ -127,7 +127,7 @@ class Atom(Element):
     occupancy : float, optional
         Fractional occupancy. If None (default), occupancy is set to 1.0.
     tag : int or None, optional
-        Tag an atom with a unique identifier. Useful to keep track of atom order, for example 
+        Tag an atom with a unique identifier. Useful to keep track of atom order, for example
         in PWSCF output files. This is mostly for internal use.
     electronic_structure : ElectronicStructure or None, optional
         Electronic orbital structure for this atom. If `None` (default), the ground
@@ -209,9 +209,9 @@ class Atom(Element):
 
     @classmethod
     def from_ase(cls, atom):
-        """ 
-        Returns an Atom instance from an ASE atom 
-        
+        """
+        Returns an Atom instance from an ASE atom
+
         Parameters
         ----------
         atom : ase.Atom
@@ -225,7 +225,7 @@ class Atom(Element):
             coords=frac_coords(atom.position, lattice),
             magmom=atom.magmom,
         )
-    
+
     @property
     def electronic_structure(self):
         """
@@ -243,14 +243,14 @@ class Atom(Element):
 
     @property
     def coords_cartesian(self):
-        """ 
+        """
         Real-space position of the atom on the lattice, in Angstroms.
-                    
+
         Returns
         -------
         pos : `~numpy.ndarray`, shape (3,)
             Atomic position
-        
+
         Raises
         ------
         RuntimeError : if this atom is not place on a lattice
@@ -260,12 +260,12 @@ class Atom(Element):
     def transform(self, *matrices):
         """
         Return an Atom with fractional coordinates transformed according to symmetry operators.
-        
+
         Parameters
         ----------
         matrices : ndarrays, shape {(3,3), (4,4)}
             Transformation matrices.
-        
+
         Returns
         -------
         atm : Atom
@@ -292,14 +292,14 @@ class Atom(Element):
 def real_coords(frac_coords, lattice_vectors):
     """
     Calculates the real-space coordinates of the atom from fractional coordinates and lattice vectors.
-    
+
     Parameters
     ----------
     frac_coords : array-like, shape (3,)
         Fractional coordinates
     lattice_vectors : list of ndarrays, shape (3,)
         Lattice vectors of the crystal.
-        
+
     Returns
     -------
     coords : ndarray, shape (3,)
@@ -311,14 +311,14 @@ def real_coords(frac_coords, lattice_vectors):
 def frac_coords(real_coords, lattice_vectors):
     """
     Calculates the fractional coordinates of the atom from real-space coordinates and lattice vectors.
-    
+
     Parameters
     ----------
     real_coords : array-like, shape (3,)
         Real-space coordinates
     lattice_vectors : list of ndarrays, shape (3,)
         Lattice vectors of the crystal.
-        
+
     Returns
     -------
     coords : ndarray, shape (3,)
@@ -328,9 +328,9 @@ def frac_coords(real_coords, lattice_vectors):
 
 
 def distance_fractional(atm1, atm2):
-    """ 
+    """
     Calculate the distance between two atoms in fractional coordinates.
-    
+
     Parameters
     ----------
     atm1, atm2 : ``crystals.Atom``
@@ -339,7 +339,7 @@ def distance_fractional(atm1, atm2):
     -------
     dist : float
         Fractional distance between atoms.
-    
+
     Raises
     ------
     RuntimeError : if atoms are not associated with the same lattice.
@@ -353,9 +353,9 @@ def distance_fractional(atm1, atm2):
 
 
 def distance_cartesian(atm1, atm2):
-    """ 
+    """
     Calculate the distance between two atoms in cartesian coordinates.
-    
+
     Parameters
     ----------
     atm1, atm2 : ``crystals.Atom``
@@ -364,7 +364,7 @@ def distance_cartesian(atm1, atm2):
     -------
     dist : float
         Cartesian distance between atoms in Angstroms..
-    
+
     Raises
     ------
     RuntimeError : if atoms are not associated with the same lattice.
@@ -391,7 +391,7 @@ def is_element(element):
     func : callable
         Returns a function that can be used to check whether a `crystals.Atom`
         instance is of a certain element.
-    
+
     Examples
     --------
     >>> is_vanadium = is_element('V') # is_vanadium is a function
@@ -411,7 +411,7 @@ def is_element(element):
 @unique
 class Orbital(Enum):
     """
-    Enumeration of electronic orbitals, used to described atomic 
+    Enumeration of electronic orbitals, used to described atomic
     orbital structure.
 
     We note that `Orbital` instances are ordered according to the Madelung rule.
@@ -453,9 +453,9 @@ class Orbital(Enum):
 
     @classmethod
     def maximum_electrons(cls, shell):
-        """ 
-        Maximum number of electrons that can be placed in an orbital. 
-        
+        """
+        Maximum number of electrons that can be placed in an orbital.
+
         Parameters
         ----------
         shell : Orbital or str
@@ -501,7 +501,7 @@ class ElectronicStructure:
     ----------
     shells : dict[Orbital,int]
         Dictionary containing the number of electrons in each Orbital, e.g. `{"1s": 2}`.
-    
+
     Raises
     ------
     ValueError : if the electronic structure is not representable
@@ -509,7 +509,7 @@ class ElectronicStructure:
     Examples
     --------
     Electronic structures can be specified by hand:
-    
+
     >>> ElectronicStructure({"1s":2, "2s":2, "2p":2})
     < ElectronicStructure: 1s²2s²2p² >
 
@@ -520,7 +520,7 @@ class ElectronicStructure:
 
     Notes
     -----
-    Shells are allowed to be filled our of order deliberately, given that unusual 
+    Shells are allowed to be filled our of order deliberately, given that unusual
     electronic structures can arise from ultrafast photoexcitation.
     """
 
@@ -590,7 +590,7 @@ class ElectronicStructure:
         -------
         structure : ElectronicStructure
             Return the ground state electronic structure for a particular element.
-        
+
         Examples
         --------
         >>> ElectronicStructure.ground_state("Ne")

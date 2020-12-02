@@ -75,8 +75,8 @@ class TestElement(unittest.TestCase):
             Element(256)
 
     def test_input_equivalence(self):
-        """ Test that the constructor for `Element` supports atomic numbers, 
-        strings, and other `Element`s """
+        """Test that the constructor for `Element` supports atomic numbers,
+        strings, and other `Element`s"""
         expected = Element("H")
 
         self.assertEqual(Element("H"), expected)
@@ -161,8 +161,8 @@ class TestAtomicDistances(unittest.TestCase):
         self.assertEqual(distance_cartesian(atm1, atm2), 4.0)
 
     def test_distance_different_lattice(self):
-        """ Test that fractional and cartesian distances 
-        between atoms in different lattices raises an error. """
+        """Test that fractional and cartesian distances
+        between atoms in different lattices raises an error."""
         lattice1 = Lattice(np.eye(3))
         lattice2 = Lattice(2 * np.eye(3))
 
@@ -180,8 +180,8 @@ class TestAtomicDistances(unittest.TestCase):
 
 class TestIsElement(unittest.TestCase):
     def test_input_types(self):
-        """ Test that is_element() works as expected for all 
-        supported input types """
+        """Test that is_element() works as expected for all
+        supported input types"""
         atm = Atom("V", [0, 0, 0])
 
         self.assertTrue(is_element(atm.element)(atm))
@@ -191,8 +191,8 @@ class TestIsElement(unittest.TestCase):
 
 class TestOrbital(unittest.TestCase):
     def test_madelung_rule(self):
-        """ Test that the orbitals are listed in the Madelung rule order,
-        which is the filling order. """
+        """Test that the orbitals are listed in the Madelung rule order,
+        which is the filling order."""
 
         enumeration = [shell.value for shell in Orbital]
         self.assertEqual(MADELUNG, enumeration)

@@ -28,7 +28,7 @@ class Residue(AtomicStructure):
 
         operators : iterable of array_like
             Symmetry operators, either 3x3 or 4x4.
-        
+
         Returns
         -------
         transformed : Residue
@@ -78,7 +78,7 @@ class SecondaryStructure(AtomicStructure):
 
         operators : iterable of array_like
             Symmetry operators, either 3x3 or 4x4.
-        
+
         Returns
         -------
         transformed : SecondaryStructure
@@ -116,7 +116,7 @@ class Helix(SecondaryStructure):
 
         operators : iterable of array_like
             Symmetry operators, either 3x3 or 4x4.
-        
+
         Returns
         -------
         transformed : Helix
@@ -143,7 +143,7 @@ class Sheet(SecondaryStructure):
 
         operators : iterable of array_like
             Symmetry operators, either 3x3 or 4x4.
-        
+
         Returns
         -------
         transformed : Sheet

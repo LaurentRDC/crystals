@@ -56,8 +56,8 @@ class TestPDBParser(unittest.TestCase):
                     pass  # TODO: find a test for this.
 
     def test_symmetry_operators(self):
-        """ Test that the non-translation part of the symmetry_operators is an invertible
-        matrix of determinant 1 | -1 """
+        """Test that the non-translation part of the symmetry_operators is an invertible
+        matrix of determinant 1 | -1"""
         with tempfile.TemporaryDirectory() as temp_dir:
             with PDBParser("1fbb", download_dir=temp_dir) as parser:
                 for sym_op in parser.symmetry_operators():
@@ -95,8 +95,8 @@ class TestPDBParserAgainstBioPython(unittest.TestCase):
         self.biopdb_parser = biopdb.PDBParser()
 
     def test_chemical_composition(self):
-        """ Test crystals.PDBParser returns the same chemical composition as BIO.PDB.PDBParser implementation,
-        i.e. the same elements in the right proportions. """
+        """Test crystals.PDBParser returns the same chemical composition as BIO.PDB.PDBParser implementation,
+        i.e. the same elements in the right proportions."""
         with catch_warnings():
             filterwarnings(
                 "ignore", category=biopdb.PDBExceptions.PDBConstructionWarning
@@ -201,8 +201,8 @@ class TestCIFParser(unittest.TestCase):
                         self.assertGreaterEqual(atm.coords_fractional.min(), 0)
 
     def test_symmetry_operators(self):
-        """ Test that the non-translation part of the symmetry_operators is an invertible
-        matrix of determinant 1 | -1 """
+        """Test that the non-translation part of the symmetry_operators is an invertible
+        matrix of determinant 1 | -1"""
         for name in self._cif_files():
             with self.subTest(name.split("\\")[-1]):
                 with CIFParser(name) as p:
@@ -211,8 +211,8 @@ class TestCIFParser(unittest.TestCase):
                         self.assertAlmostEqual(abs(np.linalg.det(t)), 1)
 
     def test_international_number(self):
-        """ Test that the international space group number  found by 
-        CIFParser is the same as spglib's """
+        """Test that the international space group number  found by
+        CIFParser is the same as spglib's"""
         for name in self._cif_files():
             with self.subTest(name.split("\\")[-1]):
                 with CIFParser(name) as p:

@@ -143,20 +143,20 @@ def write_cif(crystal, fname):
 
 
 def ase_atoms(crystal, **kwargs):
-    """ 
-    Convert a ``crystals.Crystal`` object into an ``ase.Atoms`` object. 
+    """
+    Convert a ``crystals.Crystal`` object into an ``ase.Atoms`` object.
     Keyword arguments are passed to ``ase.Atoms`` constructor.
-    
+
     Parameters
     ----------
     crystal : crystals.Crystal
         Crystal to be converted.
-    
+
     Returns
     -------
     atoms : ase.Atoms
         Group of atoms ready for ASE's routines.
-    
+
     Raises
     ------
     ImportError : If ASE is not installed

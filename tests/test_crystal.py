@@ -131,8 +131,8 @@ class TestCrystalSpecialMethods(unittest.TestCase):
 
 class TestCrystalConstructors(unittest.TestCase):
     def test_builtins(self):
-        """ Test that all names in Crystal.builtins build without errors,
-        and that Crystal.source is correctly recorded. """
+        """Test that all names in Crystal.builtins build without errors,
+        and that Crystal.source is correctly recorded."""
         for name in Crystal.builtins:
             with self.subTest(name):
                 c = Crystal.from_database(name)
@@ -206,8 +206,8 @@ class TestIndexedBy(unittest.TestCase):
 # @unittest.skipIf(bool(os.environ.get('CI', False)), reason="Flaky tests")
 class TestSymmetryReduction(unittest.TestCase):
     def test_trivial(self):
-        """ Test that the symmetry_reduction function returns the unit cell when
-        there is only one possibility. """
+        """Test that the symmetry_reduction function returns the unit cell when
+        there is only one possibility."""
         ucell = set([Atom("H", coords=[0, 0, 0])])
         symops = [np.eye(4)]
         asym_cell = symmetry_reduction(ucell, symops)
@@ -215,9 +215,9 @@ class TestSymmetryReduction(unittest.TestCase):
 
     @retry_test(max_retries=5)
     def test_simple_translation(self):
-        """ Test that symmetry_reduction works on a unitcell where two atoms are
-        linked by a translation """
-        symops = [np.eye(4), translation_matrix([0, 0, 1/3])]
+        """Test that symmetry_reduction works on a unitcell where two atoms are
+        linked by a translation"""
+        symops = [np.eye(4), translation_matrix([0, 0, 1 / 3])]
         asym_cell = set([Atom("H", coords=[0, 0, 0])])
         unitcell = set(symmetry_expansion(asym_cell, symmetry_operators=symops))
 

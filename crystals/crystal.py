@@ -32,17 +32,17 @@ is_structure = lambda s: isinstance(s, AtomicStructure)
 
 class Crystal(AtomicStructure, Lattice):
     """
-    The :class:`Crystal` class is a set-like container that represent 
-    crystalline structures. In addition to constructing the ``Crystal`` 
-    object yourself, other constructors are also available 
+    The :class:`Crystal` class is a set-like container that represent
+    crystalline structures. In addition to constructing the ``Crystal``
+    object yourself, other constructors are also available
     (and preferred):
-    
+
     * ``Crystal.from_cif``: create an instance from a CIF file;
-    
+
     * ``Crystal.from_pdb``: create an instance from a Protein Data Bank entry;
-    
+
     * ``Crystal.from_database``: create an instance from the internal database of CIF files;
-    
+
     * ``Crystal.from_cod``: create an instance from a Crystallography Open Database entry.
 
     * ``Crystal.from_mp``: create an instance from the Materials Project database.
@@ -54,10 +54,10 @@ class Crystal(AtomicStructure, Lattice):
     Parameters
     ----------
     unitcell : iterable of ``Atom`` or ``AtomicStructures``
-        Unit cell atoms or substructures. It is assumed that the atoms are 
-        in fractional coordinates. 
+        Unit cell atoms or substructures. It is assumed that the atoms are
+        in fractional coordinates.
     lattice_vectors : iterable of array_like
-        Lattice vectors. If ``lattice_vectors`` is provided as a 3x3 array, it 
+        Lattice vectors. If ``lattice_vectors`` is provided as a 3x3 array, it
         is assumed that each lattice vector is a row.
     source : str or None, optional
         Provenance, e.g. filename. Only used for bookkeeping.
@@ -84,9 +84,9 @@ class Crystal(AtomicStructure, Lattice):
             # The explicit comparison of lattices sidesteps the problem
             # of evaluating NotImplemented in a bool context, which has been deprecated
             # as of Python 3.9
-            return (Lattice(self.lattice_vectors) == Lattice(other.lattice_vectors)) and super(
-                AtomicStructure, self
-            ).__eq__(other)
+            return (
+                Lattice(self.lattice_vectors) == Lattice(other.lattice_vectors)
+            ) and super(AtomicStructure, self).__eq__(other)
         return NotImplemented
 
     def __hash__(self):
@@ -128,7 +128,7 @@ class Crystal(AtomicStructure, Lattice):
 
     @classmethod
     def from_database(cls, name, **kwargs):
-        """ 
+        """
         Returns a Crystal object create from the internal CIF database.
         Keyword arguments are passed to the class constructor.
 
@@ -147,8 +147,8 @@ class Crystal(AtomicStructure, Lattice):
 
     @classmethod
     def from_cod(cls, num, revision=None, download_dir=None, overwrite=False, **kwargs):
-        """ 
-        Returns a Crystal object built from the Crystallography Open Database. 
+        """
+        Returns a Crystal object built from the Crystallography Open Database.
         Keyword arguments are passed to the class constructor.
 
         Parameters
@@ -160,8 +160,8 @@ class Crystal(AtomicStructure, Lattice):
         download_dir : path-like object, optional
             Directory where to save the CIF file. Default is a local folder in the current directory
         overwrite : bool, optional
-            Whether or not to overwrite files in cache if they exist. If no revision 
-            number is provided, files will always be overwritten. 
+            Whether or not to overwrite files in cache if they exist. If no revision
+            number is provided, files will always be overwritten.
         """
         with CODParser(num, revision, download_dir, overwrite) as parser:
             return cls(
@@ -175,25 +175,25 @@ class Crystal(AtomicStructure, Lattice):
 
     @classmethod
     def from_mp(cls, query, api_key=None, download_dir=None, overwrite=False, **kwargs):
-        """ 
-        Returns a Crystal object built from the Materials Project. 
+        """
+        Returns a Crystal object built from the Materials Project.
         Keyword arguments are passed to the class constructor.
 
         Parameters
         ----------
         query : str
-            The query can be a Materials Project material id (e.g., `"mp-1234"`), a 
-            formula, e.g. (`"Fe2O3"`), or a chemical system ("-" separated list of elemments, 
+            The query can be a Materials Project material id (e.g., `"mp-1234"`), a
+            formula, e.g. (`"Fe2O3"`), or a chemical system ("-" separated list of elemments,
             e.g., `"Li-Fe-O"`).
         api_key : str or None, optional
-            An API key for accessing the Materials Project REST interface. 
+            An API key for accessing the Materials Project REST interface.
             Please obtain your API key at https://www.materialsproject.org/dashboard.
             If `None` (default), ``crystals`` will look for your API key in the
             `MATERIALS_PROJECT_API_KEY` environment variable.
         download_dir : path-like object or None, optional
             Directory where to save the CIF file. This is used for caching.
         overwrite : bool, optional
-            Whether or not to overwrite files in cache if they exist. If True, 
+            Whether or not to overwrite files in cache if they exist. If True,
             a new file will be downloaded, possibly overwriting previously-downloaded file.
         """
         with MPJParser(
@@ -226,8 +226,8 @@ class Crystal(AtomicStructure, Lattice):
         download_dir : path-like object, optional
             Directory where to save the PDB file.
         overwrite : bool, optional
-            Whether or not to overwrite files in cache if they exist. If no revision 
-            number is provided, files will always be overwritten. 
+            Whether or not to overwrite files in cache if they exist. If no revision
+            number is provided, files will always be overwritten.
         """
         with PDBParser(ID=ID, download_dir=download_dir) as parser:
             return cls(
@@ -263,7 +263,7 @@ class Crystal(AtomicStructure, Lattice):
         """
         Returns a Crystal object created from an ASE Atoms object.
         Keyword arguments are passed to the class constructor.
-        
+
         Parameters
         ----------
         atoms : ase.Atoms
@@ -308,9 +308,9 @@ class Crystal(AtomicStructure, Lattice):
         return cls(unitcell=atoms, lattice_vectors=lattice_vectors, **kwargs)
 
     def primitive(self, symprec=1e-2):
-        """ 
+        """
         Returns a Crystal object in the primitive unit cell.
-        
+
         Parameters
         ----------
         symprec : float, optional
@@ -325,7 +325,7 @@ class Crystal(AtomicStructure, Lattice):
         Raises
         ------
         RuntimeError : If primitive cell could not be found.
-        
+
         Notes
         -----
         Optional atomic properties (e.g magnetic moment) might be lost in the reduction.
@@ -339,9 +339,9 @@ class Crystal(AtomicStructure, Lattice):
         return self._from_spglib_cell(*search, source=self.source)
 
     def ideal(self, symprec=1e-2):
-        """ 
+        """
         Returns a Crystal object with an idealized unit cell.
-        
+
         Parameters
         ----------
         symprec : float, optional
@@ -350,12 +350,12 @@ class Crystal(AtomicStructure, Lattice):
         Returns
         -------
         ideal : Crystal
-            Crystal with idealized cell. 
+            Crystal with idealized cell.
 
         Raises
         ------
         RuntimeError : If an ideal cell could not be found.
-        
+
         Notes
         -----
         Optional atomic properties (e.g magnetic moment) might be lost in the symmetrization.
@@ -376,9 +376,9 @@ class Crystal(AtomicStructure, Lattice):
         Parameters
         ----------
         n1, n2, n3 : int
-            Repeat along the `a1`, `a2`, and `a3` lattice vectors. For example, 
+            Repeat along the `a1`, `a2`, and `a3` lattice vectors. For example,
             ``(1, 1, 1)`` represents the trivial supercell.
-        
+
         Returns
         -------
         cell : AtomicStructure
@@ -387,27 +387,27 @@ class Crystal(AtomicStructure, Lattice):
         return Supercell(crystal=self, dimensions=(n1, n2, n3))
 
     def symmetry(self, symprec=1e-2, angle_tolerance=-1.0):
-        """ 
-        Returns a dictionary containing space-group information. This information 
+        """
+        Returns a dictionary containing space-group information. This information
         is computed from the crystal unit cell.
-        
+
         Parameters
         ----------
         symprec : float, optional
             Symmetry-search distance tolerance in Cartesian coordinates [Angstroms].
         angle_tolerance: float, optional
-            Symmetry-search tolerance in degrees. If the value is negative (default), 
+            Symmetry-search tolerance in degrees. If the value is negative (default),
             an internally optimized routine is used to judge symmetry.
-        
+
         Returns
         -------
         info : dict
             Dictionary of space-group information. The following keys are available:
 
-            * ``'international_symbol'``: International Tables of Crystallography 
+            * ``'international_symbol'``: International Tables of Crystallography
               space-group symbol (short);
 
-            * ``'international_full'``: International Tables of 
+            * ``'international_full'``: International Tables of
               Crystallography space-group full symbol;
 
             * ``'hall_symbol'`` : Hall symbol;
@@ -416,21 +416,21 @@ class Crystal(AtomicStructure, Lattice):
 
             *``'centering'``: Centering-type ("P", "F", etc.);
 
-            * ``'pointgroup'`` : International Tables of 
+            * ``'pointgroup'`` : International Tables of
               Crystallography point-group;
 
-            * ``'international_number'`` : International Tables of 
+            * ``'international_number'`` : International Tables of
               Crystallography space-group number (between 1 and 230);
 
             * ``'hall_number'`` : Hall number (between 1 and 531).
-        
+
         Raises
         ------
         RuntimeError : if symmetry-determination has not succeeded.
-        
+
         Notes
         -----
-        Note that crystals generated from the Protein Data Bank are often incomplete; 
+        Note that crystals generated from the Protein Data Bank are often incomplete;
         in such cases the space-group information will be incorrect.
         """
         dataset = get_symmetry_dataset(
@@ -476,7 +476,7 @@ class Crystal(AtomicStructure, Lattice):
         ----------
         symprec : float, optional
             Symmetry-search distance tolerance in Cartesian coordinates [Angstroms].
-        
+
         Returns
         -------
         sym_ops : iterable of array_like, shapes (4,4)
@@ -514,7 +514,7 @@ class Crystal(AtomicStructure, Lattice):
         ----------
         symprec : float, optional
             Symmetry-search distance tolerance in Cartesian coordinates [Angstroms].
-        
+
         Returns
         -------
         sym_ops : iterable of array_like, shapes (4,4)
@@ -597,13 +597,13 @@ class Crystal(AtomicStructure, Lattice):
     def indexed_by(self, lattice):
         """
         Return a crystal structure, indexed by another lattice/crystal structure.
-        
+
         Parameters
         ----------
         lattice : Crystal, Lattice, or array_like, shape (3,3)
             Lattice or Crystal by which to index the structure. ``lattice`` can also be a 3x3 array,
-            where every row is a lattice vector. 
-        
+            where every row is a lattice vector.
+
         Returns
         -------
         crystal : Crystal
@@ -632,8 +632,8 @@ class Crystal(AtomicStructure, Lattice):
         return self._to_string(natoms=len(self))
 
     def _to_string(self, natoms):
-        """ Generate a string representation of this Crystal. Only include
-         a maximum of `natoms` if provided. """
+        """Generate a string representation of this Crystal. Only include
+        a maximum of `natoms` if provided."""
 
         # Note : Crystal subclasses need not override this method
         # since the class name is dynamically determined
@@ -667,12 +667,12 @@ class Crystal(AtomicStructure, Lattice):
         return rep
 
     def to_cif(self, filename):
-        """ 
-        Convert this `Crystal` instance to a CIF file. 
+        """
+        Convert this `Crystal` instance to a CIF file.
 
         Note that some information may be lost in the translation. However, we guarantee that
         reading a structure from a file, and then writing back to the same format is idempotent.
-        
+
         Parameters
         ----------
         filename : path-like
@@ -686,12 +686,12 @@ class Crystal(AtomicStructure, Lattice):
         write_cif(self, filename)
 
     def to_xyz(self, filename):
-        """ 
-        Convert this `Crystal` instance to a XYZ file. 
+        """
+        Convert this `Crystal` instance to a XYZ file.
 
         Note that some information may be lost in the translation. However, we guarantee that
         reading a structure from a file, and then writing back to the same format is idempotent.
-        
+
         Parameters
         ----------
         filename : path-like
@@ -705,18 +705,18 @@ class Crystal(AtomicStructure, Lattice):
         write_xyz(self, filename)
 
     def to_ase(self, **kwargs):
-        """ 
-        Convert a into an ``ase.Atoms`` object. Keyword arguments are passed 
+        """
+        Convert a into an ``ase.Atoms`` object. Keyword arguments are passed
         to ``ase.Atoms`` constructor.
 
         Note that some information may be lost in the translation. However, we guarantee that
         reading a structure from a file, and then writing back to the same format is idempotent.
-    
+
         Returns
         -------
         atoms : ase.Atoms
             Group of atoms ready for ASE's routines.
-    
+
         Raises
         ------
         ImportError : If ASE is not installed
@@ -731,13 +731,13 @@ class Crystal(AtomicStructure, Lattice):
 
 class Supercell(AtomicStructure):
     """
-    The :class:`Supercell` class is a set-like container that represents a 
+    The :class:`Supercell` class is a set-like container that represents a
     supercell of crystalline structures.
 
     It is recommended that you do not instantiate a :class:`Supercell` by hand, but rather
     create a ``Crystal`` object and use the ``Crystal.supercell`` method.
 
-    To iterate over all atoms in the supercell, use this object as an iterable. 
+    To iterate over all atoms in the supercell, use this object as an iterable.
     To recover the underlying crystal, use the ``Supercell.crystal`` attribute.
 
     Parameters
@@ -808,19 +808,19 @@ class CenteringType(Enum):
 
 def symmetry_expansion(atoms, symmetry_operators):
     """
-    Generate a set of unique atoms and structures from an asymmetric cell 
+    Generate a set of unique atoms and structures from an asymmetric cell
     and symmetry operators.
 
     Parameters
     ----------
     atoms : iterable of ``Atom`` and/or ``AtomicStructure``
-        Asymmetric unit cell atoms. It is assumed that the atomic 
+        Asymmetric unit cell atoms. It is assumed that the atomic
         coordinates are in fractional form. Transformations work
         the same way for ``Atom`` objects and ``AtomicStructures``
         objects: a copy is made and moved to the symmetric location.
     symmetry_operators : iterable of array_like
         Symmetry operators that generate the full unit cell.
-    
+
     Yields
     ------
     it : ``Atom`` and/or ``AtomicStructure``
@@ -848,8 +848,8 @@ def symmetry_expansion(atoms, symmetry_operators):
             unique_atoms.add(new)
 
     def _normalize_fractional_coordinates(struct):
-        """ Ensure that all atoms in this structure have fractional coordinates that are valid, i.e.
-        in [0, 1). Atoms are changed in-place. """
+        """Ensure that all atoms in this structure have fractional coordinates that are valid, i.e.
+        in [0, 1). Atoms are changed in-place."""
         for atm in struct.atoms:
             atm.coords_fractional[:] = np.mod(atm.coords_fractional, 1)
 
@@ -870,7 +870,7 @@ def symmetry_expansion(atoms, symmetry_operators):
 def symmetry_reduction(unitcell, symmetry_operators):
     """
     Determine the asymmetric cell that generates `unitcell` when combined with
-    symmetry operations. Effectively, this function is the reciprocal operation 
+    symmetry operations. Effectively, this function is the reciprocal operation
     to `symmetry_expansion`.
 
     Note that the resulting asymmetric cell is not unique.
@@ -878,11 +878,11 @@ def symmetry_reduction(unitcell, symmetry_operators):
     Parameters
     ----------
     unitcell : iterable of ``Atom`` and/or ``AtomicStructure``
-        Unit cell. It is assumed that the atomic 
-        coordinates are in fractional form. 
+        Unit cell. It is assumed that the atomic
+        coordinates are in fractional form.
     symmetry_operators : iterable of array_like
         Symmetry operators that generate the full unit cell.
-    
+
     Returns
     -------
     asym_cell: set of ``Atom`` and/or ``AtomicStructure``

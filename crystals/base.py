@@ -20,8 +20,8 @@ class AtomicStructure:
     The :class:`AtomicStructures` class provides an abstraction over structure with and without
     substructure. Subclasses can be iterated over as an iterable of atoms. Order of iteration
     is not guaranteed.
-    
-    Hierarchical containership of :class:`AtomicStructures` is implemented, as well as 
+
+    Hierarchical containership of :class:`AtomicStructures` is implemented, as well as
     containership of :class:`Atom` instances.
 
     Parameters
@@ -39,8 +39,8 @@ class AtomicStructure:
         super().__init__(**kwargs)
 
     def __iter__(self):
-        """ Yields :class:`Atom` instances from the structure and substructures 
-        recursively. Order is not guaranteed. """
+        """Yields :class:`Atom` instances from the structure and substructures
+        recursively. Order is not guaranteed."""
         yield from iter(self.atoms)
         yield from chain.from_iterable(self.substructures)
 
@@ -103,9 +103,9 @@ class AtomicStructure:
         return rep + " >"
 
     def __array__(self, *args, **kwargs):
-        """ 
-        Returns an array in which each row represents an :class:`Atom` instance. 
-        Atoms are ordered by atomic number. 
+        """
+        Returns an array in which each row represents an :class:`Atom` instance.
+        Atoms are ordered by atomic number.
         """
         arr = np.empty(shape=(len(self), 4), *args, **kwargs)
         atoms = self.itersorted(key=attrgetter("atomic_number"))
@@ -114,19 +114,19 @@ class AtomicStructure:
         return arr
 
     def itersorted(self, *, key=None, reverse=False):
-        """ 
-        Yields :class:`Atom` in sorted order. By default, atoms are sorted by element. 
+        """
+        Yields :class:`Atom` in sorted order. By default, atoms are sorted by element.
 
         Parameters
         ----------
-        key : callable or None, optional 
+        key : callable or None, optional
             Function of one argument that is used to extract a comparison key for an :class:`Atom` instance.
         reverse : bool, optional
             If True, elements are yielded in reverse order.
-        
+
         Yields
         ------
-        atm : `Atom` 
+        atm : `Atom`
         """
         if key is None:
             key = attrgetter("element")
@@ -142,8 +142,8 @@ class AtomicStructure:
         Parameters
         ----------
         predicate : callable
-            Function that takes a single atom, and returns boolean. 
-        
+            Function that takes a single atom, and returns boolean.
+
         Returns
         -------
         out : AtomicStructure
@@ -152,8 +152,8 @@ class AtomicStructure:
 
     @property
     def chemical_composition(self):
-        """ 
-        Chemical composition of this structure as an ordered dictionary. Keys are elemental symbols. 
+        """
+        Chemical composition of this structure as an ordered dictionary. Keys are elemental symbols.
         Elements are in descending order of prevalence.
 
         Example
@@ -177,10 +177,10 @@ class AtomicStructure:
 
     @property
     def chemical_formula(self):
-        """ 
-        Empirical chemical formula for this structure based on the chemical symbols. 
-        The string is returned in Hill notation: symbols are alphabetically ordered 
-        except for carbon (C) and hydrogen (H), which are put first. 
+        """
+        Empirical chemical formula for this structure based on the chemical symbols.
+        The string is returned in Hill notation: symbols are alphabetically ordered
+        except for carbon (C) and hydrogen (H), which are put first.
 
         Example
         -------
@@ -225,7 +225,7 @@ class AtomicStructure:
         ----------
         operators : iterable of array_like
             Symmetry operators, either 3x3 or 4x4.
-        
+
         Returns
         -------
         transformed : AtomicStructure
