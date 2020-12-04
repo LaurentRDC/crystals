@@ -50,6 +50,8 @@ jobs:
 
     # Note the use of the -Wa flag to show DeprecationWarnings
     - name: Unit tests
+      env:
+        MATERIALS_PROJECT_API_KEY: ${{ secrets.MATERIALS_PROJECT_API_KEY }}
       run: |
         python -Wa -m unittest discover --verbose --buffer
     

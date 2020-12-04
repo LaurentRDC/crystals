@@ -2,6 +2,12 @@
 What's new
 ==========
 
+
+1.2.2
+-----
+
+* Fixed an issue where downloading structures from the Materials Project failed on macOS/Linux.
+
 1.2.1
 -----
 

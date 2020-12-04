@@ -924,7 +924,6 @@ class MPJParser(CIFParser):
         endpoint = f"https://materialsproject.org/rest/v2/materials/{query}/vasp/cif"
         headers = {
             "x-api-key": api_key,
-            "user-agent": f"crystals {__version__}, Python {sys.version}",
         }
 
         with requests.get(endpoint, headers=headers) as response:
