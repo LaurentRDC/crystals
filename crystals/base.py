@@ -137,8 +137,8 @@ class AtomicStructure:
         # This means that by sorting atoms by (a.element, np.sum(a.coords_fractional)),
         # we can have a stable order (i.e. sorted by fractional coordinates, which don't change)
         # but with elements grouped together.
-        # The part where sorting is stable is important because of doctests, 
-        # which are quite literal. 
+        # The part where sorting is stable is important because of doctests,
+        # which are quite literal.
         if key is None:
             key = lambda a: (a.element, np.sum(a.coords_fractional))
         yield from sorted(iter(self), key=key, reverse=reverse)
