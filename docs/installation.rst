@@ -16,17 +16,17 @@ For users of the conda package manager, ``crystals`` is also available from the 
 From source
 -----------
 
-``crystals`` can also be installed from source::
+``crystals`` can also be installed from source:
 
     git clone https://github.com/LaurentRDC/crystals.git
     cd crystals
     python setup.py install
 
-You can install the latest development version using ``pip`` as well::
+You can install the latest development version using ``pip`` as well:
 
     python -m pip install git+git://github.com/LaurentRDC/crystals.git
 
-To build documentation, you will need a few more packages, listed in ``dev-requirements.txt``. For example, to build documentation from source::
+To build documentation, you will need a few more packages, listed in ``dev-requirements.txt``. For example, to build documentation from source:
 
     git clone https://github.com/LaurentRDC/crystals.git
     cd crystals

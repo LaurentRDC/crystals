@@ -37,17 +37,17 @@ database:
 >>> Crystal.from_database('vo2-m1')
 < Crystal object with following unit cell:
     Atom O  @ (0.10, 0.21, 0.20)
-    Atom O  @ (0.61, 0.19, 0.21)
     Atom O  @ (0.10, 0.29, 0.70)
     Atom O  @ (0.39, 0.69, 0.29)
+    Atom O  @ (0.39, 0.81, 0.79)
+    Atom O  @ (0.61, 0.19, 0.21)
     Atom O  @ (0.61, 0.31, 0.71)
     Atom O  @ (0.90, 0.71, 0.30)
-    Atom O  @ (0.39, 0.81, 0.79)
     Atom O  @ (0.90, 0.79, 0.80)
-    Atom V  @ (0.24, 0.97, 0.03)
     Atom V  @ (0.24, 0.53, 0.53)
-    Atom V  @ (0.76, 0.48, 0.47)
+    Atom V  @ (0.24, 0.97, 0.03)
     Atom V  @ (0.76, 0.03, 0.97)
+    Atom V  @ (0.76, 0.48, 0.47)
 Lattice parameters:
     a=5.743Å, b=4.517Å, c=5.375Å
     α=90.000°, β=122.600°, γ=90.000°
