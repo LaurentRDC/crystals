@@ -60,7 +60,7 @@ def write_xyz(crystal, fname, comment=None):
         # Write atomic data row-by-row
         # For easier human readability, atoms are sorted
         # by element
-        for atom in crystal.itersorted():
+        for atom in sorted(crystal):
             x, y, z = atom.coords_cartesian
             row = f"  {atom.element:<2}       {x:10.5f}       {y:10.5f}       {z:10.5f}"
             file.write(row + "\n")

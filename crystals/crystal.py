@@ -640,7 +640,7 @@ class Crystal(AtomicStructure, Lattice):
         # Note : Crystal subclasses need not override this method
         # since the class name is dynamically determined
         rep = f"< {self.__class__.__name__} object with following unit cell:"
-        atoms = islice(self.itersorted(), natoms)
+        atoms = islice(sorted(self), natoms)
 
         # Note that repr(Atom(...)) includes these '< ... >'
         # We remove those for cleaner string representation
@@ -661,8 +661,10 @@ class Crystal(AtomicStructure, Lattice):
         rep += f"\n    α={alpha:.3f}°, β={beta:.3f}°, γ={gamma:.3f}°"
 
         # Show stochiometric information
+        # It is important that the chemical symbols are presented in order
+        # so that doctests are reproducible
         rep += "\nChemical composition:"
-        for chem_symbol, composition in self.chemical_composition.items():
+        for chem_symbol, composition in sorted(self.chemical_composition.items(), key=lambda t: t[0]):
             rep += f"\n    {chem_symbol}: {100 * composition:.3f}%"
         rep += " >"
         return rep

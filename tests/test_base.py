@@ -120,11 +120,7 @@ class TestAtomicStructure(unittest.TestCase):
     def test_itersorted(self):
         """ Test that AtomicStructure.itersorted() works as expected """
         sorted_from_structure = list(self.structure.itersorted())
-        sorted_from_list = list(
-            sorted(
-                self.structure, key=lambda a: (a.element, np.sum(a.coords_fractional))
-            )
-        )
+        sorted_from_list = list(sorted( self.structure ))
 
         self.assertListEqual(sorted_from_structure, sorted_from_list)
 

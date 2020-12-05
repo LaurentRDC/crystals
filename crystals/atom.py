@@ -206,6 +206,19 @@ class Atom(Element):
                 hash(self.electronic_structure),
             )
         )
+    
+    def __lt__(self, other):
+        # Here's a cool fact:
+        # Sorting n-tuples works as follows:
+        #   1. Sort by the first elements
+        #   2. If the first elements are equal, sort by the second elements;
+        #   3. and so on
+        # This means that by sorting atoms by (a.element, c1, c2 ,c3),
+        # we can have a stable order (i.e. sorted by fractional coordinates)
+        # but with elements grouped together.
+        # The part where sorting is stable is important because of doctests,
+        # which are quite literal.
+        return (self.element, *self.coords_fractional) < (other.element, *other.coords_fractional)
 
     @classmethod
     def from_ase(cls, atom):
