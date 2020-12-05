@@ -7,6 +7,7 @@ What's new
 -----
 
 * Fixed an issue where downloading structures from the Materials Project failed on macOS/Linux.
+* Code snippets in documentation are now tested for correctness.
 
 1.2.1
 -----
