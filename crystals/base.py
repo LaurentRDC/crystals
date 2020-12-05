@@ -94,7 +94,7 @@ class AtomicStructure:
         # We remove those for cleaner string representation
         # Sorting the atoms is also important, so that the expected outputs
         # in doctests don't change.
-        for atm in self.itersorted(key=lambda a: np.sum(a.coords_fractional)):
+        for atm in self.itersorted():
             rep += "\n    " + repr(atm).replace("<", "").replace(">", "").strip()
 
         if self.substructures:
@@ -110,7 +110,7 @@ class AtomicStructure:
         Atoms are ordered by atomic number.
         """
         arr = np.empty(shape=(len(self), 4), *args, **kwargs)
-        atoms = self.itersorted(key=attrgetter("atomic_number"))
+        atoms = self.itersorted()
         for row, atm in enumerate(atoms):
             arr[row, :] = np.array(atm, *args, **kwargs)
         return arr
@@ -130,8 +130,17 @@ class AtomicStructure:
         ------
         atm : `Atom`
         """
+        # Here's a cool fact:
+        # Sorting two-tuples works as follows:
+        #   1. Sort by the first elements
+        #   2. If the first elements are equal, sort by the second elements;
+        # This means that by sorting atoms by (a.element, np.sum(a.coords_fractional)),
+        # we can have a stable order (i.e. sorted by fractional coordinates, which don't change)
+        # but with elements grouped together.
+        # The part where sorting is stable is important because of doctests,
+        # which are quite literal.
         if key is None:
-            key = attrgetter("element")
+            key = lambda a: (a.element, np.sum(a.coords_fractional))
         yield from sorted(iter(self), key=key, reverse=reverse)
 
     def satisfying(self, predicate):

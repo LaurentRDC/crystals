@@ -245,13 +245,13 @@ from the :attr:`source` attribute::
         Atom O  @ (0.10, 0.21, 0.20)
         Atom O  @ (0.61, 0.19, 0.21)
         Atom O  @ (0.10, 0.29, 0.70)
-        Atom V  @ (0.24, 0.97, 0.03)
-        Atom V  @ (0.24, 0.53, 0.53)
         Atom O  @ (0.39, 0.69, 0.29)
         Atom O  @ (0.61, 0.31, 0.71)
-        Atom V  @ (0.76, 0.48, 0.47)
-        Atom V  @ (0.76, 0.03, 0.97)
         Atom O  @ (0.90, 0.71, 0.30)
+        Atom O  @ (0.39, 0.81, 0.79)
+        Atom O  @ (0.90, 0.79, 0.80)
+        Atom V  @ (0.24, 0.97, 0.03)
+        Atom V  @ (0.24, 0.53, 0.53)
           ... omitting 2 atoms ...
           ... use repr() to show the full cell ...
     Lattice parameters:

@@ -60,6 +60,7 @@ doctest_global_setup = """
 from crystals import Crystal, Atom, ElectronicStructure, Orbital, is_element
 """
 
+
 def autodoc_skip_member(app, what, name, obj, skip, options):
     exclusions = {"__weakref__", "__doc__", "__module__", "__dict__"}
     exclude = name in exclusions

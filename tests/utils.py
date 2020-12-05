@@ -5,12 +5,14 @@ from contextlib import suppress
 from functools import wraps, lru_cache
 import socket
 
+
 @lru_cache(maxsize=1)
 def connection_available():
     """ Returns whether or not an internet connection is available """
     with suppress(OSError), socket.create_connection(("www.google.com", 80)):
         return True
     return False
+
 
 def retry_test(max_retries):
     """ Retry the decorated test up to `max_retries` times if failure happens. """
