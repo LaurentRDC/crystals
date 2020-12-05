@@ -32,42 +32,48 @@ Here\'s a quick example of building a crystal from the internal
 database:
 
 ```python
-    >>> from crystals import Crystal
-    >>>
-    >>> vo2 = Crystal.from_database('vo2-m1')
-    >>> print(vo2)     # Short string representation
-    < Crystal object with following unit cell:
-        Atom O  @ (0.61, 0.31, 0.71)
-        Atom O  @ (0.90, 0.79, 0.80)
-        Atom O  @ (0.39, 0.69, 0.29)
-        Atom O  @ (0.10, 0.29, 0.70)
-        Atom O  @ (0.10, 0.21, 0.20)
-        Atom O  @ (0.90, 0.71, 0.30)
-        Atom O  @ (0.39, 0.81, 0.79)
-        Atom O  @ (0.61, 0.19, 0.21)
-        Atom V  @ (0.24, 0.97, 0.03)
-        Atom V  @ (0.76, 0.03, 0.97)
-          ... omitting 2 atoms ...
-          ... use repr() to show the full cell ...
-    Lattice parameters:
-        a=5.743Å, b=4.517Å, c=5.375Å
-        α=90.000°, β=122.600°, γ=90.000°
-    Chemical composition:
-        O: 66.667%
-        V: 33.333% >
+>>> from crystals import Crystal
+>>>
+>>> Crystal.from_database('vo2-m1')
+< Crystal object with following unit cell:
+    Atom O  @ (0.10, 0.21, 0.20)
+    Atom O  @ (0.61, 0.19, 0.21)
+    Atom O  @ (0.10, 0.29, 0.70)
+    Atom O  @ (0.39, 0.69, 0.29)
+    Atom O  @ (0.61, 0.31, 0.71)
+    Atom O  @ (0.90, 0.71, 0.30)
+    Atom O  @ (0.39, 0.81, 0.79)
+    Atom O  @ (0.90, 0.79, 0.80)
+    Atom V  @ (0.24, 0.97, 0.03)
+    Atom V  @ (0.24, 0.53, 0.53)
+    Atom V  @ (0.76, 0.48, 0.47)
+    Atom V  @ (0.76, 0.03, 0.97)
+Lattice parameters:
+    a=5.743Å, b=4.517Å, c=5.375Å
+    α=90.000°, β=122.600°, γ=90.000°
+Chemical composition:
+    O: 66.667%
+    V: 33.333% >
+
 ```
 
 Symmetry information is also readily available:
 
 ```python
-    >>> print(vo2.symmetry())
-    {'international_symbol': 'P2_1/c', 
-     'hall_symbol': '-P 2ybc', 
-     'hm_symbol': 'P121/c1',
-     'international_number': 14, 
-     'hall_number': 81, 
-     'international_full': 'P 1 2_1/c 1', 
-     'pointgroup': 'C2h'}
+>>> from crystals import Crystal
+>>> from pprint import pprint # pretty printing
+>>>
+>>> vo2 = Crystal.from_database('vo2-m1')
+>>> pprint(vo2.symmetry())
+{'centering': <CenteringType.primitive: 'P'>,
+ 'hall_number': 81,
+ 'hall_symbol': '-P 2ybc',
+ 'hm_symbol': 'P121/c1',
+ 'international_full': 'P 1 2_1/c 1',
+ 'international_number': 14,
+ 'international_symbol': 'P2_1/c',
+ 'pointgroup': '2/m'}
+
 ```
 
 ### Command-line script

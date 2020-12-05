@@ -63,3 +63,4 @@ jobs:
     - name: Doctests
       run: |
         python -m sphinx -b doctest docs build
+        python -m doctest README.md -v
