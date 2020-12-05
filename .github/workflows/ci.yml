@@ -55,7 +55,7 @@ jobs:
       run: |
         python -Wa -m unittest discover --verbose --buffer
     
-    - name: Build documentation
+    - name: Build and test documentation
       run: |
         pip install -r dev-requirements.txt
-        python setup.py build_sphinx
+        python -m sphinx -b doctest docs build

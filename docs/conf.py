@@ -16,6 +16,7 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.mathjax",
     "sphinx.ext.intersphinx",
+    "sphinx.ext.doctest",
 ]
 
 source_suffix = ".rst"
@@ -55,6 +56,9 @@ autodoc_default_flags = ["members"]
 autoclass_content = "both"
 autodoc_member_order = "groupwise"
 
+doctest_global_setup = """
+from crystals import Crystal, Atom, ElectronicStructure, Orbital, is_element
+"""
 
 def autodoc_skip_member(app, what, name, obj, skip, options):
     exclusions = {"__weakref__", "__doc__", "__module__", "__dict__"}

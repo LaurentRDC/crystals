@@ -50,9 +50,7 @@ constructed like so::
         a=4.078Å, b=4.078Å, c=4.078Å
         α=90.000°, β=90.000°, γ=90.000°
     Chemical composition:
-        Au: 100.000%
-    Source:
-        (...omitted...)crystals\cifs\Au.cif >
+        Au: 100.000% >
 
 `RCSB Protein DataBank <http://www.rcsb.org/>`_ files are even easier to handle; simply provide the 4-letter identification code
 and the structure file will be taken care of by :mod:`crystals`::
@@ -219,16 +217,18 @@ all atoms satisfying a certain condition can be found using `Crystal.satisfying`
 
 To make it easier, take a look at the :func:`is_element` function:
 
+    >>> from crystals import is_element
+    >>> vo2 = Crystal.from_database('vo2-m1')
     >>> vo2.satisfying( is_element('O') )
     < AtomicStructure object with following orphan atoms:
-        Atom O  @ (0.61, 0.31, 0.71)
         Atom O  @ (0.10, 0.21, 0.20)
-        Atom O  @ (0.10, 0.29, 0.70)
-        Atom O  @ (0.39, 0.81, 0.79)
-        Atom O  @ (0.90, 0.79, 0.80)
         Atom O  @ (0.61, 0.19, 0.21)
+        Atom O  @ (0.10, 0.29, 0.70)
         Atom O  @ (0.39, 0.69, 0.29)
-        Atom O  @ (0.90, 0.71, 0.30) >
+        Atom O  @ (0.61, 0.31, 0.71)
+        Atom O  @ (0.90, 0.71, 0.30)
+        Atom O  @ (0.39, 0.81, 0.79)
+        Atom O  @ (0.90, 0.79, 0.80) >
 
 If a :class:`Crystal` was generated from a file, the path to its file can be retrieved
 from the :attr:`source` attribute::
@@ -242,25 +242,24 @@ from the :attr:`source` attribute::
     >>> vo2 = Crystal.from_database('vo2-m1')
     >>> print(vo2)	   # Short string representation
     < Crystal object with following unit cell:
-        Atom O  @ (0.90, 0.79, 0.80)
-        Atom O  @ (0.90, 0.71, 0.30)
-        Atom O  @ (0.61, 0.31, 0.71)
-        Atom O  @ (0.39, 0.69, 0.29)
+        Atom O  @ (0.10, 0.21, 0.20)
         Atom O  @ (0.61, 0.19, 0.21)
         Atom O  @ (0.10, 0.29, 0.70)
-        Atom O  @ (0.10, 0.21, 0.20)
-        Atom O  @ (0.39, 0.81, 0.79)
-        Atom V  @ (0.76, 0.03, 0.97)
+        Atom V  @ (0.24, 0.97, 0.03)
+        Atom V  @ (0.24, 0.53, 0.53)
+        Atom O  @ (0.39, 0.69, 0.29)
+        Atom O  @ (0.61, 0.31, 0.71)
         Atom V  @ (0.76, 0.48, 0.47)
-        ... omitting 2 atoms ...
+        Atom V  @ (0.76, 0.03, 0.97)
+        Atom O  @ (0.90, 0.71, 0.30)
+          ... omitting 2 atoms ...
+          ... use repr() to show the full cell ...
     Lattice parameters:
         a=5.743Å, b=4.517Å, c=5.375Å
         α=90.000°, β=122.600°, γ=90.000°
     Chemical composition:
         O: 66.667%
-        V: 33.333%
-    Source:
-        (...omitted...)\crystals\cifs\vo2-m1.cif >
+        V: 33.333% >
     
 
 :class:`Crystal` instances can be converted to NumPy arrays as well::
@@ -384,10 +383,10 @@ You can get the matrix symmetry operations directly from the :class:`Crystal` cl
     >>> first_symop = cryst.symmetry_operations()[0]
     >>> 
     >>> print(first_symop)
-    array([[1, 0, 0, 0],
-           [0, 1, 0, 0],
-           [0, 0, 1, 0]
-           [0, 0, 0, 1]], dtype=int32), 
+    [[1. 0. 0. 0.]
+     [0. 1. 0. 0.]
+     [0. 0. 1. 0.]
+     [0. 0. 0. 1.]]
     
 Symmetry operations are described using 4x4 affine matrices, where the rotation is the top 3x3 block,
 and the translation is the right-most column. Example with iteration::
@@ -667,7 +666,7 @@ Once you have a starting point, the electronic structure can be modified for you
 
     >>> structure = ElectronicStructure.ground_state("C")
     >>> structure["2p"] -= 1
-    >>> structure["3d]  += 1
+    >>> structure["3d"] += 1
     >>> structure
     < ElectronicStructure: 1s²2s²2p¹3d¹ >
 
@@ -677,14 +676,10 @@ You can always check which orbital is the outermost orbital::
     >>> structure.outer_shell
     <Orbital.three_p: '3p'>
 
-Note that you cannot create impossible electronic structures, however!
+Note that you cannot create impossible electronic structures, however::
 
     >>> structure = ElectronicStructure.ground_state("C")
     >>> structure["2s"] = 3
-    Traceback (most recent call last):
-    File "<stdin>", line 1, in <module>
-    File "(...omitted...)\crystals\crystals\atom.py", line 489, in __setitem__
-        f"There cannot be {value} electrons in orbital {shell.value}"
     ValueError: There cannot be 3 electrons in orbital 2s
 
 Finally, you can modify atomic electronic structures on a particular atom. By default, the electronic structure of atoms is set to the ground state. Let's move an electron up from the "2p" to "3d" orbital in one atom of graphite::
