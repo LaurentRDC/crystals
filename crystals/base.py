@@ -92,7 +92,9 @@ class AtomicStructure:
 
         # Note that repr(Atom(...)) includes these '< ... >'
         # We remove those for cleaner string representation
-        for atm in self.itersorted():
+        # Sorting the atoms is also important, so that the expected outputs
+        # in doctests don't change.
+        for atm in self.itersorted(key=lambda a: np.sum(a.coords_fractional)):
             rep += "\n    " + repr(atm).replace("<", "").replace(">", "").strip()
 
         if self.substructures:

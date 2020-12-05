@@ -638,7 +638,7 @@ class Crystal(AtomicStructure, Lattice):
         # Note : Crystal subclasses need not override this method
         # since the class name is dynamically determined
         rep = f"< {self.__class__.__name__} object with following unit cell:"
-        atoms = islice(self.itersorted(), natoms)
+        atoms = islice(self.itersorted(key=lambda a: np.sum(a.coords_fractional)), natoms)
 
         # Note that repr(Atom(...)) includes these '< ... >'
         # We remove those for cleaner string representation
