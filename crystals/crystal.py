@@ -662,8 +662,7 @@ class Crystal(AtomicStructure, Lattice):
         rep += "\nChemical composition:"
         for chem_symbol, composition in self.chemical_composition.items():
             rep += f"\n    {chem_symbol}: {100 * composition:.3f}%"
-
-        rep += f"\nSource: \n    {self.source or 'N/A'} >"
+        rep += " >"
         return rep
 
     def to_cif(self, filename):
