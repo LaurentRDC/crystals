@@ -52,10 +52,9 @@ class AtomicStructure:
         # Either the item is an orphan atom or
         # it is in one of the substructures
         # Checking containership of sets is faster than iterating
-        if item in self.atoms:
-            return True
-        else:
-            return any((item in struct) for struct in self.substructures)
+        return any(
+            (item in struct) for struct in chain([self.atoms], self.substructures)
+        )
 
     def __len__(self):
         """ Number of :class:`Atom` instances present in the structure and substructures """

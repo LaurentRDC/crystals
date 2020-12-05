@@ -67,15 +67,17 @@ class Crystal(AtomicStructure, Lattice):
 
     def __init__(self, unitcell, lattice_vectors, source=None, **kwargs):
         unitcell = list(unitcell)
+        # Atoms need to be modified BEFORE they are fed to the constructor
+        # of AtomicStructure
+        for atom in filter(is_atom, unitcell):
+            atom.lattice = Lattice(lattice_vectors)
+
         super().__init__(
             atoms=filter(is_atom, unitcell),
             substructures=filter(is_structure, unitcell),
             lattice_vectors=lattice_vectors,
             **kwargs,
         )
-
-        for atom in super().__iter__():
-            atom.lattice = Lattice(self.lattice_vectors)
 
         self.source = source
 

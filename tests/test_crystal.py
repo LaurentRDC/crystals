@@ -114,6 +114,13 @@ class TestCrystalSpecialMethods(unittest.TestCase):
         c3 = Crystal.from_database("Pu-epsilon")
         self.assertNotEqual(c1, c3)
 
+    def test_containership(self):
+        """ Test that __contains__ works as expected """
+        graphite = Crystal.from_database("C")
+        carbon = next(iter(graphite))  # Pick any atom from the crystal
+
+        self.assertIn(carbon, graphite)
+
 
 class TestCrystalConstructors(unittest.TestCase):
     def test_builtins(self):
