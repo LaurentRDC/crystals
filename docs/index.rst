@@ -3,14 +3,6 @@
 crystals : data structure for crystallography
 *********************************************
 
-.. image:: https://readthedocs.org/projects/crystals/badge/?version=master
-    :target: https://readthedocs.org/projects/crystals
-    :alt: Documentation Status
-
-.. image:: https://ci.appveyor.com/api/projects/status/github/LaurentRDC/crystals?branch=master&svg=true
-    :alt: AppVeyor Build Status
-    :target: https://ci.appveyor.com/project/LaurentRDC/crystals
-
 .. image:: https://img.shields.io/pypi/v/crystals.svg
     :alt: PyPI Package latest release
     :target: https://pypi.python.org/pypi/crystals
@@ -18,10 +10,6 @@ crystals : data structure for crystallography
 .. image:: https://img.shields.io/conda/vn/conda-forge/crystals.svg
     :target: https://anaconda.org/conda-forge/crystals
     :alt: Conda-forge Version
-
-.. image:: https://img.shields.io/pypi/pyversions/crystals.svg
-    :alt: Supported Python versions
-    :target: https://pypi.python.org/pypi/crystals
 
 ``crystals`` is a library of data structure and algorithms to manipulate abstract crystals. ``crystals`` helps with reading crystallographic 
 files (like .cif and .pdb), provides access to atomic positions, and allows for space-group determination. Although ``crystals`` can be used on its own,
