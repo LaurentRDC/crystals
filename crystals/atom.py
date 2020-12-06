@@ -143,7 +143,7 @@ class Atom(Element):
         "magmom",
         "occupancy",
         "lattice",
-        "_electronic_structure",
+        "electronic_structure",
     )
 
     def __init__(
@@ -171,14 +171,14 @@ class Atom(Element):
 
         # We distinguish between default (None) and other electronic structures
         # So that the atoms can be represented appropriately in __repr__
-        self._electronic_structure = electronic_structure
+        self.electronic_structure = ElectronicStructure.ground_state(self.element) or electronic_structure
 
     def __repr__(self):
         x, y, z = tuple(self.coords_fractional)
         r = f"< Atom {self.element:<2} @ ({x:.2f}, {y:.2f}, {z:.2f})"
         # No point in polluting the representation if the electronic structure was not
         # set (i.e. default)
-        if self._electronic_structure is not None:
+        if self.electronic_structure != ElectronicStructure.ground_state(self.element):
             r += f" | [{str(self.electronic_structure)}]"
         r += " >"
         return r
@@ -238,21 +238,6 @@ class Atom(Element):
             coords=frac_coords(atom.position, lattice),
             magmom=atom.magmom,
         )
-
-    @property
-    def electronic_structure(self):
-        """
-        Electronic structure proper to this atom.
-
-        Returns
-        -------
-        struct: ElectronicStructure
-            Electronic structure. If this was not set before, the ground-state electronic
-            structure is returned.
-        """
-        if self._electronic_structure is None:
-            return ElectronicStructure.ground_state(self.element)
-        return self._electronic_structure
 
     @property
     def coords_cartesian(self):
