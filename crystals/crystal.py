@@ -664,7 +664,9 @@ class Crystal(AtomicStructure, Lattice):
         # It is important that the chemical symbols are presented in order
         # so that doctests are reproducible
         rep += "\nChemical composition:"
-        for chem_symbol, composition in sorted(self.chemical_composition.items(), key=lambda t: t[0]):
+        for chem_symbol, composition in sorted(
+            self.chemical_composition.items(), key=lambda t: t[0]
+        ):
             rep += f"\n    {chem_symbol}: {100 * composition:.3f}%"
         rep += " >"
         return rep

@@ -171,7 +171,9 @@ class Atom(Element):
 
         # We distinguish between default (None) and other electronic structures
         # So that the atoms can be represented appropriately in __repr__
-        self.electronic_structure = ElectronicStructure.ground_state(self.element) or electronic_structure
+        self.electronic_structure = (
+            ElectronicStructure.ground_state(self.element) or electronic_structure
+        )
 
     def __repr__(self):
         x, y, z = tuple(self.coords_fractional)
@@ -206,7 +208,7 @@ class Atom(Element):
                 hash(self.electronic_structure),
             )
         )
-    
+
     def __lt__(self, other):
         # Here's a cool fact:
         # Sorting n-tuples works as follows:
@@ -218,7 +220,10 @@ class Atom(Element):
         # but with elements grouped together.
         # The part where sorting is stable is important because of doctests,
         # which are quite literal.
-        return (self.element, *self.coords_fractional) < (other.element, *other.coords_fractional)
+        return (self.element, *self.coords_fractional) < (
+            other.element,
+            *other.coords_fractional,
+        )
 
     @classmethod
     def from_ase(cls, atom):
