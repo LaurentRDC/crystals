@@ -10,11 +10,6 @@ from numpy.linalg import norm
 from .affine import change_basis_mesh, change_of_basis
 
 
-# Generalized hypotenuse
-def _hypot(*args):
-    return sqrt(sum(map(lambda i: i ** 2, args)))
-
-
 def primed(gen):
     """
     Decorator that primes a generator function, i.e. runs the function
@@ -320,6 +315,10 @@ class Lattice:
         refls = product(extent, repeat=3)
 
         yield  # Priming the generator ends here
+
+        # Generalized hypotenuse
+        def _hypot(*args):
+            return sqrt(sum(map(lambda i: i ** 2, args)))
 
         # The above bound was only a first pass. We can refine further
         in_bounds = (
