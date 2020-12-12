@@ -14,7 +14,7 @@ constructors = {
     "pwscf": Crystal.from_pwscf,
     "cod": Crystal.from_cod,
     "pdb": Crystal.from_pdb,
-    "mp": Crystal.from_mp,  # REQUIRES API_KEY in environment
+    "mp": Crystal.from_mp,
 }
 
 INFO_HELP = "Display the crystallographic information related to a crystal file or database entry."
@@ -115,8 +115,8 @@ def guess_constructor(i):
     return cryst
 
 
-def main(args=None):
-    args = parser.parse_args(args)
+def main():
+    args = parser.parse_args()
 
     if args.command == "info":
         if args.type is not None:
