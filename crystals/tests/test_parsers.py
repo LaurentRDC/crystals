@@ -280,7 +280,9 @@ class TestPWSCFParser(unittest.TestCase):
         self.parser_tise2 = PWSCFParser(
             Path(__file__).parent / "data" / "pwscf_tise2.out"
         )
-        self.parser_snse = PWSCFParser(Path(__file__).parent / "data" / "pwscf_snse.out")
+        self.parser_snse = PWSCFParser(
+            Path(__file__).parent / "data" / "pwscf_snse.out"
+        )
         self.parser_graphite = PWSCFParser(
             Path(__file__).parent / "data" / "pwscf_graphite.out"
         )
