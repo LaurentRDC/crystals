@@ -168,7 +168,7 @@ class TestCIFParser(unittest.TestCase):
 
     def _cif_files(self):
         """ Yields cif files included in crystals """
-        for root, _, files in os.walk(os.path.join("crystals", "cifs")):
+        for root, _, files in os.walk(Path(__file__).parent.parent / "cifs"):
             for name in filter(lambda path: path.endswith(".cif"), files):
                 yield os.path.join(root, name)
 
@@ -211,7 +211,7 @@ class TestCIFParser(unittest.TestCase):
 
     def test_silicon(self):
         """ Test CIFParser on Si.cif (diamond structure) """
-        Si_path = os.path.join("crystals", "cifs", "Si.cif")
+        Si_path = Path(__file__).parent.parent / "cifs" / "Si.cif"
         si = Crystal.from_cif(Si_path)
 
         self.assertEqual(len(si), 8)
@@ -223,7 +223,7 @@ class TestCIFParser(unittest.TestCase):
 
     def test_vo2(self):
         """ Test CIFParser on vo2.cif (monoclinic M1) """
-        VO2_path = os.path.join("crystals", "cifs", "vo2-m1.cif")
+        VO2_path = Path(__file__).parent.parent / "cifs" / "vo2-m1.cif"
         vo2 = Crystal.from_cif(VO2_path)
 
         self.assertEqual(len(vo2), 12)
