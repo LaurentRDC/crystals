@@ -10,7 +10,7 @@ What's new
 * Fixed an issue where checking the containership of atoms did not work properly.
 * Fixed an issue where downloading structures from the Materials Project failed on macOS/Linux.
 * Code snippets in documentation are now tested for correctness.
-* Tests are now included in source distributions.
+* Tests are now included in the package itself.
 
 1.2.1
 -----
