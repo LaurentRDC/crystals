@@ -236,7 +236,7 @@ class TestCIFParser(unittest.TestCase):
 
     def test_site_occupancy(self):
         """ Test that atom site occupancy is correctly parsed from CIF files. """
-        path = os.path.join("tests", "data", "SiC_partial_site_occ.cif")
+        path = Path(__file__).parent / "data" / "SiC_partial_site_occ.cif"
         with CIFParser(path) as parser:
             atoms = list(parser.atoms())
 
@@ -278,11 +278,11 @@ class TestMPJParser(unittest.TestCase):
 class TestPWSCFParser(unittest.TestCase):
     def setUp(self):
         self.parser_tise2 = PWSCFParser(
-            Path(".") / "tests" / "data" / "pwscf_tise2.out"
+            Path(__file__).parent / "data" / "pwscf_tise2.out"
         )
-        self.parser_snse = PWSCFParser(Path(".") / "tests" / "data" / "pwscf_snse.out")
+        self.parser_snse = PWSCFParser(Path(__file__).parent / "data" / "pwscf_snse.out")
         self.parser_graphite = PWSCFParser(
-            Path(".") / "tests" / "data" / "pwscf_graphite.out"
+            Path(__file__).parent / "data" / "pwscf_graphite.out"
         )
 
     def test_alat(self):
