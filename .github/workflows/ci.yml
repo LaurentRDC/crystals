@@ -49,11 +49,16 @@ jobs:
         pip install -r requirements.txt
 
     # Note the use of the -Wa flag to show DeprecationWarnings
+    # We test the package as-installed. Pytest is better than unittest at finding
+    # unittest tests when the package is installed.
     - name: Unit tests
       env:
         MATERIALS_PROJECT_API_KEY: ${{ secrets.MATERIALS_PROJECT_API_KEY }}
       run: |
-        python -Wa -m unittest discover --verbose --buffer
+        python setup.py install
+        pip install pytest
+        cd ~
+        python -Wa -m pytest --pyargs crystals --import-mode=importlib
     
     - name: Build documentation
       run: |
@@ -63,4 +68,4 @@ jobs:
     - name: Doctests
       run: |
         python -m sphinx -b doctest docs build
-        python -m doctest README.md -v
+        python -m doctest README.md

@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
 import os
+import socket
 import tempfile
 import unittest
 from collections import Counter, namedtuple
+from contextlib import suppress
+from functools import lru_cache
 from itertools import chain
 from pathlib import Path
 from tempfile import gettempdir
 from warnings import catch_warnings, filterwarnings
-from .utils import connection_available
 
 import numpy as np
-from spglib import get_symmetry_dataset
-
 from crystals import CIFParser, Crystal, MPJParser, PDBParser, frac_coords, is_element
 from crystals.affine import transform
 from crystals.parsers import STRUCTURE_CACHE, PWSCFParser
 from crystals.spg_data import Hall2Number
+from spglib import get_symmetry_dataset
 
 try:
     import Bio.PDB as biopdb
@@ -31,6 +32,14 @@ MPJ_API_KEY = os.environ.get("MATERIALS_PROJECT_API_KEY", None)
 GenericAtom = namedtuple("GenericAtom", ["element", "coords"])
 
 filterwarnings("ignore", category=UserWarning)
+
+
+@lru_cache(maxsize=1)
+def connection_available():
+    """ Returns whether or not an internet connection is available """
+    with suppress(OSError), socket.create_connection(("www.google.com", 80)):
+        return True
+    return False
 
 
 @unittest.skipUnless(connection_available(), "Internet connection is required.")
