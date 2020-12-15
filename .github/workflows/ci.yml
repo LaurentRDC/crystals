@@ -55,14 +55,13 @@ jobs:
       env:
         MATERIALS_PROJECT_API_KEY: ${{ secrets.MATERIALS_PROJECT_API_KEY }}
       run: |
+        pip install -r dev-requirements.txt
         python setup.py install
-        pip install pytest
         cd ~
         python -Wa -m pytest --pyargs crystals --import-mode=importlib
     
     - name: Build documentation
       run: |
-        pip install -r dev-requirements.txt
         python setup.py build_sphinx
     
     - name: Doctests
