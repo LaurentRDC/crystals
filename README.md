@@ -161,10 +161,9 @@ is available here: <https://crystals.readthedocs.io/>
 Development
 -----------
 
-Tests can be run with the standard library\'s `unittest`
-module:
+Tests can be run with the `pytest` package:
 
-    python -m unittest discover
+    python -m pytest --pyargs crystals
 
 Some optional tests might be skipped if dependencies are not installed,
 e.g. [ASE](https://wiki.fysik.dtu.dk/ase/).

@@ -105,7 +105,7 @@ class Element:
     @property
     def magnetic_moment_ground(self):
         """ Ground state magnetic moment. """
-        return ELEM_TO_MAGMOM[self.element]
+        return ELEM_TO_MAGMOM.get(self.element, None)
 
 
 class Atom(Element):

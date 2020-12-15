@@ -3,6 +3,11 @@ What's new
 ==========
 
 
+1.2.3
+-----
+
+* Migration of testing infrastructure to pytest.
+
 1.2.2
 -----
 
