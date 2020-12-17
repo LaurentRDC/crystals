@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import tempfile
-import pytest
+from itertools import islice
+from pathlib import Path
 from random import choice, randint
 
 import numpy as np
-from pathlib import Path
+import pytest
 from crystals import Crystal
 
 try:
@@ -17,17 +18,19 @@ else:
 
 
 @pytest.mark.skipif(not WITH_ASE, reason="ASE not installed or importable")
+@pytest.mark.parametrize("name", islice(Crystal.builtins, 10))
 def test_ase_atoms_construction(name):
     """ Test that ase_atoms returns without error """
-    crystal = Crystal.from_database(choice(list(Crystal.builtins)))
+    crystal = Crystal.from_database(name)
     to_ase = crystal.to_ase()
     assert len(crystal) == len(to_ase)
 
 
 @pytest.mark.skipif(not WITH_ASE, reason="ASE not installed or importable")
-def test_ase_atoms_back_and_forth():
+@pytest.mark.parametrize("name", islice(Crystal.builtins, 10))
+def test_ase_atoms_back_and_forth(name):
     """ Test conversion to and from ase Atoms """
-    crystal = Crystal.from_database(choice(list(Crystal.builtins)))
+    crystal = Crystal.from_database(name)
     to_ase = crystal.to_ase()
     crystal2 = Crystal.from_ase(to_ase)
 
