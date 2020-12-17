@@ -47,6 +47,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install numpy wheel
         pip install -r requirements.txt
+        pip install -r dev-requirements.txt
 
     # Note the use of the -Wa flag to show DeprecationWarnings
     # We test the package as-installed. 
@@ -54,7 +55,6 @@ jobs:
       env:
         MATERIALS_PROJECT_API_KEY: ${{ secrets.MATERIALS_PROJECT_API_KEY }}
       run: |
-        pip install -r dev-requirements.txt
         python setup.py install
         cd ~
         python -Wa -m pytest --pyargs crystals
