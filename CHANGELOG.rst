@@ -7,6 +7,7 @@ What's new
 -----
 
 * Migration of testing infrastructure to pytest.
+* `Support for Python 3.6 and NumPy<1.17 has been dropped <https://numpy.org/neps/nep-0029-deprecation_policy.html>`_
 
 1.2.2
 -----
