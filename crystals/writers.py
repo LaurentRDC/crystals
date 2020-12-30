@@ -144,12 +144,12 @@ def write_cif(crystal, fname):
 
 def ase_atoms(crystal, **kwargs):
     """
-    Convert a ``crystals.Crystal`` object into an ``ase.Atoms`` object.
-    Keyword arguments are passed to ``ase.Atoms`` constructor.
+    Convert a :class:`crystals.Crystal` object into an :class:`ase.Atoms` object.
+    Keyword arguments are passed to :class:`ase.Atoms` constructor.
 
     Parameters
     ----------
-    crystal : crystals.Crystal
+    crystal : :class:`Crystal`
         Crystal to be converted.
 
     Returns

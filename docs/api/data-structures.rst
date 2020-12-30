@@ -15,6 +15,7 @@ Crystal
 
 .. autoclass:: Crystal
     :show-inheritance:
+    :members:
     :exclude-members: from_parameters
 
 ---------
@@ -23,6 +24,7 @@ Supercell
 
 .. autoclass:: Supercell
     :show-inheritance:
+    :members:
     :exclude-members: from_parameters
 
 ----
@@ -33,6 +35,7 @@ To deal with atoms with coordinates, take a look at the :class:`Atom` class:
 
 .. autoclass:: Atom
     :show-inheritance:
+    :members:
 
 -------
 Element
@@ -42,6 +45,7 @@ To access atomic data only, take a look at the :class:`Element` class:
 
 .. autoclass:: Element
     :show-inheritance:
+    :members:
 
 -------------------
 Electronic Orbitals

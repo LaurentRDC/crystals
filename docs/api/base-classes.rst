@@ -13,9 +13,12 @@ Lattice
 -------
 
 .. autoclass:: Lattice
+    :members:
 
 ---------------
 AtomicStructure
 ---------------
 
 .. autoclass:: AtomicStructure
+    :members:
+    :private-members:

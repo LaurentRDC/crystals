@@ -33,27 +33,27 @@ is_structure = lambda s: isinstance(s, AtomicStructure)
 class Crystal(AtomicStructure, Lattice):
     """
     The :class:`Crystal` class is a set-like container that represent
-    crystalline structures. In addition to constructing the ``Crystal``
+    crystalline structures. In addition to constructing the :class:`Crystal`
     object yourself, other constructors are also available
     (and preferred):
 
-    * ``Crystal.from_cif``: create an instance from a CIF file;
+    * :meth:`Crystal.from_cif`: create an instance from a CIF file;
 
-    * ``Crystal.from_pdb``: create an instance from a Protein Data Bank entry;
+    * :meth:`Crystal.from_pdb`: create an instance from a Protein Data Bank entry;
 
-    * ``Crystal.from_database``: create an instance from the internal database of CIF files;
+    * :meth:`Crystal.from_database`: create an instance from the internal database of CIF files;
 
-    * ``Crystal.from_cod``: create an instance from a Crystallography Open Database entry.
+    * :meth:`Crystal.from_cod`: create an instance from a Crystallography Open Database entry.
 
-    * ``Crystal.from_mp``: create an instance from the Materials Project database.
+    * :meth:`Crystal.from_mp`: create an instance from the Materials Project database.
 
-    * ``Crystal.from_pwscf``: create an instance from the output of the PWSCF program.
+    * :meth:`Crystal.from_pwscf`: create an instance from the output of the PWSCF program.
 
-    * ``Crystal.from_ase``: create an instance from an ``ase.Atoms`` instance.
+    * :meth:`Crystal.from_ase`: create an instance from an ``ase.Atoms`` instance.
 
     Parameters
     ----------
-    unitcell : iterable of ``Atom`` or ``AtomicStructures``
+    unitcell : iterable of :class:`Atom` or :class:`AtomicStructure`
         Unit cell atoms or substructures. It is assumed that the atoms are
         in fractional coordinates.
     lattice_vectors : iterable of array_like
@@ -602,13 +602,13 @@ class Crystal(AtomicStructure, Lattice):
 
         Parameters
         ----------
-        lattice : Crystal, Lattice, or array_like, shape (3,3)
+        lattice : :class:`Crystal`, :class:`Lattice`, or array_like, shape (3,3)
             Lattice or Crystal by which to index the structure. ``lattice`` can also be a 3x3 array,
             where every row is a lattice vector.
 
         Returns
         -------
-        crystal : Crystal
+        crystal : :class:`Crystal`
             New crystal, indexed by ``lattice``.
         """
         # TODO: example
@@ -673,7 +673,7 @@ class Crystal(AtomicStructure, Lattice):
 
     def to_cif(self, filename):
         """
-        Convert this `Crystal` instance to a CIF file.
+        Convert this :class:`Crystal` instance to a CIF file.
 
         Note that some information may be lost in the translation. However, we guarantee that
         reading a structure from a file, and then writing back to the same format is idempotent.
@@ -692,7 +692,7 @@ class Crystal(AtomicStructure, Lattice):
 
     def to_xyz(self, filename):
         """
-        Convert this `Crystal` instance to a XYZ file.
+        Convert this :class:`Crystal` instance to a XYZ file.
 
         Note that some information may be lost in the translation. However, we guarantee that
         reading a structure from a file, and then writing back to the same format is idempotent.
@@ -711,8 +711,8 @@ class Crystal(AtomicStructure, Lattice):
 
     def to_ase(self, **kwargs):
         """
-        Convert a into an ``ase.Atoms`` object. Keyword arguments are passed
-        to ``ase.Atoms`` constructor.
+        Convert a into an :class:`ase.Atoms` object. Keyword arguments are passed
+        to :class:`ase.Atoms` constructor.
 
         Note that some information may be lost in the translation. However, we guarantee that
         reading a structure from a file, and then writing back to the same format is idempotent.
@@ -740,10 +740,10 @@ class Supercell(AtomicStructure):
     supercell of crystalline structures.
 
     It is recommended that you do not instantiate a :class:`Supercell` by hand, but rather
-    create a ``Crystal`` object and use the ``Crystal.supercell`` method.
+    create a :class:`Crystal` object and use the :meth:`Crystal.supercell` method.
 
     To iterate over all atoms in the supercell, use this object as an iterable.
-    To recover the underlying crystal, use the ``Supercell.crystal`` attribute.
+    To recover the underlying crystal, use the :attr:`Supercell.crystal` attribute.
 
     Parameters
     ----------
@@ -818,17 +818,17 @@ def symmetry_expansion(atoms, symmetry_operators):
 
     Parameters
     ----------
-    atoms : iterable of ``Atom`` and/or ``AtomicStructure``
+    atoms : iterable of :class:`Atom` and/or :class:`AtomicStructure`
         Asymmetric unit cell atoms. It is assumed that the atomic
         coordinates are in fractional form. Transformations work
-        the same way for ``Atom`` objects and ``AtomicStructures``
+        the same way for :class:`Atom` objects and :class:`AtomicStructure`
         objects: a copy is made and moved to the symmetric location.
     symmetry_operators : iterable of array_like
         Symmetry operators that generate the full unit cell.
 
     Yields
     ------
-    it : ``Atom`` and/or ``AtomicStructure``
+    it : :class:`Atom` and/or :class:`AtomicStructure`
         Appropriately-transformed object. Original objects are left untouched.
 
     See Also
@@ -882,7 +882,7 @@ def symmetry_reduction(unitcell, symmetry_operators):
 
     Parameters
     ----------
-    unitcell : iterable of ``Atom`` and/or ``AtomicStructure``
+    unitcell : iterable of :class:`Atom` and/or :class:`AtomicStructure`
         Unit cell. It is assumed that the atomic
         coordinates are in fractional form.
     symmetry_operators : iterable of array_like
@@ -890,7 +890,7 @@ def symmetry_reduction(unitcell, symmetry_operators):
 
     Returns
     -------
-    asym_cell: set of ``Atom`` and/or ``AtomicStructure``
+    asym_cell: set of :class:`Atom` and/or :class:`AtomicStructure`
         Asymmetric cell.
 
     See Also

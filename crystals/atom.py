@@ -28,7 +28,7 @@ class Element:
 
     Parameters
     ----------
-    element : str, int, or Element
+    element : str, int, or :class:`Element`
         Elemental symbol (e.g. "He"), element name (e.g. "Helium"),
         atomic number, or another `Element` instance.
 
@@ -336,7 +336,7 @@ def distance_fractional(atm1, atm2):
 
     Parameters
     ----------
-    atm1, atm2 : ``crystals.Atom``
+    atm1, atm2 : :class:`Atom`
 
     Returns
     -------
@@ -361,7 +361,7 @@ def distance_cartesian(atm1, atm2):
 
     Parameters
     ----------
-    atm1, atm2 : ``crystals.Atom``
+    atm1, atm2 : :class:`Atom`
 
     Returns
     -------
