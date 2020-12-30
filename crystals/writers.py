@@ -71,6 +71,8 @@ def write_cif(crystal, fname):
     """
     Generate an atomic coordinates .cif file from a crystal structure.
 
+    .. versionadded:: 1.2.0
+
     Parameters
     ----------
     crystal : crystals.Crystal

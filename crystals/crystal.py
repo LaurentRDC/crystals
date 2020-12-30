@@ -103,7 +103,11 @@ class Crystal(AtomicStructure, Lattice):
         maxsize=1
     )  # This operation is very heavy; better to cache it than recalculate.
     def asymmetric_cell(self):
-        """ Calculates the asymmetric cell that generates the crystal unit cell. """
+        """
+        Calculates the asymmetric cell that generates the crystal unit cell.
+
+        .. versionadded:: 1.2.0
+        """
         return symmetry_reduction(self.unitcell, self.symmetry_operations())
 
     @classmethod
@@ -879,6 +883,8 @@ def symmetry_reduction(unitcell, symmetry_operators):
     to `symmetry_expansion`.
 
     Note that the resulting asymmetric cell is not unique.
+
+    .. versionadded:: 1.2.0
 
     Parameters
     ----------
