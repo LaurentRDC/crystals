@@ -159,7 +159,7 @@ class AtomicStructure:
         Example
         -------
         >>> c = Crystal.from_cod(1508819)
-        >>> c.chemical_composition
+        >>> c.chemical_composition # doctest: +SKIP
         OrderedDict([('H',  0.441),
                      ('C',  0.349),
                      ('N',  0.093),
