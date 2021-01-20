@@ -1071,7 +1071,7 @@ class PWSCFParser(AbstractStructureParser):
 
     def lattice_vectors(self):
         """
-        Returns the lattice vectors associated to a structure [:math:`\AA`].
+        Returns the lattice vectors associated to a structure [:math:`Å`].
 
         Returns
         -------
