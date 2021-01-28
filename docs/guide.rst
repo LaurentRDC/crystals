@@ -496,6 +496,25 @@ The conversion between Miller indices and scattering vectors is available:
     >>> graphite.miller_indices(G)
     array([1., 0., 0.])
 
+Since version 1.3, the calculation of Miller indices or scattering vectors is much faster 
+for tables of indices, where every row corresponds to a reflection/scattering vector:
+
+    >>> from crystals import Crystal
+    >>> import numpy as np
+    >>>
+    >>> graphite = Crystal.from_database('C')
+    >>> indices = np.array([
+    ...    [1,0,0],
+    ...    [1,1,0],
+    ...    [1,2,1],
+    ...    [2,0,0],
+    ... ])
+    >>> graphite.scattering_vector(indices)
+    array([[2.94447949, 0.        , 0.        ],
+           [4.41671923, 2.54999404, 0.        ],
+           [5.88895897, 5.09998807, 0.93625172],
+           [5.88895897, 0.        , 0.        ]])
+
 Supercells
 ==========
 For various reasons, creating a supercell from a crystal might be desirable. The process is very easy. 

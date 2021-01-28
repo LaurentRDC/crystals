@@ -233,10 +233,24 @@ def test_scattering_vector_trivial():
     assert np.allclose(lattice.scattering_vector((0, 0, 0)), ((0, 0, 0)))
 
 
+def test_scattering_vector_table():
+    """ Test that Lattice.scattering_vector is working on tables of reflections """
+    lattice = Lattice(2 * np.pi * np.eye(3))
+    vectors = np.random.random(size=(10, 3))
+    assert np.allclose(lattice.scattering_vector(vectors), vectors)
+
+
 def test_miller_indices_trivial():
     """ Test that Lattice.miller_indices is working """
     lattice = Lattice(np.random.random((3, 3)))
     assert np.allclose(lattice.miller_indices((0, 0, 0)), ((0, 0, 0)))
+
+
+def test_miller_indices_table():
+    """ Test that Lattice.miller_indices is working on tables of vectors """
+    lattice = Lattice(2 * np.pi * np.eye(3))
+    vectors = np.random.random(size=(10, 3))
+    assert np.allclose(lattice.miller_indices(vectors), vectors)
 
 
 def test_back_and_forth():

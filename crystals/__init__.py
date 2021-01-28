@@ -5,7 +5,7 @@ This package allows for manipulation and modelling of atomic structures in cryst
 __author__ = "Laurent P. René de Cotret"
 __email__ = "laurent.renedecotret@mail.mcgill.ca"
 __license__ = "BSD3"
-__version__ = "1.2.2"
+__version__ = "1.3.0"
 
 from .atom import Atom
 from .atom import Element
@@ -31,6 +31,8 @@ from .crystal import Supercell
 from .crystal import CenteringType
 from .crystal import symmetry_expansion
 from .crystal import symmetry_reduction
+from .indexing import index_dirax
+from .indexing import IndexingError
 from .lattice import Lattice
 from .lattice import LatticeSystem
 from .lattice import lattice_system

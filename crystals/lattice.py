@@ -26,6 +26,11 @@ def primed(gen):
     return primed_gen
 
 
+def matmulrow(matrix, arr):
+    """ Row-wise matrix multiplication. """
+    return np.transpose(matrix @ arr.T)
+
+
 @unique
 class LatticeSystem(Enum):
     """
@@ -170,35 +175,43 @@ class Lattice:
         """
         Scattering vector from Miller indices.
 
+        .. versionchanged:: 1.3
+           Can now operate on tables of reflections, where every
+           reflection is a row.
+
         Parameters
         ----------
-        reflection : array_like, shape (3,)
+        reflection : array_like, shape (3,) or (N, 3)
             Miller indices.
 
         Returns
         -------
-        G : ndarray, shape (3,)
+        G : ndarray, shape (3,) or (N, 3)
             Scattering vector in :math:`A^{-1}`.
         """
         COB = change_of_basis(basis1=self.reciprocal_vectors, basis2=np.eye(3))
-        return COB @ np.asarray(reflection)
+        return matmulrow(COB, np.asarray(reflection))
 
     def miller_indices(self, scattering_vector):
         """
         Miller indices from scattering vector components.
 
+        .. versionchanged:: 1.3
+           Can now operate on tables of vectors, where every
+           vector is a row.
+
         Parameters
         ----------
-        scattering_vector : array_like, shape (3,)
+        scattering_vector : array_like, shape (3,) or (N, 3)
             Scattering vector in :math:`A^{-1}`.
 
         Returns
         -------
-        reflection : `~numpy.ndarray`, shape (3,)
+        reflection : `~numpy.ndarray`, shape (3,) or (N, 3)
             Miller indices.
         """
         COB = change_of_basis(basis1=np.eye(3), basis2=self.reciprocal_vectors)
-        return COB @ np.asarray(scattering_vector)
+        return matmulrow(COB, np.asarray(scattering_vector))
 
     @staticmethod
     def frac_mesh(*xi, indexing="xy"):
