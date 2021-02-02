@@ -84,7 +84,7 @@ def index_dirax(reflections, initial=None, length_bounds=(2, 20)):
     points = [np.squeeze(a) for a in np.vsplit(reflections, reflections.shape[0])]
     for a1, a2, a3 in product(points, repeat=3):
         normal = np.cross(a2 - a1, a3 - a1)
-        if np.allclose(normal, 0, atol=1e-4):
+        if np.allclose(normal, 0, atol=1e-2):
             continue
         normal /= np.linalg.norm(normal)
 
@@ -102,7 +102,7 @@ def index_dirax(reflections, initial=None, length_bounds=(2, 20)):
             continue
 
         frac_dist = proj / d_star
-        nf = np.sum(np.isclose(frac_dist, np.rint(frac_dist), atol=0.01))
+        nf = np.sum(np.isclose(frac_dist, np.rint(frac_dist), atol=1 / 24))
 
         t = 2 * np.pi * normal / d_star
         potential_direct_vectors.add(LatVec(nf, t))
@@ -144,12 +144,11 @@ def _find_basis(vectors, reflections):
     """ Find the shorted three linearly-independent vectors from a list. """
     vectors = sorted(vectors, key=np.linalg.norm)
     a1 = vectors.pop(0)
-
     try:
         index, a2 = next(
             (i, v)
             for i, v in enumerate(vectors)
-            if not np.allclose(np.cross(a1, v), 0, atol=1e-4)
+            if np.linalg.norm(np.cross(a1, v)) >= 1
         )
     except StopIteration:
         raise IndexingError(
@@ -165,7 +164,7 @@ def _find_basis(vectors, reflections):
     m[1, :] = a2
     for v in vectors:
         m[2, :] = v
-        if np.linalg.matrix_rank(m) == 3:
+        if np.linalg.matrix_rank(m, tol=0.1) == 3:
             return Lattice(row_echelon_form([a1, a2, v]))
 
     raise IndexingError(

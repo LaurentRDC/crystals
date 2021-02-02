@@ -20,7 +20,7 @@ def test_dirax_indexing_ideal(name, bound):
     refls = [cryst.scattering_vector(r) for r in cryst.bounded_reflections(bound=bound)]
     lat, hkls = index_dirax(refls)
 
-    assert np.allclose(hkls - np.rint(hkls), 0, atol=0.1)
+    assert np.allclose(hkls - np.rint(hkls), 0, atol=0.001)
 
 
 @pytest.mark.parametrize("name", ["Pu-epsilon", "C", "vo2-m1", "BaTiO3_cubic"])
@@ -53,6 +53,24 @@ def test_dirax_indexing_alien_reflections(name, bound):
     lat, hkls = index_dirax(refls + aliens)
     # The alien reflections will not be indexed correctly, of course
     hkls = hkls[:num_aliens]
+    assert np.allclose(hkls - np.rint(hkls), 0, atol=0.01)
+
+
+@pytest.mark.parametrize(
+    "name,bound", zip(["Pu-epsilon", "C", "vo2-m1", "BaTiO3_cubic"], [2, 3, 2, 2])
+)
+def test_dirax_indexing_noise(name, bound):
+    """
+    Test that indexing always succeeds despite noise in reflection positions.
+    """
+    np.random.seed(0)
+
+    cryst = Crystal.from_database(name)
+    refls = [
+        cryst.scattering_vector(r) + np.random.normal(0, scale=0.01, size=(3,))
+        for r in cryst.bounded_reflections(bound=bound)
+    ]
+    lat, hkls = index_dirax(refls)
     assert np.allclose(hkls - np.rint(hkls), 0, atol=0.1)
 
 
