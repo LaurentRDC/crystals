@@ -1,7 +1,7 @@
 .. _indexing:
 
 ********************
-Indexing Reflections
+Indexing reflections
 ********************
 
 .. currentmodule:: crystals

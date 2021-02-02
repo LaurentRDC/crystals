@@ -22,7 +22,7 @@ Table of content
     :maxdepth: 2
     
     installation
-    guide
+    guides/guide
     api/reference
     cmdline
     whatsnew
@@ -89,21 +89,24 @@ Citations
 
 As this package is a spinoff from ``scikit-ued``, please consider citing the following publication if you find ``crystals`` useful:
 
-.. [_] L. P. René de Cotret, M. R. Otto, M. J. Stern. and B. J. Siwick, *An open-source software ecosystem for the interactive 
-       exploration of ultrafast electron scattering data*, Advanced Structural and Chemical Imaging **4**:11 (2018) DOI: 10.1186/s40679-018-0060-y
+`L. P. René de Cotret, M. R. Otto, M. J. Stern. and B. J. Siwick, An open-source software ecosystem for the interactive 
+exploration of ultrafast electron scattering data, Advanced Structural and Chemical Imaging 4:11 (2018) 
+<https://doi.org/10.1186/s40679-018-0060-y>`_
 
 Underlying algorithms provided by ``spglib`` are described in the following publication:
 
-.. [_] A. Togo and I. Tanaka, *spglib: a software library for crystal symmetry search*. https://arxiv.org/abs/1808.01590 (written at version 1.10.4).
+`A. Togo and I. Tanaka, spglib: a software library for crystal symmetry search. arxiv/1808.01590 
+(written at version 1.10.4) <https://arxiv.org/abs/1808.01590>`_.
 
 Structure parsing from CIF files has been tested for correctness against CIF2CELL, detailed here:
 
-.. [_] Torbjorn Bjorkman, *CIF2Cell: Generating geometries for electronic structure programs*, 
-       Computer Physics Communications **182**, 1183-1186 (2011) doi: 10.1016/j.cpc.2011.01.013
+`Torbjorn Bjorkman, CIF2Cell: Generating geometries for electronic structure programs, Computer 
+Physics Communications 182, 1183-1186 (2011) <10.1016/j.cpc.2011.01.013>`_
 
 Structure parsing from PDB files has been tested for correctness against ``Bio.PDB``, detailed here:
 
-.. [_] Hamelryck, T., Manderick, B. *PDB parser and structure class implemented in Python*. Bioinformatics **19**: 2308–2310 (2003)
+`Hamelryck, T., Manderick, B. PDB parser and structure class implemented in Python. Bioinformatics 19: 
+2308–2310 (2003) <https://doi.org/10.1093/bioinformatics/btg299>`_
 
 Support / Report Issues
 =======================
