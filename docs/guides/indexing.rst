@@ -112,6 +112,36 @@ In the next example, we will introduce 10% of non-fitting reflections:
 As you can see, the last indexed reflections in ``hkls`` don't have integer 
 Miller indices; those are the non-fitting (alien) reflections!
 
+Of course, the DirAx algorithm is also resistant to noise. Here is an example where
+we add noise to our perfect peaks:
+
+.. testsetup::
+
+    import numpy as np
+    np.random.seed(0)
+
+.. doctest::
+
+    >>> from crystals import Crystal, Lattice, index_dirax
+    >>> import numpy as np
+    >>> 
+    >>> cryst = Crystal.from_database("Pu-epsilon")
+    >>> indices = list(cryst.bounded_reflections(2))
+    >>> 
+    >>> peaks = [
+    ...     cryst.scattering_vector(hkl) + np.random.normal(0, scale=0.01, size=(3,))
+    ...     for hkl in indices
+    ... ]
+    >>> lattice, hkls = index_dirax(peaks)
+    >>> hkls.round(decimals=2)
+    array([[-0.98, -0.  , -0.  ],
+           [ 0.  , -1.  ,  0.01],
+           [ 0.  , -0.  , -1.  ],
+           [ 0.  ,  0.01, -0.  ],
+           [ 0.  , -0.  ,  0.99],
+           [ 0.  ,  1.01, -0.  ],
+           [ 1.  , -0.01,  0.  ]])
+
 Dealing with a restricted set of reflections
 ````````````````````````````````````````````
 
