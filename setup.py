@@ -97,13 +97,17 @@ class BuildExtWithOpenMP(build_ext):
         return super().build_extensions()
 
 
-ROOT = Path(".") / "pinkindexer"
+PINKINDEXER = Path(".") / "pinkindexer"
 pinkindexer_ext = Extension(
     "crystals.indexing._pinkindexer",
-    include_dirs=[numpy.get_include()]
-    + [ROOT / "src", ROOT / "include", ROOT / "include" / "Eigen"],
+    include_dirs=[
+        numpy.get_include(),
+        PINKINDEXER / "src",
+        PINKINDEXER / "include",
+        PINKINDEXER / "include" / "Eigen",
+    ],
     sources=["crystals/indexing/_pinkindexer.cpp"]
-    + [str(p) for p in (ROOT / "src").glob("*.cpp")],
+    + [str(p) for p in (PINKINDEXER / "src").glob("*.cpp")],
     extra_compile_args=["-std=c++11"] if platform.system() != "Windows" else [],
 )
 

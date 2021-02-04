@@ -1,8 +1,6 @@
 name: Continuous integration
 
-on: 
-  push:
-  pull_request:
+on: [push, pull_request]
 
 jobs:
   build:
@@ -51,10 +49,20 @@ jobs:
         pip install -r requirements.txt
         pip install -r dev-requirements.txt
     
-    - name: Install OpenMP (MacOS)
+    # MacOS gets special attention because it does not
+    # include openMP
+    - name: Build C++ extensions (MacOS)
       if: matrix.os == 'macos-latest'
       run: |
         brew install libomp
+        python setup.py build_ext --inplace
+      env:
+        CC: /usr/bin/clang
+        CXX: /usr/bin/clang++
+        CPPFLAGS: "-Xpreprocessor -fopenmp"
+        CFLAGS: "-Wno-implicit-function-declaration -I/usr/local/opt/libomp/include"
+        CXXFLAGS: "-I/usr/local/opt/libomp/include"
+        LDFLAGS: "-Wl,-rpath,/usr/local/opt/libomp/lib -L/usr/local/opt/libomp/lib -lomp"
 
     - name: Build C++ extensions
       run: |
@@ -78,3 +86,11 @@ jobs:
       run: |
         python -m sphinx -b doctest docs build
         python -m doctest README.md
+
+    - name: Build wheels
+      run: |
+        python setup.py bdist_wheel --dist-dir=wheelhouse
+
+    - uses: actions/upload-artifact@v2
+      with:
+        path: ./wheelhouse/*.whl
