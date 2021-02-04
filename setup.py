@@ -5,7 +5,6 @@ import platform
 import re
 import shutil
 import tempfile
-from distutils.errors import CompileError, LinkError
 from glob import glob
 from itertools import chain
 from pathlib import Path
@@ -13,6 +12,7 @@ from pathlib import Path
 import numpy
 from setuptools import Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
+from distutils.errors import CompileError, LinkError
 
 PACKAGE_NAME = "crystals"
 DESCRIPTION = "Data structures for crystallography"

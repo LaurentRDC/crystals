@@ -1,9 +1,14 @@
-from crystals.indexing._pinkindexer import index_pink
+from crystals.indexing.pinkindexer import index_pink
+from crystals import Lattice
 import numpy as np
 import pytest
 
 
 def test_index_pink_trivial():
     """ Test a bogus indexing to see if things don't crash. """
-    r = index_pink(1, 1, 1, 1, detector_radius=1, reciprocal_lattice=np.eye(3))
-    assert r is None
+    intensities = np.array([0])
+    peaks = np.array([[0, 0]])
+    r = index_pink(
+        peaks, intensities, 1, 1, 1, 1, detector_radius=1, reciprocal_lattice=np.eye(3)
+    )
+    assert type(r) == Lattice
