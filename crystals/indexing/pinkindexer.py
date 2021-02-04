@@ -4,6 +4,7 @@ Crystal structure indexing with the pinkindexer algorithm.
 """
 import numpy as np
 from . import _pinkindexer
+from .common import IndexingError
 from ..lattice import Lattice
 
 
@@ -15,7 +16,7 @@ def index_pink(
     divergence_angle,
     non_monochromaticity,
     detector_radius,
-    reciprocal_lattice,
+    initial,
 ):
     """
     Index reflections using pinkindexer.
@@ -36,8 +37,8 @@ def index_pink(
         I don't know what that is yet.
     detector_radius : float
         Detector radius [m]
-    reciprocal_lattice : ndarray, shape (3,3)
-        Initial guess for the eciprocal lattice [1/A]
+    initial : Lattice or Crystal, shape (3,3)
+        Initial guess for the lattice lattice [1/A]
 
     Raises
     ------
@@ -58,14 +59,17 @@ def index_pink(
             f"Expected peaks to be an (N,2) iterable, but got {peaks.shape}"
         )
 
-    lat = _pinkindexer.index_pink(
-        intensities=intensities,
-        peaks=peaks,
-        detector_distance=detector_distance,
-        beam_energy=beam_energy,
-        divergence_angle=divergence_angle,
-        non_monochromaticity=non_monochromaticity,
-        detector_radius=detector_radius,
-        reciprocal_lattice=reciprocal_lattice,
-    )
+    try:
+        lat = _pinkindexer.index_pink(
+            intensities=intensities,
+            peaks=peaks,
+            detector_distance=detector_distance,
+            beam_energy=beam_energy,
+            divergence_angle=divergence_angle,
+            non_monochromaticity=non_monochromaticity,
+            detector_radius=detector_radius,
+            reciprocal_lattice=np.array(initial.reciprocal_vectors),
+        )
+    except _pinkindexer.PinkIndexerError:
+        return initial
     return Lattice(np.asarray(lat))

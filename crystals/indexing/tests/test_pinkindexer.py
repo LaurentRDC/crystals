@@ -9,6 +9,6 @@ def test_index_pink_trivial():
     intensities = np.array([0])
     peaks = np.array([[0, 0]])
     r = index_pink(
-        peaks, intensities, 1, 1, 1, 1, detector_radius=1, reciprocal_lattice=np.eye(3)
+        peaks, intensities, 1, 1, 1, 1, detector_radius=1, initial=Lattice(np.eye(3))
     )
     assert type(r) == Lattice

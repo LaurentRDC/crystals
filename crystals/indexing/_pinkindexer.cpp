@@ -44,6 +44,8 @@ Raises
 ValueError
     If the number of peaks does not match the intensities provided.
     If the dimensions of the reciprocal lattice are not adequate.
+PinkIndexerError
+    If indexing has failed.
 )"""";
 
 static PyObject *PinkIndexerError = NULL;
@@ -127,15 +129,23 @@ static PyObject * index_pink(PyObject *self, PyObject *args, PyObject *kwargs) {
     );
 
     Lattice indexedLattice;
+    int result;
     try {
         int threadCount = 6;
         Eigen::Array<bool, Eigen::Dynamic, 1> fittedPeaks;
         Vector2f centerShift;
-        indexer.indexPattern(indexedLattice, centerShift, fittedPeaks, intensities, peaksOnDetector_m, threadCount);
+        // Returns the number of fitted peaks according to tolerance
+        // Therefore, if result is 0, indexing has failed.
+        result = indexer.indexPattern(indexedLattice, centerShift, fittedPeaks, intensities, peaksOnDetector_m, threadCount);
     } 
     catch (exception &e)
     {
         PyErr_SetString(PinkIndexerError, e.what());
+        return NULL;
+    }
+    if (result == 0) {
+        PyErr_SetString(PinkIndexerError, "Indexing has failed: no peaks were indexed correctly.");
+        return NULL;
     }
     Matrix3f indexedBasis = indexedLattice.getBasis();
 
