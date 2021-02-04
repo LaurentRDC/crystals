@@ -1,11 +1,13 @@
 # -*- encoding: utf-8 -*-
 
+import platform
 import re
 from glob import glob
 from itertools import chain
 from pathlib import Path
+import numpy
 
-from setuptools import find_packages, setup
+from setuptools import Extension, find_packages, setup
 
 PACKAGE_NAME = "crystals"
 DESCRIPTION = "Data structures for crystallography"
@@ -32,6 +34,18 @@ with open("README.md", encoding="utf-8") as f:
 with open("requirements.txt") as f:
     REQUIREMENTS = [line for line in f.read().split("\n") if len(line.strip())]
 
+ROOT = Path(".") / "pinkindexer"
+GCC_COMPILE_ARGS = ["-std=c++11"] if platform.system() != "Windows" else []
+pinkindexer_ext = Extension(
+    "crystals.indexing._pinkindexer",
+    include_dirs=[numpy.get_include()]
+    + [ROOT / "src", ROOT / "include", ROOT / "include" / "Eigen"],
+    sources=["crystals/indexing/_pinkindexer.cpp"]
+    + [str(p) for p in (ROOT / "src").glob("*.cpp")],
+    extra_compile_args=[] + GCC_COMPILE_ARGS,
+)
+
+
 if __name__ == "__main__":
     setup(
         name=PACKAGE_NAME,
@@ -56,6 +70,7 @@ if __name__ == "__main__":
         packages=find_packages(),
         data_files=[("crystals\\cifs", CIF_FILES)],
         include_package_data=True,
+        ext_modules=[pinkindexer_ext],
         zip_safe=False,
         entry_points={"console_scripts": ["crystals = crystals.__main__:main"]},
         # list of possible classifiers:
