@@ -1,13 +1,18 @@
 # -*- encoding: utf-8 -*-
 
+import os
 import platform
 import re
+import shutil
+import tempfile
+from distutils.errors import CompileError, LinkError
 from glob import glob
 from itertools import chain
 from pathlib import Path
-import numpy
 
+import numpy
 from setuptools import Extension, find_packages, setup
+from setuptools.command.build_ext import build_ext
 
 PACKAGE_NAME = "crystals"
 DESCRIPTION = "Data structures for crystallography"
@@ -34,15 +39,72 @@ with open("README.md", encoding="utf-8") as f:
 with open("requirements.txt") as f:
     REQUIREMENTS = [line for line in f.read().split("\n") if len(line.strip())]
 
+# Support for openmp
+# This idea is from scikit-image:
+# https://github.com/scikit-image/scikit-image/
+class BuildExtWithOpenMP(build_ext):
+    """
+    Try to compile extensions with OpenMP if possible
+    """
+
+    def can_compile_link(self, compile_flags, link_flags):
+        cc = self.compiler
+        fname = "test.c"
+        cwd = os.getcwd()
+        tmpdir = tempfile.mkdtemp()
+
+        code = "#include <omp.h>" "int main(int argc, char** argv) { return(0); }"
+
+        if self.compiler.compiler_type == "msvc":
+            # make sure we build a DLL on Windows
+            local_link_flags = link_flags + ["/DLL"]
+        else:
+            local_link_flags = link_flags
+
+        try:
+            os.chdir(tmpdir)
+            with open(fname, "wt") as fobj:
+                fobj.write(code)
+            try:
+                objects = cc.compile([fname], extra_postargs=compile_flags)
+            except CompileError:
+                return False
+            try:
+                # Link shared lib rather then executable to avoid
+                # http://bugs.python.org/issue4431 with MSVC 10+
+                cc.link_shared_lib(objects, "testlib", extra_postargs=local_link_flags)
+            except (LinkError, TypeError):
+                return False
+        finally:
+            os.chdir(cwd)
+            shutil.rmtree(tmpdir)
+        return True
+
+    def build_extensions(self):
+        """ Hook into extension building to set compiler flags """
+        if self.compiler.compiler_type == "msvc":
+            compile_flags = ["/openmp"]
+            link_flags = []
+        else:
+            compile_flags = ["-fopenmp"]
+            link_flags = ["-fopenmp"]
+
+        if self.can_compile_link(compile_flags, link_flags):
+            for ext in self.extensions:
+                ext.extra_compile_args += compile_flags
+                ext.extra_link_args += link_flags
+
+        return super().build_extensions()
+
+
 ROOT = Path(".") / "pinkindexer"
-GCC_COMPILE_ARGS = ["-std=c++11"] if platform.system() != "Windows" else []
 pinkindexer_ext = Extension(
     "crystals.indexing._pinkindexer",
     include_dirs=[numpy.get_include()]
     + [ROOT / "src", ROOT / "include", ROOT / "include" / "Eigen"],
     sources=["crystals/indexing/_pinkindexer.cpp"]
     + [str(p) for p in (ROOT / "src").glob("*.cpp")],
-    extra_compile_args=[] + GCC_COMPILE_ARGS,
+    extra_compile_args=["-std=c++11"] if platform.system() != "Windows" else [],
 )
 
 
@@ -71,6 +133,7 @@ if __name__ == "__main__":
         data_files=[("crystals\\cifs", CIF_FILES)],
         include_package_data=True,
         ext_modules=[pinkindexer_ext],
+        cmdclass=dict(build_ext=BuildExtWithOpenMP),
         zip_safe=False,
         entry_points={"console_scripts": ["crystals = crystals.__main__:main"]},
         # list of possible classifiers:

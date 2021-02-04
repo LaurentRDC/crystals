@@ -51,6 +51,11 @@ jobs:
         pip install -r requirements.txt
         pip install -r dev-requirements.txt
     
+    - name: Install OpenMP (MacOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install libomp
+
     - name: Build C++ extensions
       run: |
         python setup.py build_ext --inplace
