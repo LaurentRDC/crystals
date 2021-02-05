@@ -6,6 +6,7 @@ import numpy as np
 from . import _pinkindexer
 from .common import IndexingError
 from ..lattice import Lattice
+from ..crystal import Crystal
 
 
 def index_pink(
@@ -19,7 +20,10 @@ def index_pink(
     initial,
 ):
     """
-    Index reflections using pinkindexer.
+    Index reflections using pinkindexer, and indexing routine that can be
+    used in a variety of contexts including measurements made with a
+    monochromatic radiation source, a polychromatic source or with radiation
+    of very short wavelength.
 
     Parameters
     ----------
@@ -37,14 +41,29 @@ def index_pink(
         I don't know what that is yet.
     detector_radius : float
         Detector radius [m]
-    initial : Lattice or Crystal, shape (3,3)
-        Initial guess for the lattice lattice [1/A]
+    initial : Lattice or Crystal
+        Initial guess for the crystal structure. If a :class:`Lattice`
+        instance is provided, it is assumed that it is the **primitive**
+        lattice. If a :class:`Crystal` instances is provided,
+        the primitive lattice will be calculated.
+
+    Returns
+    -------
+    indexed_lattice : :class:`Lattice`
+        Lattice that indexes `peaks` best.
 
     Raises
     ------
     ValueError
         If the number of peaks does not match the intensities provided.
         If the dimensions of the reciprocal lattice are not adequate.
+
+    References
+    ----------
+    Y. Gevorkov, A. Barty, W. Brehm, T. A. White, A. Tolstikova,
+    M. O. Wiedorn, A. Meents R.-R. Grigat, H. N. Chapman and O. Yefanova,
+    pinkIndexer – a universal indexer for pink-beam X-ray and electron
+    diffraction snapshots (2020). Acta Cryst. A, vol 76, pages 121-132.
     """
     intensities = np.asarray(intensities)
     peaks = np.asarray(peaks)
@@ -58,6 +77,11 @@ def index_pink(
         raise ValueError(
             f"Expected peaks to be an (N,2) iterable, but got {peaks.shape}"
         )
+
+    # Yaroslav Gevorkov has mentionned that the indexing routine
+    # only works provided an initial lattice that is PRIMITIVE
+    if isinstance(initial, Crystal):
+        initial = initial.primitive()
 
     try:
         lat = _pinkindexer.index_pink(
