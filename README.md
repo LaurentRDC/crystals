@@ -5,120 +5,13 @@ crystals
 `crystals` is a library of data structure and algorithms to manipulate
 abstract crystals in a Pythonic way. `crystals` helps with reading
 crystallographic files (like .cif and .pdb), provides access to atomic
-positions, scattering utilities, and allows for symmetry determination.
-Although `crystals` can be used on its own, it was made to be integrated
-into larger projects (like
+positions, scattering utilities, allows for symmetry determination, and
+indexing of diffraction peaks. Although `crystals` can be used on its own, 
+it was made to be integrated into larger projects (like
 [scikit-ued](https://github.com/LaurentRDC/scikit-ued)).
 
 Take a look at the [documentation](https://crystals.readthedocs.io/) for
-more information.
-
-Usage example
--------------
-
-`crystals` is all about constructing crystals and getting information
-about the resulting object. Crystals can be built from a variety of
-sources:
-
--   From files on disk, such as Crystallography Information Files (CIF)
-    or Place-Wave Self-Consistent Field calculations (PWSCF);
--   From the internal database of over 90 structure files (mostly
-    elemental crystals);
--   From online databases, such as the [RCSB Protein
-    DataBank](http://www.rcsb.org/) or the [Crystallography Open
-    Database](http://www.crystallography.net/cod/).
-
-Here\'s a quick example of building a crystal from the internal
-database:
-
-```python
->>> from crystals import Crystal
->>>
->>> Crystal.from_database('vo2-m1')
-< Crystal object with following unit cell:
-    Atom O  @ (0.10, 0.21, 0.20)
-    Atom O  @ (0.10, 0.29, 0.70)
-    Atom O  @ (0.39, 0.69, 0.29)
-    Atom O  @ (0.39, 0.81, 0.79)
-    Atom O  @ (0.61, 0.19, 0.21)
-    Atom O  @ (0.61, 0.31, 0.71)
-    Atom O  @ (0.90, 0.71, 0.30)
-    Atom O  @ (0.90, 0.79, 0.80)
-    Atom V  @ (0.24, 0.53, 0.53)
-    Atom V  @ (0.24, 0.97, 0.03)
-    Atom V  @ (0.76, 0.03, 0.97)
-    Atom V  @ (0.76, 0.48, 0.47)
-Lattice parameters:
-    a=5.743Å, b=4.517Å, c=5.375Å
-    α=90.000°, β=122.600°, γ=90.000°
-Chemical composition:
-    O: 66.667%
-    V: 33.333% >
-
-```
-
-Symmetry information is also readily available:
-
-```python
->>> from crystals import Crystal
->>> from pprint import pprint # pretty printing
->>>
->>> vo2 = Crystal.from_database('vo2-m1')
->>> pprint(vo2.symmetry())
-{'centering': <CenteringType.primitive: 'P'>,
- 'hall_number': 81,
- 'hall_symbol': '-P 2ybc',
- 'hm_symbol': 'P121/c1',
- 'international_full': 'P 1 2_1/c 1',
- 'international_number': 14,
- 'international_symbol': 'P2_1/c',
- 'pointgroup': '2/m'}
-
-```
-
-### Command-line script
-
-`crystals` comes with command-line utilities. The most important of them
-is the `crystals info` command-line program, which will give you
-information on a crystal.
-
-For example, the equivalent of the usage example above is as follows:
-
-```bash
-    > crystals info vo2-m1
-    Crystal object with following unit cell:
-        Atom O  @ (0.10, 0.29, 0.70) | [1s²2s²2p⁴]
-        Atom O  @ (0.10, 0.21, 0.20) | [1s²2s²2p⁴]
-        Atom O  @ (0.90, 0.71, 0.30) | [1s²2s²2p⁴]
-        Atom O  @ (0.90, 0.79, 0.80) | [1s²2s²2p⁴]
-        Atom O  @ (0.39, 0.69, 0.29) | [1s²2s²2p⁴]
-        Atom O  @ (0.39, 0.81, 0.79) | [1s²2s²2p⁴]
-        Atom O  @ (0.61, 0.19, 0.21) | [1s²2s²2p⁴]
-        Atom O  @ (0.61, 0.31, 0.71) | [1s²2s²2p⁴]
-        Atom V  @ (0.24, 0.97, 0.03) | [1s²2s²2p⁶3s²3p⁶4s²3d³]
-        Atom V  @ (0.76, 0.03, 0.97) | [1s²2s²2p⁶3s²3p⁶4s²3d³]
-        Atom V  @ (0.24, 0.53, 0.53) | [1s²2s²2p⁶3s²3p⁶4s²3d³]
-        Atom V  @ (0.76, 0.48, 0.47) | [1s²2s²2p⁶3s²3p⁶4s²3d³]
-    Lattice parameters:
-        a=5.743Å, b=4.517Å, c=5.375Å
-        α=90.000°, β=122.600°, γ=90.000°
-    Chemical composition:
-        V: 33.333%
-    Source:
-        (...omitted...)\crystals\crystals\cifs\vo2-m1.cif
-    Symmetry information:
-        International symbol
-                    (short) ..... P2_1/c
-                    (full) ...... P 1 2_1/c 1
-        International number .... 14
-        Hermann-Mauguin symbol .. P121/c1
-        Pointgroup .............. 2/m
-        Hall Number ............. 81
-        Centering ............... CenteringType.primitive
-```
-
-`crystals` will guess what the input means. You can pass a filename, or
-database entry. See `crystals --help` for more details.
+more information and examples.
 
 Installation
 ------------
@@ -155,7 +48,7 @@ To build documentation, you will need a few more packages, listed in
 Documentation
 -------------
 
-The documentation, including a user guide as well as detailed reference,
+The documentation, including user guides as well as detailed reference,
 is available here: <https://crystals.readthedocs.io/>
 
 Development
@@ -195,12 +88,6 @@ Atomic weights are reported in the following publication:
 
 > Meija, J., Coplen, T., Berglund, M., et al. (2016). *Atomic weights of the elements 2013* (IUPAC Technical Report). Pure and Applied Chemistry, 88(3), pp. 265-291. Retrieved 30 Nov. 2016, [DOI:10.1515/pac-2015-0305](https://doi.org/10.1515/pac-2015-0305)
 
-Aknowledgements
----------------
-
-This package depends on the work of some amazing people. Of note are the
-[spglib contributors](https://github.com/atztogo/spglib).
-
 Support / Report Issues
 -----------------------
 
@@ -210,7 +97,7 @@ issue](https://github.com/LaurentRDC/crystals/issues).
 License
 -------
 
-`crystals` is made available under the BSD 3-clause license. For more
+`crystals` is made available under the GPLv3 license. For more
 details, see [LICENSE](https://github.com/LaurentRDC/crystals/blob/master/LICENSE).
 
 Related projects
