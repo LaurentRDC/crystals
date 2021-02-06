@@ -26,7 +26,7 @@ def index_pink(
     monochromatic radiation source, a polychromatic source or with radiation
     of very short wavelength.
 
-    .. versionadded:: 1.3.0
+    .. versionadded:: 1.3.1
 
     Parameters
     ----------
