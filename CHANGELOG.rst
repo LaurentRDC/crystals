@@ -7,7 +7,8 @@ What's new
 1.3.0
 -----
 
-* General purpose single-crystal structure indexing has been added: :func:`index_reflections`.
+* Starting with this version, ``crystals`` is licensed under GPLv3.
+* General purpose single-crystal structure indexing with the DirAx algorithm has been added: :func:`index_dirax`.
 * :meth:`Lattice.scattering_vector` and :meth:`Lattice.miller_indices` now accept tables of reflections/scattering vectors. This calculation is vectorized using NumPy.
 * Migration of testing infrastructure to pytest.
 * `Support for Python 3.6 and NumPy<1.17 has been dropped <https://numpy.org/neps/nep-0029-deprecation_policy.html>`_

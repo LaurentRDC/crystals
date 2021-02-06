@@ -148,7 +148,7 @@ if __name__ == "__main__":
             "Intended Audience :: Developers",
             "Intended Audience :: Education",
             "Intended Audience :: Science/Research",
-            "License :: OSI Approved :: BSD License",
+            "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
             "Natural Language :: English",
             "Operating System :: OS Independent",
             "Programming Language :: Python",

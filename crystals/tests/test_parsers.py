@@ -196,7 +196,6 @@ def test_cif_site_occupancy():
         assert atm.occupancy == 0.85
 
 
-@pytest.mark.xfail(reason="API outage until Dec 17th 2020")
 @pytest.mark.skipif(
     MPJ_API_KEY is None,
     reason="Materials Project API key not defined in the environment.",
@@ -214,7 +213,6 @@ def test_mpj_example():
         assert isinstance(cryst, Crystal)
 
 
-@pytest.mark.xfail(reason="API outage until Dec 17th 2020")
 @pytest.mark.skipif(
     MPJ_API_KEY is None,
     reason="Materials Project API key not defined in the environment.",
