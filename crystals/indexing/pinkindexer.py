@@ -31,9 +31,9 @@ def index_pink(
     Parameters
     ----------
     peaks : ndarray, shape (N, 2)
-        Peak locations on detector [m]
+        Each row represents a peak location [x, y] on the detector [m]
     intensities : ndarray, shape (N,)
-        Scatterign intensity for each peak in `peaks` [a.u.]
+        Scattering intensity for each row in `peaks` [a.u.]
     detector_distance : float
         Distance between the sample and detector [m]
     beam_energy : float
@@ -103,9 +103,11 @@ def index_pink(
     except _pinkindexer.PinkIndexerError:
         warn("Indexing has failed; returning the initial guess")
         return initial
-    
+
     if num_indexed == 0:
-        warn("Indexing has failed; no peaks were successfully indexed. Returning the initial guess")
+        warn(
+            "Indexing has failed; no peaks were successfully indexed. Returning the initial guess"
+        )
         return initial
-    
+
     return Lattice(2 * np.pi * np.asfarray(recip)).reciprocal

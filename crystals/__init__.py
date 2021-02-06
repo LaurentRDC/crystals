@@ -32,6 +32,7 @@ from .crystal import CenteringType
 from .crystal import symmetry_expansion
 from .crystal import symmetry_reduction
 from .indexing import index_dirax
+from .indexing import index_pink
 from .indexing import IndexingError
 from .lattice import Lattice
 from .lattice import LatticeSystem
