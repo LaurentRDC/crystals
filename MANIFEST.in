@@ -6,6 +6,7 @@ include dev-requirements.txt
 
 recursive-include crystals/cifs *.cif
 recursive-include crystals/tests/data *
+recursive-include crystals/indexing/tests/data *
 
 recursive-exclude docs *
 

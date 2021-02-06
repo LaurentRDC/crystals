@@ -7,6 +7,7 @@ from . import _pinkindexer
 from .common import IndexingError
 from ..lattice import Lattice
 from ..crystal import Crystal
+from warnings import warn
 
 
 def index_pink(
@@ -24,6 +25,8 @@ def index_pink(
     used in a variety of contexts including measurements made with a
     monochromatic radiation source, a polychromatic source or with radiation
     of very short wavelength.
+
+    .. versionadded:: 1.3.0
 
     Parameters
     ----------
@@ -65,8 +68,8 @@ def index_pink(
     pinkIndexer – a universal indexer for pink-beam X-ray and electron
     diffraction snapshots (2020). Acta Cryst. A, vol 76, pages 121-132.
     """
-    intensities = np.asarray(intensities)
-    peaks = np.asarray(peaks)
+    intensities = np.asfarray(intensities)
+    peaks = np.asfarray(peaks)
 
     if intensities.shape[0] != peaks.shape[0]:
         raise ValueError(
@@ -83,17 +86,26 @@ def index_pink(
     if isinstance(initial, Crystal):
         initial = initial.primitive()
 
+    # The convention for crystals' reciprocal vectors
+    # differs from pinkindexer's definition by a factor of 2 pi
+    reciprocal_basis = np.array(initial.reciprocal_vectors) / (2 * np.pi)
     try:
-        lat = _pinkindexer.index_pink(
+        recip, num_indexed = _pinkindexer.index_pink(
             intensities=intensities,
             peaks=peaks,
-            detector_distance=detector_distance,
-            beam_energy=beam_energy,
-            divergence_angle=divergence_angle,
-            non_monochromaticity=non_monochromaticity,
-            detector_radius=detector_radius,
-            reciprocal_lattice=np.array(initial.reciprocal_vectors),
+            detector_distance=float(detector_distance),
+            beam_energy=float(beam_energy),
+            divergence_angle=float(divergence_angle),
+            non_monochromaticity=float(non_monochromaticity),
+            detector_radius=float(detector_radius),
+            reciprocal_lattice=reciprocal_basis,
         )
     except _pinkindexer.PinkIndexerError:
+        warn("Indexing has failed; returning the initial guess")
         return initial
-    return Lattice(np.asarray(lat))
+    
+    if num_indexed == 0:
+        warn("Indexing has failed; no peaks were successfully indexed. Returning the initial guess")
+        return initial
+    
+    return Lattice(2 * np.pi * np.asfarray(recip)).reciprocal

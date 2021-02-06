@@ -37,7 +37,14 @@ non_monochromaticity: float
 detector_radius : float
     Detector radius [m]
 reciprocal_lattice : ndarray, shape (3,3)
-    Initial guess for the eciprocal lattice [1/A]
+    Initial guess for the reciprocal lattice [1/A]
+
+Returns
+-------
+indexed : list of lists
+    Reciprocal basis vectors for the indexed reflections.
+num_indexed : int
+    Number of peaks that were indexed successfully.
 
 Raises
 ------
@@ -81,6 +88,7 @@ static PyObject * index_pink(PyObject *self, PyObject *args, PyObject *kwargs) {
     if (num_peaks != num_intensities) {
         PyErr_SetString(PyExc_ValueError, "Number of peaks does not match the intensities provided.");
     }
+
     double (*peaks_raw)[2] = (double (*)[2])PyArray_DATA(py_peaks);
     double *intensities_raw = (double *)PyArray_DATA(py_intensities);
     Matrix2Xf peaksOnDetector_m(2, num_peaks);
@@ -88,10 +96,12 @@ static PyObject * index_pink(PyObject *self, PyObject *args, PyObject *kwargs) {
 
     for (int i=0; i < num_peaks; i++) {
         intensities(i) = intensities_raw[i];
-        peaksOnDetector_m(0, i) = peaks_raw[0][i];
-        peaksOnDetector_m(1, i) = peaks_raw[1][i];
+        // Note that pinkindexer expects peak positions
+        // as columns, but peaks_raw is a (N, 2) array
+        peaksOnDetector_m(0, i) = peaks_raw[i][0];
+        peaksOnDetector_m(1, i) = peaks_raw[i][1];
     }
-
+    
     // Cast lattice into Eigen types
     npy_intp num_rows = PyArray_SHAPE(py_sample_lattice)[0];
     npy_intp num_cols = PyArray_SHAPE(py_sample_lattice)[1];
@@ -116,7 +126,7 @@ static PyObject * index_pink(PyObject *self, PyObject *args, PyObject *kwargs) {
         divergenceAngle_deg, 
         nonMonochromaticity, 
         sampleReciprocalLattice_1A,
-        0.01,                       // tolerance 
+        0.02,                       // tolerance 
         2.528445006321113e-04       // reflectionRadius_1_per_A
     );
 
@@ -129,24 +139,21 @@ static PyObject * index_pink(PyObject *self, PyObject *args, PyObject *kwargs) {
     );
 
     Lattice indexedLattice;
-    int result;
+    int num_indexed;
     try {
         int threadCount = 6;
         Eigen::Array<bool, Eigen::Dynamic, 1> fittedPeaks;
         Vector2f centerShift;
         // Returns the number of fitted peaks according to tolerance
         // Therefore, if result is 0, indexing has failed.
-        result = indexer.indexPattern(indexedLattice, centerShift, fittedPeaks, intensities, peaksOnDetector_m, threadCount);
+        num_indexed = indexer.indexPattern(indexedLattice, centerShift, fittedPeaks, intensities, peaksOnDetector_m, threadCount);
     } 
     catch (exception &e)
     {
         PyErr_SetString(PinkIndexerError, e.what());
         return NULL;
     }
-    if (result == 0) {
-        PyErr_SetString(PinkIndexerError, "Indexing has failed: no peaks were indexed correctly.");
-        return NULL;
-    }
+
     Matrix3f indexedBasis = indexedLattice.getBasis();
 
     // For some reason, creating a numpy array directly always resulted in
@@ -165,7 +172,7 @@ static PyObject * index_pink(PyObject *self, PyObject *args, PyObject *kwargs) {
     PyList_SetItem(py_indexed_lattice, 0, a1);
     PyList_SetItem(py_indexed_lattice, 1, a2);
     PyList_SetItem(py_indexed_lattice, 2, a3);
-    return py_indexed_lattice;
+    return Py_BuildValue("(Oi)", py_indexed_lattice, num_indexed);
 }
 
 static PyMethodDef PinkIndexerMethods[] {
