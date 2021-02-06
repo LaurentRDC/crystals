@@ -159,7 +159,7 @@ def _find_basis(vectors, reflections):
     # The best way to find the last vector is to iterate through the remaining
     # vectors, from shortest to longest, until a matrix with the candidate
     # basis as rows has rank 3
-    m = np.empty(shape=(3, 3), dtype=np.float)
+    m = np.empty(shape=(3, 3), dtype=np.float64)
     m[0, :] = a1
     m[1, :] = a2
     for v in vectors:

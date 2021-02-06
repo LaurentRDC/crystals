@@ -418,7 +418,7 @@ class PDBParser(AbstractStructureParser):
             if op_num not in sym_ops:
                 sym_ops[op_num] = {"rotation": list(), "translation": list()}
 
-            r1, r2, r3, t = np.fromstring(line[23:], dtype=np.float, count=4, sep=" ")
+            r1, r2, r3, t = np.fromstring(line[23:], dtype=np.float64, count=4, sep=" ")
             sym_ops[op_num]["rotation"].append([r1, r2, r3])
             sym_ops[op_num]["translation"].append(t)
 
@@ -429,7 +429,7 @@ class PDBParser(AbstractStructureParser):
 
         operators = list()
         for op in sym_ops.values():
-            mat = np.eye(4, dtype=np.float)
+            mat = np.eye(4, dtype=np.float64)
             mat[:3, :3] = np.array(op["rotation"])
             mat[:3, 3] = np.array(op["translation"])
             operators.append(mat)
@@ -1051,7 +1051,7 @@ class PWSCFParser(AbstractStructureParser):
 
     def reciprocal_vectors_alat(self):
         """
-        Returns the reciprocal lattice vectors associated to a structure, in units of :math:`2 \pi / alat`.
+        Returns the reciprocal lattice vectors associated to a structure, in units of :math:`2 \\pi / alat`.
 
         Returns
         -------
