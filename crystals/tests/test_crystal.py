@@ -194,9 +194,10 @@ def test_from_cod_new_dir():
 @pytest.mark.parametrize("name", islice(Crystal.builtins, 20))
 def test_supercell_constructors(name):
     """ Test Supercell constructors for varyous 'builtin' structures """
-    s = Crystal.from_database(name).supercell(2, 2, 2)
+    c = Crystal.from_database(name)
+    s = c.supercell(2, 2, 2)
 
-    assert len(s) == 8 * len(s.crystal)
+    assert len(s) == 8 * len(c)
 
 
 def test_indexed_by_trivial_reindexing():

@@ -4,6 +4,11 @@ What's new
 
 .. currentmodule:: crystals
 
+1.3.1
+-----
+
+* The distinction between :class:`Supercell` and :class:`Crystal` no longer exists; :class:`Supercell` objects can be used everywhere a :class:`Crystal` is expected.
+
 1.3.0
 -----
 
