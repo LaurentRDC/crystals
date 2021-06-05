@@ -4,8 +4,13 @@ What's new
 
 .. currentmodule:: crystals
 
-1.3.1
------
+Release 1.3.2
+-------------
+
+* Releases are now automatically performed using Github Actions
+
+Release 1.3.1
+-------------
 
 * The distinction between :class:`Supercell` and :class:`Crystal` no longer exists; :class:`Supercell` objects can be used everywhere a :class:`Crystal` is expected.
 

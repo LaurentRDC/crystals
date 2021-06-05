@@ -1,6 +1,7 @@
 sphinx >= 3
 sphinx_rtd_theme >= 0.4
 pytest >= 6
+wheel
 # Optional requirements used for tests
 biopython >= 1, <2
 ase >= 3, <4
