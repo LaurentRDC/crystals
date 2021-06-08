@@ -20,7 +20,7 @@ else:
 @pytest.mark.skipif(not WITH_ASE, reason="ASE not installed or importable")
 @pytest.mark.parametrize("name", islice(Crystal.builtins, 10))
 def test_ase_atoms_construction(name):
-    """ Test that ase_atoms returns without error """
+    """Test that ase_atoms returns without error"""
     crystal = Crystal.from_database(name)
     to_ase = crystal.to_ase()
     assert len(crystal) == len(to_ase)
@@ -29,7 +29,7 @@ def test_ase_atoms_construction(name):
 @pytest.mark.skipif(not WITH_ASE, reason="ASE not installed or importable")
 @pytest.mark.parametrize("name", islice(Crystal.builtins, 10))
 def test_ase_atoms_back_and_forth(name):
-    """ Test conversion to and from ase Atoms """
+    """Test conversion to and from ase Atoms"""
     crystal = Crystal.from_database(name)
     to_ase = crystal.to_ase()
     crystal2 = Crystal.from_ase(to_ase)
@@ -42,7 +42,7 @@ def test_ase_atoms_back_and_forth(name):
 
 @pytest.mark.parametrize("name", Crystal.builtins)
 def test_cif_writer_idempotence(name):
-    """ Test that conversion to CIF of a structure loaded from CIF is idempotent. """
+    """Test that conversion to CIF of a structure loaded from CIF is idempotent."""
     # Testing on all built-in structure assures us that corner cases
     # are taken care of.
     cryst = Crystal.from_database(name)

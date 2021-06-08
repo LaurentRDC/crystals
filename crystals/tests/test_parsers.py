@@ -42,7 +42,7 @@ filterwarnings("ignore", category=UserWarning)
 
 @lru_cache(maxsize=1)
 def web_avail():
-    """ Returns whether or not an internet connection is available """
+    """Returns whether or not an internet connection is available"""
     with suppress(OSError), socket.create_connection(("www.google.com", 80)):
         return True
     return False
@@ -50,7 +50,7 @@ def web_avail():
 
 @pytest.mark.skipif(not web_avail(), reason="Internet connection is required.")
 def test_pdb_parser_fractional_atoms():
-    """ Test the PDBParser returns fractional atomic coordinates. """
+    """Test the PDBParser returns fractional atomic coordinates."""
     with tempfile.TemporaryDirectory() as temp_dir:
         with PDBParser("1fbb", download_dir=temp_dir) as parser:
             for atm in parser.atoms():
@@ -70,7 +70,7 @@ def test_pdb_parser_symmetry_operators():
 
 @pytest.mark.skipif(not web_avail(), reason="Internet connection is required.")
 def test_pdb_parser_residues():
-    """ Test the parsing of residues for 1fbb """
+    """Test the parsing of residues for 1fbb"""
     with tempfile.TemporaryDirectory() as temp_dir:
         with PDBParser("1fbb", download_dir=temp_dir) as parser:
             residues = list(parser.residues())
@@ -83,7 +83,7 @@ def test_pdb_parser_residues():
 
 @pytest.mark.skipif(not web_avail(), reason="Internet connection is required.")
 def test_pdb_parser_default_download_dir():
-    """ Test that the file is saved in the correct temporary directory by default """
+    """Test that the file is saved in the correct temporary directory by default"""
     filename = PDBParser.download_pdb_file("1fbb")
 
     assert filename.exists()
@@ -125,13 +125,13 @@ def test_chemical_composition(protein_id):
 
 @pytest.mark.parametrize("file", CIF_FILES)
 def test_cif_compatibility(file):
-    """ Test the CIFParser on all CIF files stored herein to check build errors"""
+    """Test the CIFParser on all CIF files stored herein to check build errors"""
     Crystal.from_cif(file)
 
 
 @pytest.mark.parametrize("file", CIF_FILES)
 def test_cif_fractional_atoms(file):
-    """ Test the CIFParser returns fractional atomic coordinates. """
+    """Test the CIFParser returns fractional atomic coordinates."""
     with CIFParser(file) as p:
         for atm in p.atoms():
             assert atm.coords_fractional.max() <= 1
@@ -161,7 +161,7 @@ def test_cif_international_number(file):
 
 
 def test_cif_silicon():
-    """ Test CIFParser on Si.cif (diamond structure) """
+    """Test CIFParser on Si.cif (diamond structure)"""
     Si_path = Path(__file__).parent.parent / "cifs" / "Si.cif"
     si = Crystal.from_cif(Si_path)
 
@@ -169,13 +169,13 @@ def test_cif_silicon():
 
 
 def test_cif_issue_5():
-    """ Test that the parsing of MgSiO3 is working. See Issue 5 for details on why this was a problem. """
+    """Test that the parsing of MgSiO3 is working. See Issue 5 for details on why this was a problem."""
     c = Crystal.from_cif(Path(__file__).parent / "data" / "issue5_MgSiO3.cif")
     assert len(c) == 20
 
 
 def test_cif_vo2():
-    """ Test CIFParser on vo2.cif (monoclinic M1) """
+    """Test CIFParser on vo2.cif (monoclinic M1)"""
     VO2_path = Path(__file__).parent.parent / "cifs" / "vo2-m1.cif"
     vo2 = Crystal.from_cif(VO2_path)
 
@@ -185,7 +185,7 @@ def test_cif_vo2():
 
 
 def test_cif_site_occupancy():
-    """ Test that atom site occupancy is correctly parsed from CIF files. """
+    """Test that atom site occupancy is correctly parsed from CIF files."""
     path = Path(__file__).parent / "data" / "SiC_partial_site_occ.cif"
     with CIFParser(path) as parser:
         atoms = list(parser.atoms())
@@ -202,7 +202,7 @@ def test_cif_site_occupancy():
 )
 @pytest.mark.skipif(not web_avail(), reason="Internet connection is required.")
 def test_mpj_example():
-    """ Test that the API example given on the Materials Project website is working as expected. """
+    """Test that the API example given on the Materials Project website is working as expected."""
     with tempfile.TemporaryDirectory() as temp_dir:
         cryst = Crystal.from_mp(
             api_key=MPJ_API_KEY,
@@ -219,7 +219,7 @@ def test_mpj_example():
 )
 @pytest.mark.skipif(not web_avail(), reason="Internet connection is required.")
 def test_material_id():
-    """ Test that that material ID for Fe2O3 is as expected. """
+    """Test that that material ID for Fe2O3 is as expected."""
     with tempfile.TemporaryDirectory() as temp_dir:
         # We use the Zr5Te6 formula because it has a single Materials ID
         with MPJParser(
@@ -233,7 +233,7 @@ def test_material_id():
 
 @pytest.mark.parametrize("file,alat", zip(PWSCF_FILES, [6.6764, 21.4862, 4.6563]))
 def test_pwscf_alat(file, alat):
-    """ Test the parsing of the lattice parameter (alat) """
+    """Test the parsing of the lattice parameter (alat)"""
     parser = PWSCFParser(file)
 
     assert parser.alat == alat
@@ -243,13 +243,13 @@ def test_pwscf_alat(file, alat):
 
 @pytest.mark.parametrize("file,natoms", zip(PWSCF_FILES, [3, 8, 4]))
 def test_pwscf_natoms(file, natoms):
-    """ Test the parsing of the number of unit cell atoms """
+    """Test the parsing of the number of unit cell atoms"""
     parser = PWSCFParser(file)
     assert parser.natoms == natoms
 
 
 def test_pwscf_lattice_vectors_alat():
-    """ Test the parsing of lattice vectors in alat units """
+    """Test the parsing of lattice vectors in alat units"""
     parser_tise2 = PWSCFParser(Path(__file__).parent / "data" / "pwscf_tise2.out")
     a1, a2, a3 = parser_tise2.lattice_vectors_alat()
     assert np.allclose(a1, np.array([0.989_891, -0.001_560, -0.001_990]))
@@ -258,7 +258,7 @@ def test_pwscf_lattice_vectors_alat():
 
 
 def test_pwscf_reciprocal_vectors_alat():
-    """ Test the parsing of reciprocal vectors in alat units """
+    """Test the parsing of reciprocal vectors in alat units"""
     parser_tise2 = PWSCFParser(Path(__file__).parent / "data" / "pwscf_tise2.out")
     b1, b2, b3 = parser_tise2.reciprocal_vectors_alat()
     assert np.allclose(b1, np.array([1.011_138, 0.585_904, 0.001_336]))
@@ -275,7 +275,7 @@ def test_pwscf_atoms(file):
 
 @pytest.mark.parametrize("file,expected_spg", zip(PWSCF_FILES, [164, 62, 194]))
 def test_pwscf_crystal_instance(file, expected_spg):
-    """ Test the construction of Crystal instances, and check against expected symmetry properties """
+    """Test the construction of Crystal instances, and check against expected symmetry properties"""
 
     parser = PWSCFParser(file)
     crystal = Crystal.from_pwscf(file)

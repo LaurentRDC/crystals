@@ -22,25 +22,25 @@ def structure():
 
 
 def test_iteration(structure):
-    """ Test iteration of AtomicStructure yields from orphan atoms and substructure atoms alike """
+    """Test iteration of AtomicStructure yields from orphan atoms and substructure atoms alike"""
     elements = [atm.element for atm in structure]
     assert len(elements), 3
 
 
 def test_addition_trivial(structure):
-    """ Test that the addition of two AtomicStructures, one being empty, works as expected """
+    """Test that the addition of two AtomicStructures, one being empty, works as expected"""
     addition = structure + AtomicStructure()
     assert addition == structure
     assert addition is not structure
 
 
 def test_addition_uniqueness(structure):
-    """ Test that the addition of two AtomicStructures, works as expected regarding unique atoms """
+    """Test that the addition of two AtomicStructures, works as expected regarding unique atoms"""
     assert structure + structure == structure
 
 
 def test_addition(structure):
-    """ Test the addition of two different AtomicStructures works as expected. """
+    """Test the addition of two different AtomicStructures works as expected."""
     new_struct = AtomicStructure(
         atoms=[Atom("U", [0, 1, 0])],
         substructures=[
@@ -58,7 +58,7 @@ def test_addition(structure):
 
 
 def test_addition_subclasses(structure):
-    """ Test that the addition of two subclass of AtomicStructures is preserved under addition. """
+    """Test that the addition of two subclass of AtomicStructures is preserved under addition."""
 
     class NewAtomicStructure(AtomicStructure):
         pass
@@ -68,7 +68,7 @@ def test_addition_subclasses(structure):
 
 
 def test_truthiness(structure):
-    """ Test that empty AtomicStructures are falsey, and truthy otherwise. """
+    """Test that empty AtomicStructures are falsey, and truthy otherwise."""
     empty_structure = AtomicStructure()
     assert not empty_structure
 
@@ -76,7 +76,7 @@ def test_truthiness(structure):
 
 
 def test_trivial_transformation(structure):
-    """ Test that the identity transformation of an AtomicStructure works as expected. """
+    """Test that the identity transformation of an AtomicStructure works as expected."""
     transformed = structure.transform(np.eye(3))
 
     # transformed structure should be different, but equal, to original structure
@@ -85,7 +85,7 @@ def test_trivial_transformation(structure):
 
 
 def test_transformations_inversions(structure):
-    """ Test that symmetry operations work as expected when inverted. """
+    """Test that symmetry operations work as expected when inverted."""
     operator = np.random.random(size=(3, 3))
     inv_op = np.linalg.inv(operator)
 
@@ -111,7 +111,7 @@ def test_transform_subclass(structure):
 
 
 def test_transformations_correctness(structure):
-    """ Test that AtomicStructure.transform() works as expected. """
+    """Test that AtomicStructure.transform() works as expected."""
     operator = 2 * np.eye(3)
     transformed = structure.transform(operator)
 
@@ -122,7 +122,7 @@ def test_transformations_correctness(structure):
 
 
 def test_itersorted(structure):
-    """ Test that AtomicStructure.itersorted() works as expected """
+    """Test that AtomicStructure.itersorted() works as expected"""
     sorted_from_structure = list(structure.itersorted())
     sorted_from_list = list(sorted(structure))
 
@@ -130,14 +130,14 @@ def test_itersorted(structure):
 
 
 def test_chemical_composition_trivial(structure):
-    """ Test that AtomicStructure.chemical_composition works as expected """
+    """Test that AtomicStructure.chemical_composition works as expected"""
     expected = {"U": 1 / 3, "Ag": 2 / 3}
     assert structure.chemical_composition == expected
 
 
 @pytest.mark.parametrize("name", islice(Crystal.builtins, 10))
 def test_chemical_composition_add_to_unity(name):
-    """ Test that AtomicStructure.chemical_composition always adds up to 1 """
+    """Test that AtomicStructure.chemical_composition always adds up to 1"""
     # Faster to create a large atomic structure from a Crystal object
     # Testing for 10 crystal structures only
     structure = AtomicStructure(atoms=Crystal.from_database(name))
@@ -145,12 +145,12 @@ def test_chemical_composition_add_to_unity(name):
 
 
 def test_chemical_formula(structure):
-    """ Test that AtomicStructure.chemical_formula is working as expected. """
+    """Test that AtomicStructure.chemical_formula is working as expected."""
     assert structure.chemical_formula == "Ag2 U"
 
 
 def test_chemical_formula_hill_notation(structure):
-    """ Test that the Hill notation, where elements are alphabetically ordered except C and H, which are first. """
+    """Test that the Hill notation, where elements are alphabetically ordered except C and H, which are first."""
     structure = AtomicStructure(
         atoms=[
             Atom("Ag", [0, 1, 0]),
@@ -163,25 +163,25 @@ def test_chemical_formula_hill_notation(structure):
 
 
 def test_length(structure):
-    """ Test the __len__ methods """
+    """Test the __len__ methods"""
     assert len(structure), 3
 
 
 def test_containership_substructures(structure):
-    """ Test that containership works on substructure and atoms separately """
+    """Test that containership works on substructure and atoms separately"""
     substructure = next(iter(structure.substructures))
     assert substructure in structure
     assert structure not in substructure
 
 
 def test_containership_atoms(structure):
-    """ Test that atom containership testing is working, even in substructures """
+    """Test that atom containership testing is working, even in substructures"""
     atm = next(iter(structure))
     assert atm in structure
 
 
 def test_equality(structure):
-    """ Test that AtomicStructure is equal to itself but not others """
+    """Test that AtomicStructure is equal to itself but not others"""
     substructure = next(iter(structure.substructures))
     assert structure == structure
     assert structure == deepcopy(structure)
@@ -196,7 +196,7 @@ def test_equality(structure):
 
 
 def test_array(structure):
-    """ Test AtomicStructure.__array__ """
+    """Test AtomicStructure.__array__"""
     arr = np.array(structure)
     assert arr.shape == (len(structure), 4)
 
@@ -210,13 +210,13 @@ def test_picklable(structure):
 
 
 def test_abstract_base_classes(structure):
-    """ Test that AtomicStructure fits with collections.abc module """
+    """Test that AtomicStructure fits with collections.abc module"""
     for abstract_base_class in (abc.Hashable, abc.Iterable, abc.Sized):
         assert isinstance(structure, abstract_base_class)
 
 
 def test_satisfying(structure):
-    """ Test the AtomicStructure.satisfying method """
+    """Test the AtomicStructure.satisfying method"""
     uranium = structure.satisfying(lambda a: a.element == "U")
     silver = structure.satisfying(lambda a: a.element == "Ag")
 

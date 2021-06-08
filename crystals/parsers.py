@@ -46,7 +46,7 @@ as the `MATERIALS_PROJECT_API_KEY` environment variable.
 
 
 class ParseError(IOError):
-    """ General parsing error type. """
+    """General parsing error type."""
 
     pass
 
@@ -507,7 +507,7 @@ class CIFParser(AbstractStructureParser):
 
     @property
     def structure_block(self):
-        """ Retrieve which CIF block has the appropriate structural information """
+        """Retrieve which CIF block has the appropriate structural information"""
         blocks = (self.file[key] for key in self.file.keys())
         for block in blocks:
             try:
@@ -519,7 +519,7 @@ class CIFParser(AbstractStructureParser):
 
     @lru_cache(maxsize=1)
     def hall_symbol(self):
-        """ Returns the Hall symbol """
+        """Returns the Hall symbol"""
         block = self.structure_block
 
         hall_symbol = block.get("_symmetry_space_group_name_Hall") or block.get(
@@ -878,7 +878,7 @@ class MPJParser(CIFParser):
 
     @property
     def material_id(self):
-        """ Returns the Materials Project material ID from this file. """
+        """Returns the Materials Project material ID from this file."""
         # A comment of the form "Material ID: xxxxxxx" will have been inserted in the first
         # line of the file after download.
         self._handle.seek(0)
@@ -977,7 +977,7 @@ class PWSCFParser(AbstractStructureParser):
 
     @property
     def alat(self):
-        """ Get the lattice parameter [Bohr radius] """
+        """Get the lattice parameter [Bohr radius]"""
         match = re.search(
             r"\s*(lattice parameter [(]alat[)])\s*=\s*(?P<alat>\d+[.]\d+)\s*(a.u.)",
             self._filecontent,
@@ -991,7 +991,7 @@ class PWSCFParser(AbstractStructureParser):
 
     @property
     def natoms(self):
-        """ Number of atoms defined per cell """
+        """Number of atoms defined per cell"""
         match = re.search(
             r"(\s*number of atoms/cell\s*)[=]\s*(?P<natoms>\d+)", self._filecontent
         )

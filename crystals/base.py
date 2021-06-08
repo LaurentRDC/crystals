@@ -45,7 +45,7 @@ class AtomicStructure:
         yield from chain.from_iterable(self.substructures)
 
     def __contains__(self, item):
-        """ Check containership of :class:`Atom` instances or :class:`AtomicStructure` substructures recursively."""
+        """Check containership of :class:`Atom` instances or :class:`AtomicStructure` substructures recursively."""
         if isinstance(item, AtomicStructure):
             return item in self.substructures
 
@@ -57,15 +57,15 @@ class AtomicStructure:
         )
 
     def __len__(self):
-        """ Number of :class:`Atom` instances present in the structure and substructures """
+        """Number of :class:`Atom` instances present in the structure and substructures"""
         return len(self.atoms) + sum(len(struct) for struct in self.substructures)
 
     def __bool__(self):
-        """ An :class:`AtomicStructure` is `False` if empty, and `True` otherwise """
+        """An :class:`AtomicStructure` is `False` if empty, and `True` otherwise"""
         return bool(self.atoms) or bool(self.substructures)
 
     def __add__(self, other):
-        """ Create a new structure made from the combination of two structures. """
+        """Create a new structure made from the combination of two structures."""
         # We defer construction to the current class. Therefore, subclasses of AtomicStructure
         # will add into their own class
         return self.__class__(
@@ -84,7 +84,7 @@ class AtomicStructure:
         return hash(self.atoms) | hash(self.substructures)
 
     def __repr__(self):
-        """ Verbose string representation of this instance. """
+        """Verbose string representation of this instance."""
         # AtomicStructure subclasses need not override this method
         # since the class name is dynamically determined
         rep = f"< {self.__class__.__name__} object with following orphan atoms:"

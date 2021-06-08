@@ -761,6 +761,7 @@ class Supercell(Crystal):
 
     To iterate over all atoms in the supercell, use this object as an iterable.
     """
+
     pass
 
 

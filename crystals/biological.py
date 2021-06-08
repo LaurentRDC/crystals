@@ -69,7 +69,7 @@ class SecondaryStructure(AtomicStructure):
 
     @property
     def residues(self):
-        """ Residues making this structure. """
+        """Residues making this structure."""
         return self.substructures
 
     def transform(self, *operators):

@@ -141,7 +141,7 @@ class LatVec:
 
 
 def _find_basis(vectors, reflections):
-    """ Find the shorted three linearly-independent vectors from a list. """
+    """Find the shorted three linearly-independent vectors from a list."""
     vectors = sorted(vectors, key=np.linalg.norm)
     a1 = vectors.pop(0)
     try:

@@ -27,7 +27,7 @@ def primed(gen):
 
 
 def matmulrow(matrix, arr):
-    """ Row-wise matrix multiplication. """
+    """Row-wise matrix multiplication."""
     return np.transpose(matrix @ arr.T)
 
 
@@ -83,7 +83,7 @@ class Lattice:
         return NotImplemented
 
     def __array__(self, *args, **kwargs):
-        """ Returns a 3x3 float array in which each row is a lattice vector """
+        """Returns a 3x3 float array in which each row is a lattice vector"""
         return np.array(self.lattice_vectors, *args, **kwargs)
 
     @classmethod
@@ -106,7 +106,7 @@ class Lattice:
 
     @property
     def lattice_parameters(self):
-        """ Lattice parameters as three lengths [Å] and three angles [degrees]. """
+        """Lattice parameters as three lengths [Å] and three angles [degrees]."""
         a, b, c = norm(self.a1), norm(self.a2), norm(self.a3)
         alpha = np.arccos(np.vdot(self.a2, self.a3) / (b * c))
         beta = np.arccos(np.vdot(self.a1, self.a3) / (a * c))
@@ -115,17 +115,17 @@ class Lattice:
 
     @property
     def lattice_system(self):
-        """ One of the seven lattice system, returned in the form of the :class:`LatticeSystem` enumeration. """
+        """One of the seven lattice system, returned in the form of the :class:`LatticeSystem` enumeration."""
         return lattice_system(*self.lattice_parameters, atol=5e-2)
 
     @property
     def volume(self):
-        """ Lattice cell volume Angtroms cubed """
+        """Lattice cell volume Angtroms cubed"""
         return np.dot(self.a1, np.cross(self.a2, self.a3))
 
     @property
     def lattice_vectors(self):
-        """ Iterable of lattice vectors """
+        """Iterable of lattice vectors"""
         return self.a1, self.a2, self.a3
 
     @lattice_vectors.setter
@@ -134,7 +134,7 @@ class Lattice:
 
     @property
     def reciprocal(self):
-        """ Reciprocal lattice """
+        """Reciprocal lattice"""
         return Lattice(lattice_vectors=self.reciprocal_vectors)
 
     @property
@@ -453,7 +453,7 @@ def lattice_system(a, b, c, alpha, beta, gamma, atol=1e-2):
 
 
 def _two_equal(iterable, atol):
-    """ Returns True if and only if two items from an iterable are equal """
+    """Returns True if and only if two items from an iterable are equal"""
     iterable = tuple(iterable)
     for i in iterable:
         if sum(isclose(i, l, abs_tol=atol) for l in iterable) == 2:
