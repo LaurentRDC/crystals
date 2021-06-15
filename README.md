@@ -1,6 +1,6 @@
 crystals
 ========
-[![Documentation Status](https://readthedocs.org/projects/crystals/badge/?version=master)](https://crystals.readthedocs.io/) [![PyPI Package latest release](https://img.shields.io/pypi/v/crystals.svg)](https://pypi.python.org/pypi/crystals) [![Conda-forge Version](https://img.shields.io/conda/vn/conda-forge/crystals.svg)](https://anaconda.org/conda-forge/crystals)
+[![Documentation Status](https://readthedocs.org/projects/crystals/badge/?version=master)](https://crystals.readthedocs.io/) [![PyPI Package latest release](https://img.shields.io/pypi/v/crystals.svg)](https://pypi.python.org/pypi/crystals) [![Conda-forge Version](https://img.shields.io/conda/vn/conda-forge/crystals.svg)](https://anaconda.org/conda-forge/crystals) [![DOI badge](https://img.shields.io/badge/DOI-10.1186%2Fs40679--018--0060--y-blue)](https://doi.org/10.1186/s40679-018-0060-y)
 
 `crystals` is a library of data structure and algorithms to manipulate
 abstract crystals in a Pythonic way. `crystals` helps with reading
