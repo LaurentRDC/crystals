@@ -8,6 +8,7 @@ Release 1.3.2
 -------------
 
 * Releases are now automatically performed using Github Actions
+* Fixed an issue where uncertainties in atom site occupancy in CIF files would not be parsed correctly (#7).
 
 Release 1.3.1
 -------------

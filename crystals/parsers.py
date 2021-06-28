@@ -21,7 +21,8 @@ from warnings import warn
 
 import numpy as np
 import requests
-from CifFile import ReadCif, get_number_with_esd
+from CifFile import ReadCif
+import CifFile as Cif
 from numpy.linalg import inv
 
 from . import __version__
@@ -43,6 +44,14 @@ MISSING_MP_API_KEY_MESSAGE = """
 You have not provided a Materials Project API key. Either provide it, or set it 
 as the `MATERIALS_PROJECT_API_KEY` environment variable.
 """
+
+
+def get_number_with_esd(x):
+    """ pycifrw's version cannot handle floats, only strings. """
+    try:
+        return Cif.get_number_with_esd(x)
+    except TypeError:
+        return Cif.get_number_with_esd(str(x))
 
 
 class ParseError(IOError):
@@ -698,7 +707,9 @@ class CIFParser(AbstractStructureParser):
             # len(xs) == number of atoms. Therefore, good upper bound for `repeat`, which otherwise
             # might produce an infinitely long iterable
             occupancies = repeat(1.0, len(xs))
-        occupancies = map(float, occupancies)
+        occupancies = map(
+            lambda x: get_number_with_esd(x)[0], occupancies
+        )  # See issue #7
 
         atoms = list()
         for e, x, y, z, occ in zip(elements, xs, ys, zs, occupancies):

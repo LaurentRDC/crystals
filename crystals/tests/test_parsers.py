@@ -129,6 +129,12 @@ def test_cif_compatibility(file):
     Crystal.from_cif(file)
 
 
+def test_cif_uncertainties_issue7():
+    """Test that the CIF parser handles atomic positions with uncertainties (issue #7)."""
+    path = Path(__file__).parent / "data" / "issue7.cif"
+    Crystal.from_cif(path)
+
+
 @pytest.mark.parametrize("file", CIF_FILES)
 def test_cif_fractional_atoms(file):
     """Test the CIFParser returns fractional atomic coordinates."""
