@@ -15,6 +15,7 @@ constructors = {
     "cod": Crystal.from_cod,
     "pdb": Crystal.from_pdb,
     "mp": Crystal.from_mp,
+    "poscar": Crystal.from_poscar,
 }
 
 INFO_HELP = "Display the crystallographic information related to a crystal file or database entry."
@@ -92,12 +93,15 @@ def guess_constructor(i):
         return Crystal.from_pwscf(i)
     elif str(i).startswith("mp-"):
         return Crystal.from_mp(i)
+    elif "POSCAR" in str(i):
+        return Crystal.from_poscar(i)
 
     # We iterate over constructors that don't require network access first
     cryst = None
     for constructor in (
         Crystal.from_cif,
         Crystal.from_pwscf,
+        Crystal.from_poscar,
         Crystal.from_database,
         Crystal.from_cod,
         Crystal.from_pdb,

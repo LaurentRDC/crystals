@@ -19,7 +19,7 @@ from .affine import affine_map, change_of_basis
 from .atom import Atom
 from .base import AtomicStructure
 from .lattice import Lattice
-from .parsers import CIFParser, CODParser, MPJParser, PDBParser, PWSCFParser
+from .parsers import CIFParser, CODParser, MPJParser, PDBParser, POSCARParser, PWSCFParser
 from .spg_data import Hall2HM
 from .writers import write_cif, write_xyz, ase_atoms
 
@@ -282,6 +282,26 @@ class Crystal(AtomicStructure, Lattice):
             lattice_vectors=lattice_vectors,
             **kwargs,
         )
+
+    @classmethod
+    def from_poscar(cls, path, **kwargs):
+        """
+        Returns a Crystal object created from an ASE Atoms object.
+        Keyword arguments are passed to the class constructor.
+
+        Parameters
+        ----------
+        atoms : ase.Atoms
+            Atoms group.
+        """
+        with POSCARParser(path) as parser:
+            return cls(
+                unitcell=parser.atoms(),
+                lattice_vectors=parser.lattice_vectors(),
+                source=parser.filename,
+                **kwargs,
+            )
+
 
     def _spglib_cell(self):
         """Returns an array in spglib's cell format."""

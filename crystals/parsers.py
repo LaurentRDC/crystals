@@ -1123,3 +1123,48 @@ class PWSCFParser(AbstractStructureParser):
             )
 
         return atoms
+
+class POSCARParser(AbstractStructureParser):
+
+    def __init__(self, filename, **kwargs):
+        self.filename = filename
+
+        with open(filename, mode="r") as f:
+
+            next(f)
+        
+            self._sym_ops = [np.eye(3) * float(next(f))]
+            self._lattice_vectors = np.array([next(f).split() for _ in range(3)]).astype(np.float)
+            self._atom_types = list(zip(
+                next(f).strip().split(),
+                map(int, next(f).strip().split()),
+            ))
+            self._atoms = []
+            flag = next(f)
+
+            if flag.startswith("S"):
+                raise NotImplementedError()
+            elif flag[0] in ["C", "c", "K", "k"]:
+                for element, nat in self._atom_types:
+                    for _ in range(nat):
+                        coords = np.array(next(f).strip().split()).astype(np.float)
+                        coords = coords @ np.linalg.inv(self._lattice_vectors)
+                        self._atoms.append(
+                            Atom(element, coords)
+                        )
+            else:
+                for element, nat in self._atom_types:
+                    for _ in range(nat):
+                        coords = np.array(next(f).strip().split()).astype(np.float)
+                        self._atoms.append(
+                            Atom(element, coords)
+                        )
+
+    def __exit__(self, *args, **kwargs):
+        pass
+
+    def atoms(self):
+        return self._atoms
+    
+    def lattice_vectors(self):
+        return self._lattice_vectors
