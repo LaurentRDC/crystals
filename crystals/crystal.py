@@ -286,13 +286,13 @@ class Crystal(AtomicStructure, Lattice):
     @classmethod
     def from_poscar(cls, path, **kwargs):
         """
-        Returns a Crystal object created from an ASE Atoms object.
+        Returns a Crystal object created from a VASP's POSCAR file.
         Keyword arguments are passed to the class constructor.
 
         Parameters
         ----------
-        atoms : ase.Atoms
-            Atoms group.
+        path : path-like
+            File path
         """
         with POSCARParser(path) as parser:
             return cls(
@@ -771,10 +771,10 @@ class Crystal(AtomicStructure, Lattice):
         return ase_atoms(self)
 
 
-    def to_poscar(self, filename, *args, **kwargs):
+    def to_poscar(self, filename, **kwargs):
         """
         Convert this :class:`Crystal` instance to a POSCAR file.
-        Keyword arguments are passed to `writers.write_poscar`.
+        Keyword arguments are passed to :meth:`writers.write_poscar`.
 
         Note that some information may be lost in the translation. However, we guarantee that
         reading a structure from a file, and then writing back to the same format is idempotent.
@@ -784,8 +784,7 @@ class Crystal(AtomicStructure, Lattice):
         filename : path-like
             Path to a file. If the file already exists, it will be overwritten.
         kwargs: 
-            Keyword arguments are passed to `writers.write_poscar`.
-
+            Keyword arguments are passed to :meth:`writers.write_poscar`.
         """
         write_poscar(self, filename, **kwargs)
 

@@ -206,19 +206,15 @@ def write_poscar(crystal, fname, comment=None, scaling_factor=1.0, cartesian=Fal
     with open(fname, "wt", encoding="ascii") as file:
         file.write(comment + "\n")
 
-        file.write(str(scaling_factor)) # Temporarily fixed
+        file.write(str(scaling_factor))
         file.write("\n")
         for vec in crystal.lattice_vectors:
             x, y, z = vec / scaling_factor
             file.write(f"{x:10.6f}  {y:10.6f}  {z:10.6f}")
             file.write("\n")
 
-        # Write atomic data row-by-row
-        # For easier human readability, atoms are sorted
-        # by element
-        atoms = sorted(crystal)
         grouped = [(elem, list(atoms)) for elem, atoms in
-                   groupby(atoms, key=lambda atom: atom.element)]
+                   groupby(sorted(crystal), key=lambda atom: atom.element)]
 
         file.write(" ".join(["%5s" % elem for elem, atoms in grouped]))
         file.write("\n")
