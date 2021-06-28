@@ -51,3 +51,16 @@ def test_cif_writer_idempotence(name):
         cryst.to_cif(f)
         cryst2 = Crystal.from_cif(f)
         assert cryst == cryst2
+
+
+@pytest.mark.parametrize("name", Crystal.builtins)
+def test_vasp_writer_idempotence(name):
+    """Test that conversion to VASP of a structure loaded from VASP is idempotent."""
+    # Testing on all built-in structure assures us that corner cases
+    # are taken care of.
+    cryst = Crystal.from_database(name)
+    with tempfile.TemporaryDirectory() as temp_dir:
+        f = Path(temp_dir) / "temp.POSCAR"
+        cryst.to_poscar(f)
+        cryst2 = Crystal.from_poscar(f)
+        assert cryst == cryst2
