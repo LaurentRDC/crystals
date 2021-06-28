@@ -47,7 +47,7 @@ as the `MATERIALS_PROJECT_API_KEY` environment variable.
 
 
 def get_number_with_esd(x):
-    """ pycifrw's version cannot handle floats, only strings. """
+    """pycifrw's version cannot handle floats, only strings."""
     try:
         return Cif.get_number_with_esd(x)
     except TypeError:
