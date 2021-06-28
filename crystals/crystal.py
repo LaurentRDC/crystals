@@ -19,9 +19,9 @@ from .affine import affine_map, change_of_basis
 from .atom import Atom
 from .base import AtomicStructure
 from .lattice import Lattice
-from .parsers import CIFParser, CODParser, MPJParser, PDBParser, PWSCFParser
+from .parsers import CIFParser, CODParser, MPJParser, PDBParser, POSCARParser, PWSCFParser
 from .spg_data import Hall2HM
-from .writers import write_cif, write_xyz, ase_atoms
+from .writers import write_cif, write_poscar, write_xyz, ase_atoms
 
 CIF_ENTRIES = frozenset((Path(__file__).parent / "cifs").glob("*.cif"))
 
@@ -282,6 +282,26 @@ class Crystal(AtomicStructure, Lattice):
             lattice_vectors=lattice_vectors,
             **kwargs,
         )
+
+    @classmethod
+    def from_poscar(cls, path, **kwargs):
+        """
+        Returns a Crystal object created from a VASP's POSCAR file.
+        Keyword arguments are passed to the class constructor.
+
+        Parameters
+        ----------
+        path : path-like
+            File path
+        """
+        with POSCARParser(path) as parser:
+            return cls(
+                unitcell=parser.atoms(),
+                lattice_vectors=parser.lattice_vectors(),
+                source=parser.filename,
+                **kwargs,
+            )
+
 
     def _spglib_cell(self):
         """Returns an array in spglib's cell format."""
@@ -750,6 +770,23 @@ class Crystal(AtomicStructure, Lattice):
         """
         return ase_atoms(self)
 
+
+    def to_poscar(self, filename, **kwargs):
+        """
+        Convert this :class:`Crystal` instance to a POSCAR file.
+        Keyword arguments are passed to :meth:`writers.write_poscar`.
+
+        Note that some information may be lost in the translation. However, we guarantee that
+        reading a structure from a file, and then writing back to the same format is idempotent.
+
+        Parameters
+        ----------
+        filename : path-like
+            Path to a file. If the file already exists, it will be overwritten.
+        kwargs: 
+            Keyword arguments are passed to :meth:`writers.write_poscar`.
+        """
+        write_poscar(self, filename, **kwargs)
 
 class Supercell(Crystal):
     """

@@ -8,6 +8,7 @@ These functions are not expected to be used on their own; see the associated
 from abc import abstractmethod
 from contextlib import AbstractContextManager, redirect_stdout
 from io import StringIO
+from itertools import groupby
 
 import numpy as np
 from CifFile import CifBlock, CifFile
@@ -179,3 +180,59 @@ def ase_atoms(crystal, **kwargs):
         cell=np.array(crystal.lattice_vectors),
         **kwargs,
     )
+
+def write_poscar(crystal, fname, comment=None, scaling_factor=1.0, cartesian=False):
+    """
+    Generate an atomic coordinates .xyz file from a crystal structure.
+
+    Parameters
+    ----------
+    crystal : crystals.Crystal
+        Crystal to be converted.
+    fname : path-like
+        The POSCAR file will be written to this file. If the file already exists,
+        it will be overwritten.
+    comment : str or None, optional
+        Comment to include at the first line of ``fname``.
+    scaling_factor: float, optional
+        Scaling factor to scale lattice vectors with
+    cartesian: bool
+        Use cartisian or fractional coordinates
+    """
+    # Format is specified here:
+    #   https://www.vasp.at/wiki/index.php/POSCAR
+    comment = comment or "POSCAR"
+
+    with open(fname, "wt", encoding="ascii") as file:
+        file.write(comment + "\n")
+
+        file.write(str(scaling_factor))
+        file.write("\n")
+        for vec in crystal.lattice_vectors:
+            x, y, z = vec / scaling_factor
+            file.write(f"{x:10.6f}  {y:10.6f}  {z:10.6f}")
+            file.write("\n")
+
+        grouped = [(elem, list(atoms)) for elem, atoms in
+                   groupby(sorted(crystal), key=lambda atom: atom.element)]
+
+        file.write(" ".join(["%5s" % elem for elem, atoms in grouped]))
+        file.write("\n")
+        file.write(" ".join(["%5d" % len(atoms) for elem, atoms in grouped]))
+        file.write("\n")
+
+
+        if cartesian:
+            file.write("Cartesian\n")
+            for elem, atoms in grouped:
+                for atom in atoms:
+                    x, y, z = atom.coords_cartesian / scaling_factor
+                    row = f"{x:10.5f}  {y:10.5f}  {z:10.5f}"
+                    file.write(row + "\n")
+        else:
+            file.write("Direct\n")
+            for elem, atoms in grouped:
+                for atom in atoms:
+                    x, y, z = atom.coords_fractional
+                    row = f"{x:10.5f}  {y:10.5f}  {z:10.5f}"
+                    file.write(row + "\n")

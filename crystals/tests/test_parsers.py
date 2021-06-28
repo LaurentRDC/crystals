@@ -294,3 +294,14 @@ def test_pwscf_crystal_instance(file, expected_spg):
 
     # Comparison requires slighly relaxed precision
     assert crystal.symmetry(symprec=1e-1)["international_number"] == expected_spg
+
+
+@pytest.mark.parametrize("poscar", [
+    "issue5_MgSiO3.cartesian.POSCAR",
+    "issue5_MgSiO3.direct.POSCAR"
+])
+def test_pwscf_lattice_vectors_alat(poscar):
+    """Test POSCAR parser against CIF parser"""
+    c0 = Crystal.from_cif(Path(__file__).parent / "data" / "issue5_MgSiO3.cif")
+    c1 = Crystal.from_poscar(Path(__file__).parent / "data" / poscar)
+    assert c0 == c1
