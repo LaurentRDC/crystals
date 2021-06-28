@@ -230,7 +230,7 @@ def write_poscar(crystal, fname, comment=None, scaling_factor=1.0, cartesian=Fal
             file.write("Cartesian\n")
             for elem, atoms in grouped:
                 for atom in atoms:
-                    x, y, z = atom.coords_cartesian
+                    x, y, z = atom.coords_cartesian / scaling_factor
                     row = f"{x:10.5f}  {y:10.5f}  {z:10.5f}"
                     file.write(row + "\n")
         else:
