@@ -103,7 +103,8 @@ class AbstractStructureParser(AbstractContextManager):
     @abstractmethod
     def atoms(self):
         """
-        Asymmetric unit cell. Combine with CIFParser.symmetry_operators() for a full unit cell.
+        Asymmetric unit cell. Combine with AbstractStructureParser.symmetry_operators()
+        for a full unit cell.
 
         Returns
         -------
@@ -427,7 +428,7 @@ class PDBParser(AbstractStructureParser):
             if op_num not in sym_ops:
                 sym_ops[op_num] = {"rotation": list(), "translation": list()}
 
-            r1, r2, r3, t = np.fromstring(line[23:], dtype=np.float64, count=4, sep=" ")
+            r1, r2, r3, t = np.fromstring(line[23:], dtype=float, count=4, sep=" ")
             sym_ops[op_num]["rotation"].append([r1, r2, r3])
             sym_ops[op_num]["translation"].append(t)
 
@@ -438,7 +439,7 @@ class PDBParser(AbstractStructureParser):
 
         operators = list()
         for op in sym_ops.values():
-            mat = np.eye(4, dtype=np.float64)
+            mat = np.eye(4, dtype=float)
             mat[:3, :3] = np.array(op["rotation"])
             mat[:3, 3] = np.array(op["translation"])
             operators.append(mat)
@@ -1124,7 +1125,19 @@ class PWSCFParser(AbstractStructureParser):
 
         return atoms
 
+
 class POSCARParser(AbstractStructureParser):
+    """
+    Collection of methods that parses POSCAR output files from the Vienna Ab initio
+    Simulation Package (VASP) suite.
+
+    The preferred method of using this object is as a context manager.
+
+    Parameters
+    ----------
+    filename : str or path-like
+        Location of the POSCAR file.
+    """
 
     def __init__(self, filename, **kwargs):
         self.filename = filename
@@ -1132,41 +1145,58 @@ class POSCARParser(AbstractStructureParser):
         with open(filename, mode="r") as f:
 
             next(f)
-        
+
             scaling_factor = float(next(f))
 
-            self._lattice_vectors = np.array([next(f).split() for _ in range(3)]).astype(float) * scaling_factor
-            self._atom_types = list(zip(
-                next(f).strip().split(),
-                map(int, next(f).strip().split()),
-            ))
+            self._lattice_vectors = (
+                np.array([next(f).split() for _ in range(3)]).astype(float)
+                * scaling_factor
+            )
+            self._atom_types = list(
+                zip(
+                    next(f).strip().split(),
+                    map(int, next(f).strip().split()),
+                )
+            )
             self._atoms = []
             flag = next(f)
 
             if flag.startswith("S"):
-                raise NotImplementedError("Selective dynamics tag in POSCAR files are not supported.")
+                raise NotImplementedError(
+                    "Selective dynamics tag in POSCAR files are not supported."
+                )
             elif flag[0] in ["C", "c", "K", "k"]:
                 for element, nat in self._atom_types:
                     for _ in range(nat):
                         coords = np.array(next(f).strip().split()[:3]).astype(float)
                         coords *= scaling_factor
                         coords = coords @ np.linalg.inv(self._lattice_vectors)
-                        self._atoms.append(
-                            Atom(element, coords)
-                        )
+                        self._atoms.append(Atom(element, coords))
             else:
                 for element, nat in self._atom_types:
                     for _ in range(nat):
                         coords = np.array(next(f).strip().split()[:3]).astype(float)
-                        self._atoms.append(
-                            Atom(element, coords)
-                        )
+                        self._atoms.append(Atom(element, coords))
 
     def __exit__(self, *args, **kwargs):
         pass
 
     def atoms(self):
+        """
+        Unit cell.
+
+        Returns
+        -------
+        atoms : iterable of Atom instance
+        """
         return self._atoms
-    
+
     def lattice_vectors(self):
+        """
+        Returns the lattice vectors associated to a POSCAR structure.
+
+        Returns
+        -------
+        lv : list of ndarrays, shape (3,)
+        """
         return self._lattice_vectors

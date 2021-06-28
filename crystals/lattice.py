@@ -65,9 +65,9 @@ class Lattice:
 
     def __init__(self, lattice_vectors, **kwargs):
         a1, a2, a3 = lattice_vectors
-        self.a1 = np.asarray(a1, dtype=np.float64)
-        self.a2 = np.asarray(a2, dtype=np.float64)
-        self.a3 = np.asarray(a3, dtype=np.float64)
+        self.a1 = np.asarray(a1, dtype=float)
+        self.a2 = np.asarray(a2, dtype=float)
+        self.a3 = np.asarray(a3, dtype=float)
         super().__init__(**kwargs)
 
     def __repr__(self):

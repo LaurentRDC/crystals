@@ -4,6 +4,11 @@ What's new
 
 .. currentmodule:: crystals
 
+Release 1.4.0
+-------------
+
+* Added the ability to read and write POSCAR files from the Vienna Ab initio Simulation Package (VASP). Contributed by Chenxing Luo (#8).
+
 Release 1.3.2
 -------------
 

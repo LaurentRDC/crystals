@@ -34,7 +34,7 @@ def ratio_indexed(lattice, reflections):
     ratio : float
         Ratio of reflections that are indexed correctly, in the [0, 1] range.
     """
-    reflections = np.asarray(reflections, dtype=np.float64)
+    reflections = np.asarray(reflections, dtype=float)
 
     hkl = lattice.miller_indices(reflections)
     return (

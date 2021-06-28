@@ -181,9 +181,10 @@ def ase_atoms(crystal, **kwargs):
         **kwargs,
     )
 
+
 def write_poscar(crystal, fname, comment=None, scaling_factor=1.0, cartesian=False):
     """
-    Generate an atomic coordinates .xyz file from a crystal structure.
+    Generate a POSCAR file from a crystal structure.
 
     Parameters
     ----------
@@ -193,11 +194,12 @@ def write_poscar(crystal, fname, comment=None, scaling_factor=1.0, cartesian=Fal
         The POSCAR file will be written to this file. If the file already exists,
         it will be overwritten.
     comment : str or None, optional
-        Comment to include at the first line of ``fname``.
+        Comment to include as the first line of ``fname``.
     scaling_factor: float, optional
-        Scaling factor to scale lattice vectors with
-    cartesian: bool
-        Use cartisian or fractional coordinates
+        Scaling factor with which to scale lattice vectors
+    cartesian: bool, optional
+        If True, the resulting file will be expressed in cartesian coordinates.
+        Default is to use fractional coordinates.
     """
     # Format is specified here:
     #   https://www.vasp.at/wiki/index.php/POSCAR
@@ -213,14 +215,15 @@ def write_poscar(crystal, fname, comment=None, scaling_factor=1.0, cartesian=Fal
             file.write(f"{x:10.6f}  {y:10.6f}  {z:10.6f}")
             file.write("\n")
 
-        grouped = [(elem, list(atoms)) for elem, atoms in
-                   groupby(sorted(crystal), key=lambda atom: atom.element)]
+        grouped = [
+            (elem, list(atoms))
+            for elem, atoms in groupby(sorted(crystal), key=lambda atom: atom.element)
+        ]
 
         file.write(" ".join(["%5s" % elem for elem, atoms in grouped]))
         file.write("\n")
         file.write(" ".join(["%5d" % len(atoms) for elem, atoms in grouped]))
         file.write("\n")
-
 
         if cartesian:
             file.write("Cartesian\n")

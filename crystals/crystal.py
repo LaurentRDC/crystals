@@ -19,7 +19,14 @@ from .affine import affine_map, change_of_basis
 from .atom import Atom
 from .base import AtomicStructure
 from .lattice import Lattice
-from .parsers import CIFParser, CODParser, MPJParser, PDBParser, POSCARParser, PWSCFParser
+from .parsers import (
+    CIFParser,
+    CODParser,
+    MPJParser,
+    PDBParser,
+    POSCARParser,
+    PWSCFParser,
+)
 from .spg_data import Hall2HM
 from .writers import write_cif, write_poscar, write_xyz, ase_atoms
 
@@ -43,13 +50,15 @@ class Crystal(AtomicStructure, Lattice):
 
     * :meth:`Crystal.from_database`: create an instance from the internal database of CIF files;
 
-    * :meth:`Crystal.from_cod`: create an instance from a Crystallography Open Database entry.
+    * :meth:`Crystal.from_cod`: create an instance from a Crystallography Open Database entry;
 
-    * :meth:`Crystal.from_mp`: create an instance from the Materials Project database.
+    * :meth:`Crystal.from_mp`: create an instance from the Materials Project database;
 
-    * :meth:`Crystal.from_pwscf`: create an instance from the output of the PWSCF program.
+    * :meth:`Crystal.from_pwscf`: create an instance from the output of the PWSCF program;
 
-    * :meth:`Crystal.from_ase`: create an instance from an ``ase.Atoms`` instance.
+    * :meth:`Crystal.from_ase`: create an instance from an ``ase.Atoms`` instance;
+
+    * :meth:`Crystal.from_poscar`: create an instance from VASP POSCAR files.
 
     Parameters
     ----------
@@ -289,6 +298,8 @@ class Crystal(AtomicStructure, Lattice):
         Returns a Crystal object created from a VASP's POSCAR file.
         Keyword arguments are passed to the class constructor.
 
+        .. versionadded:: 1.4.0
+
         Parameters
         ----------
         path : path-like
@@ -301,7 +312,6 @@ class Crystal(AtomicStructure, Lattice):
                 source=parser.filename,
                 **kwargs,
             )
-
 
     def _spglib_cell(self):
         """Returns an array in spglib's cell format."""
@@ -770,7 +780,6 @@ class Crystal(AtomicStructure, Lattice):
         """
         return ase_atoms(self)
 
-
     def to_poscar(self, filename, **kwargs):
         """
         Convert this :class:`Crystal` instance to a POSCAR file.
@@ -783,10 +792,11 @@ class Crystal(AtomicStructure, Lattice):
         ----------
         filename : path-like
             Path to a file. If the file already exists, it will be overwritten.
-        kwargs: 
+        kwargs:
             Keyword arguments are passed to :meth:`writers.write_poscar`.
         """
         write_poscar(self, filename, **kwargs)
+
 
 class Supercell(Crystal):
     """
