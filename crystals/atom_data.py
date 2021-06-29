@@ -517,6 +517,8 @@ ELEM_TO_MAGMOM = dict(zip(chemical_symbols, ground_state_magnetic_moments))
 
 # from Cordero et al, 'Covalent radii revisited' (2008).
 # Dalton Transactions. DOI: 10.1039/B801115J
+# TODO: implement bond perception based on something like this:
+#       https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3557220/
 covalent_radii = {
     "H": 0.31,
     "He": 0.28,
