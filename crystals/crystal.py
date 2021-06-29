@@ -17,6 +17,7 @@ from spglib import (
 
 from .affine import affine_map, change_of_basis
 from .atom import Atom
+from .atom_data import chemical_symbols
 from .base import AtomicStructure
 from .lattice import Lattice
 from .parsers import (
@@ -31,7 +32,7 @@ from .spg_data import Hall2HM
 from .writers import write_cif, write_poscar, write_xyz, ase_atoms
 
 CIF_ENTRIES = frozenset((Path(__file__).parent / "cifs").glob("*.cif"))
-
+LONGEST_CHEMICAL_SYMBOL = max(len(s) for s in chemical_symbols)
 
 is_atom = lambda a: isinstance(a, Atom)
 is_structure = lambda s: isinstance(s, AtomicStructure)
@@ -714,7 +715,7 @@ class Crystal(AtomicStructure, Lattice):
         for chem_symbol, composition in sorted(
             self.chemical_composition.items(), key=lambda t: t[0]
         ):
-            rep += f"\n    {chem_symbol}: {100 * composition:.3f}%"
+            rep += f"\n    {chem_symbol.rjust(LONGEST_CHEMICAL_SYMBOL)}: {100 * composition:.3f}%"
         rep += " >"
         return rep
 

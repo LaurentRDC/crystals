@@ -65,11 +65,11 @@ and the structure file will be taken care of by :mod:`crystals`:
         a=97.050Å, b=99.500Å, c=66.110Å
         α=90.000°, β=90.000°, γ=90.000°
     Chemical composition:
-        C: 64.724%
+         C: 64.724%
         Fe: 0.088%
-        N: 17.090%
-        O: 17.835%
-        S: 0.263% >
+         N: 17.090%
+         O: 17.835%
+         S: 0.263% >
 
 Another convenient way to construct a :class:`Crystal` is through the `Crystallography Open Database <http://www.crystallography.net/cod/>`_:
 
@@ -100,7 +100,7 @@ You will need an API key from your `account dashboard <https://materialsproject.
         a=8.525Å, b=8.525Å, c=25.593Å
         α=90.000°, β=90.000°, γ=90.000°
     Chemical composition:
-        O: 60.000%
+         O: 60.000%
         Fe: 40.000% >
 
 Other constructors are supported. See the reference for the :class:`Crystal` class for more details.
@@ -257,8 +257,8 @@ from the :attr:`source` attribute:
         a=5.743Å, b=4.517Å, c=5.375Å
         α=90.000°, β=122.600°, γ=90.000°
     Chemical composition:
-        O: 66.667%
-        V: 33.333% >
+         O: 66.667%
+         V: 33.333% >
     
 
 :class:`Crystal` instances can be converted to NumPy arrays as well:
