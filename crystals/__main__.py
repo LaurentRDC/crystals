@@ -26,8 +26,8 @@ Example of a local CIF file:
 > crystals info vo2.cif --type cif
 
 Example of a local PWSCF file:
-> crystals info ..\graphite.pwscf
-> crystals info ..\graphite.pwscf --type pwscf
+> crystals info graphite.pwscf
+> crystals info graphite.pwscf --type pwscf
 
 Example of internal database entry:
 > crystals info diamond
@@ -37,13 +37,17 @@ Example of Crystallography Open Database (COD) entry:
 > crystals info 5000215 # Bismuth
 > crystals info 5000215 --type cod
 
-Example of Protein DataBank entry
+Example of Protein DataBank entry:
 > crystals info 1fbb # Bacteriorhodopsin
 > crystals info 1fbb --type pdb
 
-Exanoke of Materials Project entry (requires API key)
+Example of Materials Project entry (requires API key):
 > crystals info Fe2O3 
 > crystals info Fe2O3 --type mp
+
+Example of a local POSCAR file:
+> crystals info MgSiO3.direct.POSCAR
+> crystals info MgSiO3.direct.POSCAR --type poscar
 """
 
 INPUT_HELP = """Path to a file, or database ID. CIF files (*.cif) and PWSCF (*.pwscf) files are supported. 
@@ -93,7 +97,7 @@ def guess_constructor(i):
         return Crystal.from_pwscf(i)
     elif str(i).startswith("mp-"):
         return Crystal.from_mp(i)
-    elif "POSCAR" in str(i):
+    elif "poscar" in str(i).lower():
         return Crystal.from_poscar(i)
 
     # We iterate over constructors that don't require network access first
