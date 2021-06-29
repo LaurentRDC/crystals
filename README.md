@@ -88,6 +88,10 @@ Atomic weights are reported in the following publication:
 
 > Meija, J., Coplen, T., Berglund, M., et al. (2016). *Atomic weights of the elements 2013* (IUPAC Technical Report). Pure and Applied Chemistry, 88(3), pp. 265-291. Retrieved 30 Nov. 2016, [DOI:10.1515/pac-2015-0305](https://doi.org/10.1515/pac-2015-0305)
 
+Covalent radii are reported in the following article:
+
+> Cordero, B. et al. (2008). *Covalent radii revisited*. Dalton Transactions, issue 21, pp. 2832-2838. The Royal Society of Chemistry. [DOI: 10.1039/B801115j](https://dx.doi.org/10.1039/B801115J)
+
 Support / Report Issues
 -----------------------
 
