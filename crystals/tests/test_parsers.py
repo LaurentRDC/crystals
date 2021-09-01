@@ -201,6 +201,7 @@ def test_cif_site_occupancy():
     for atm in filter(is_element("C"), atoms):
         assert atm.occupancy == 0.85
 
+
 @pytest.mark.xfail(reason="Bad SSL certificates")
 @pytest.mark.skipif(
     MPJ_API_KEY is None,
@@ -217,6 +218,7 @@ def test_mpj_example():
             overwrite=True,
         )
         assert isinstance(cryst, Crystal)
+
 
 @pytest.mark.xfail(reason="Bad SSL certificates")
 @pytest.mark.skipif(

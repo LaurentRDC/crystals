@@ -939,7 +939,7 @@ class MPJParser(CIFParser):
         }
 
         with requests.get(endpoint, headers=headers) as response:
-            if response.status_code == 403: # Forbidden access
+            if response.status_code == 403:  # Forbidden access
                 raise ConnectionError(
                     "Materials Project API key is not authorized to do this operation."
                     / f"status code {response.status_code}"
