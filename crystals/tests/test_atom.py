@@ -48,32 +48,32 @@ MADELUNG = [
 
 
 def random_transform():
-    """ Create a rotation matrix, around a random axis, of a random amount """
+    """Create a rotation matrix, around a random axis, of a random amount"""
     return rotation_matrix(random(), axis=np.random.random((3,)))
 
 
 @pytest.mark.parametrize("symbol", chemical_symbols)
 def test_element_build(symbol):
-    """ Test that all valid chemical symbols can be used to create an Element instance """
+    """Test that all valid chemical symbols can be used to create an Element instance"""
     Element(symbol)
 
 
 def test_element_invalid_element():
-    """ Test that an invalid chemical symbol will raise an error """
+    """Test that an invalid chemical symbol will raise an error"""
     with pytest.raises(ValueError):
         Element("montreal")
 
 
 @pytest.mark.parametrize("symbol", chemical_symbols)
 def test_element_init_with_atomic_number(symbol):
-    """ Test that constructing an Element from a symbol or atomic number results in the same element """
+    """Test that constructing an Element from a symbol or atomic number results in the same element"""
     from_symbol = Element(symbol)
     from_number = Element(from_symbol.atomic_number)
     assert from_number == from_symbol
 
 
 def test_element_atomic_number_out_of_range():
-    """ Test that constructing an Element from an atomic number out-of-range raises a ValueError """
+    """Test that constructing an Element from an atomic number out-of-range raises a ValueError"""
     with pytest.raises(ValueError):
         Element(256)
 
@@ -91,7 +91,7 @@ def test_element_input_equivalence():
 
 
 def test_atom_init():
-    """ Test that Atom can be instantiated with an element str or atomic number """
+    """Test that Atom can be instantiated with an element str or atomic number"""
     by_element = Atom("C", coords=(0, 0, 0))
     by_number = Atom(6, coords=(0, 0, 0))
     assert by_element == by_number
@@ -101,7 +101,7 @@ def test_atom_init():
     "atom", map(lambda s: Atom(s, [0, 0, 0]), islice(chemical_symbols, 50))
 )
 def test_atom_equality(atom):
-    """ Test __eq__ for atoms """
+    """Test __eq__ for atoms"""
     other = deepcopy(atom)
     assert atom == atom
     assert atom == other
@@ -114,7 +114,7 @@ def test_atom_equality(atom):
     "atom", map(lambda s: Atom(s, [0, 0, 0]), islice(chemical_symbols, 50))
 )
 def test_atom_trivial_transform(atom):
-    """ Test Atom.transform() with the identity """
+    """Test Atom.transform() with the identity"""
     transformed = atom.transform(np.eye(3))
 
     assert transformed is not atom
@@ -122,7 +122,7 @@ def test_atom_trivial_transform(atom):
 
 
 def test_atom_subclasses_transform_preserved():
-    """ Test transform() preserves subclasses """
+    """Test transform() preserves subclasses"""
 
     class NewAtom(Atom):
         pass
@@ -137,7 +137,7 @@ def test_atom_subclasses_transform_preserved():
     "atom", map(lambda s: Atom(s, [0, 0, 0]), islice(chemical_symbols, 50))
 )
 def test_atom_transform_back_and_forth(atom):
-    """ Test Atom.transform() with a random transformation back and forth """
+    """Test Atom.transform() with a random transformation back and forth"""
 
     transf = random_transform()
     transformed1 = atom.transform(transf)
@@ -149,7 +149,7 @@ def test_atom_transform_back_and_forth(atom):
 
 @pytest.mark.parametrize("atom", map(lambda s: Atom(s, [0, 0, 0]), chemical_symbols))
 def test_atom_atom_array(atom):
-    """ Test that numpy.array(Atom(...)) works as expected """
+    """Test that numpy.array(Atom(...)) works as expected"""
     arr = np.array(atom)
     assert arr.shape == (4,)
     assert arr[0] == atom.atomic_number
@@ -157,7 +157,7 @@ def test_atom_atom_array(atom):
 
 
 def test_atomic_distance_fractional():
-    """ Test the fractional distance between atoms """
+    """Test the fractional distance between atoms"""
     atm1 = Atom("He", [0, 0, 0])
     atm2 = Atom("He", [1, 0, 0])
     assert distance_fractional(atm1, atm2) == 1
@@ -165,7 +165,7 @@ def test_atomic_distance_fractional():
 
 
 def test_atomic_distance_cartesian():
-    """ Test the cartesian distance between atom """
+    """Test the cartesian distance between atom"""
     lattice = Lattice(4 * np.eye(3))  # Cubic lattice side length 4 angs
 
     atm1 = Atom("He", [0, 0, 0], lattice=lattice)
@@ -209,38 +209,38 @@ def test_orbital_madelung_rule():
 
 
 def test_orbital_maximum_electrons():
-    """ That that the maximum number of electrons per Orbital is as expected. """
+    """That that the maximum number of electrons per Orbital is as expected."""
     maxima = {"s": 2, "p": 6, "d": 10, "f": 14}
     for shell in Orbital:
         assert maxima[shell.value[-1]] == Orbital.maximum_electrons(shell)
 
 
 def test_electronic_structure_maximum_electrons():
-    """ Test that an error is raised for impossible electronic structures. """
+    """Test that an error is raised for impossible electronic structures."""
     with pytest.raises(ValueError):
         ElectronicStructure({"1s": 3})
 
 
 def test_electronic_structure_pickable():
-    """ Test that ElectronicStructure instances are pickable. """
+    """Test that ElectronicStructure instances are pickable."""
     structure = ElectronicStructure.ground_state("W")
     assert structure == pickle.loads(pickle.dumps(structure))
 
 
 def test_electronic_structure_missing_orbital():
-    """ Test that 'missing' orbitals will return 0 electrons """
+    """Test that 'missing' orbitals will return 0 electrons"""
     struct = ElectronicStructure.ground_state("He")
     assert struct["2p"] == 0
 
 
 def test_electronic_structure_orbital_keys():
-    """ Test that orbital occupancies can be accessed either with strings or Orbital """
+    """Test that orbital occupancies can be accessed either with strings or Orbital"""
     struct = ElectronicStructure.ground_state("He")
     assert struct["1s"] == struct[Orbital.one_s]
 
 
 def test_electronic_structure_modification_in_place():
-    """ Test that ElectronicStructure instances can be modified in-place """
+    """Test that ElectronicStructure instances can be modified in-place"""
     struct = ElectronicStructure({"1s": 2, "2s": 2, "2p": 4})
     expected = ElectronicStructure({"1s": 2, "2s": 2, "2p": 3, "4s": 1})
     struct["2p"] -= 1
@@ -249,7 +249,7 @@ def test_electronic_structure_modification_in_place():
 
 
 def test_electronic_structure_valence_shell():
-    """ Test that the outermost shell is as expected """
+    """Test that the outermost shell is as expected"""
     struct = ElectronicStructure({"1s": 2})
     assert struct.outer_shell == Orbital("1s")
 

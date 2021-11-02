@@ -60,8 +60,8 @@ Here's a quick example of building a crystal from the internal database:
         a=5.743Å, b=4.517Å, c=5.375Å
         α=90.000°, β=122.600°, γ=90.000°
     Chemical composition:
-        O: 66.667%
-        V: 33.333% >
+         O: 66.667%
+         V: 33.333% >
 
 Symmetry information is also readily available:
 

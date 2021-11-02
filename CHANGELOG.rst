@@ -4,6 +4,22 @@ What's new
 
 .. currentmodule:: crystals
 
+Release 1.4.0
+-------------
+
+* Added the ability to read and write POSCAR files from the Vienna Ab initio Simulation Package (VASP). Contributed by Chenxing Luo (#8).
+
+Release 1.3.2
+-------------
+
+* Releases are now automatically performed using Github Actions
+* Fixed an issue where uncertainties in atom site occupancy in CIF files would not be parsed correctly (#7).
+
+Release 1.3.1
+-------------
+
+* The distinction between :class:`Supercell` and :class:`Crystal` no longer exists; :class:`Supercell` objects can be used everywhere a :class:`Crystal` is expected.
+
 1.3.0
 -----
 

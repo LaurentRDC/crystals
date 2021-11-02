@@ -15,7 +15,7 @@ np.random.seed(23)
 
 
 def angle_between(v1, v2):
-    """ Returns the angle in degrees between vectors `v1` and `v2`"""
+    """Returns the angle in degrees between vectors `v1` and `v2`"""
     v1 /= norm(v1)
     v2 /= norm(v2)
     rad = np.arccos(np.clip(np.dot(v1, v2), -1.0, 1.0))
@@ -32,7 +32,7 @@ def test_euclidian_lattice():
 
 
 def test_euclidian_lattice_equality():
-    """ Test equality between identical Lattice instances and copies """
+    """Test equality between identical Lattice instances and copies"""
     lattice = Lattice(np.eye(3))
     assert lattice == lattice
     assert lattice == deepcopy(lattice)
@@ -41,21 +41,21 @@ def test_euclidian_lattice_equality():
 
 
 def test_lattice_array_shape():
-    """ Test that array(Lattice(...)) is always 3x3 """
+    """Test that array(Lattice(...)) is always 3x3"""
     arr = np.random.random(size=(3, 3))
     lattice = Lattice(arr)
     assert np.allclose(arr, np.array(lattice))
 
 
 def test_lattice_array_dtype():
-    """ Test that the data-type of array(Lattice(...)) is respected """
+    """Test that the data-type of array(Lattice(...)) is respected"""
     arr = np.random.random(size=(3, 3))
     lattice = Lattice(arr)
     assert np.array(lattice, dtype=np.int32).dtype, np.int32
 
 
 def test_lattice_frac_mesh():
-    """ Test that Lattice.frac_mesh is working as expected compared to numpy.meshgrid """
+    """Test that Lattice.frac_mesh is working as expected compared to numpy.meshgrid"""
     lattice = Lattice(np.eye(3))
     x = np.linspace(0, 1, num=8)
 
@@ -64,7 +64,7 @@ def test_lattice_frac_mesh():
 
 
 def test_lattice_frac_mesh_two_arr():
-    """ Test that Lattice.frac_mesh is raising an exception for two input vectors """
+    """Test that Lattice.frac_mesh is raising an exception for two input vectors"""
     lattice = Lattice(np.eye(3))
     x = np.linspace(0, 1, num=2)
 
@@ -73,7 +73,7 @@ def test_lattice_frac_mesh_two_arr():
 
 
 def test_lattice_real_mesh_trivial():
-    """ Test that Lattice.mesh works identically to Lattice.frac_mesh for trivial lattice """
+    """Test that Lattice.mesh works identically to Lattice.frac_mesh for trivial lattice"""
     lattice = Lattice(np.eye(3))
     x = np.linspace(0, 1, num=8)
 
@@ -82,7 +82,7 @@ def test_lattice_real_mesh_trivial():
 
 
 def test_lattice_real_mesh():
-    """ Test that Lattice.mesh works as expected """
+    """Test that Lattice.mesh works as expected"""
     lattice = Lattice(2 * np.eye(3))
     x = np.linspace(0, 1, num=8)
 
@@ -92,7 +92,7 @@ def test_lattice_real_mesh():
 
 
 def test_lattice_parameters_orthorombic():
-    """ alpha = beta = gamma = 90"""
+    """alpha = beta = gamma = 90"""
     a1, a2, a3 = Lattice.from_parameters(2, 1, 5, 90, 90, 90).lattice_vectors
     assert np.allclose(a1, [2, 0, 0])
     assert np.allclose(a2, [0, 1, 0])
@@ -100,7 +100,7 @@ def test_lattice_parameters_orthorombic():
 
 
 def test_lattice_parameters_monoclinic():
-    """ beta =/= 90 """
+    """beta =/= 90"""
     a1, a2, a3 = Lattice.from_parameters(1, 2, 3, 90, 120, 90).lattice_vectors
 
     assert round(abs(norm(a1) - 1), 7) == 0
@@ -113,7 +113,7 @@ def test_lattice_parameters_monoclinic():
 
 
 def test_lattice_parameters_triclinic():
-    """ alpha, beta, gama =/= 90 """
+    """alpha, beta, gama =/= 90"""
     a1, a2, a3 = Lattice.from_parameters(1, 2, 3, 75, 40, 81).lattice_vectors
 
     assert round(abs(norm(a1) - 1), 7) == 0
@@ -149,19 +149,19 @@ def test_lattice_parameters_back_and_forth(name):
 
 
 def test_cubic_lattice_system():
-    """ Test that the Lattice.lattice_system attribute is working properly for cubic lattice """
+    """Test that the Lattice.lattice_system attribute is working properly for cubic lattice"""
     assert Lattice(2 * np.eye(3)).lattice_system == LatticeSystem.cubic
 
 
 def test_tetragonal_lattice_system():
-    """ Test that the Lattice.lattice_system attribute is working properly for tetragonal lattice """
+    """Test that the Lattice.lattice_system attribute is working properly for tetragonal lattice"""
     parameters = (2, 2, 3, 90, 90, 90)
     l = Lattice.from_parameters(*parameters)
     assert l.lattice_system == LatticeSystem.tetragonal
 
 
 def test_rhombohedral_lattice_system():
-    """ Test that the Lattice.lattice_system attribute is working properly for rhombohedral lattice """
+    """Test that the Lattice.lattice_system attribute is working properly for rhombohedral lattice"""
     parameters = (1, 1, 1, 87, 87, 87)
     l = Lattice.from_parameters(*parameters)
     assert l.lattice_system == LatticeSystem.rhombohedral
@@ -204,50 +204,50 @@ def test_hexagonal_lattice_system():
 
 
 def test_triclinic_lattice_system():
-    """ Test that the Lattice.lattice_system attribute is working properly for triclinic lattice """
+    """Test that the Lattice.lattice_system attribute is working properly for triclinic lattice"""
     l = Lattice.from_parameters(1, 2, 3, 75, 40, 81)
     assert l.lattice_system == LatticeSystem.triclinic
 
 
 def test_lattice_system_graphite():
-    """ Test that the builtin Crystal for graphite has a hexagonal lattice system """
+    """Test that the builtin Crystal for graphite has a hexagonal lattice system"""
     graphite = Crystal.from_database("C")
     assert graphite.lattice_system == LatticeSystem.hexagonal
 
 
 def test_lattice_system_lead():
-    """ Test that the builtin Crystal for lead has a cubic lattice system """
+    """Test that the builtin Crystal for lead has a cubic lattice system"""
     pb = Crystal.from_database("Pb")
     assert pb.lattice_system == LatticeSystem.cubic
 
 
 def test_lattice_system_vo2():
-    """ Test that the builtin Crystal for monoclinic M1 VO2 has a monoclinic lattice system """
+    """Test that the builtin Crystal for monoclinic M1 VO2 has a monoclinic lattice system"""
     vo2 = Crystal.from_database("vo2-m1")
     assert vo2.lattice_system == LatticeSystem.monoclinic
 
 
 def test_scattering_vector_trivial():
-    """ Test that Lattice.scattering_vectors is working """
+    """Test that Lattice.scattering_vectors is working"""
     lattice = Lattice(np.random.random((3, 3)))
     assert np.allclose(lattice.scattering_vector((0, 0, 0)), ((0, 0, 0)))
 
 
 def test_scattering_vector_table():
-    """ Test that Lattice.scattering_vector is working on tables of reflections """
+    """Test that Lattice.scattering_vector is working on tables of reflections"""
     lattice = Lattice(2 * np.pi * np.eye(3))
     vectors = np.random.random(size=(10, 3))
     assert np.allclose(lattice.scattering_vector(vectors), vectors)
 
 
 def test_miller_indices_trivial():
-    """ Test that Lattice.miller_indices is working """
+    """Test that Lattice.miller_indices is working"""
     lattice = Lattice(np.random.random((3, 3)))
     assert np.allclose(lattice.miller_indices((0, 0, 0)), ((0, 0, 0)))
 
 
 def test_miller_indices_table():
-    """ Test that Lattice.miller_indices is working on tables of vectors """
+    """Test that Lattice.miller_indices is working on tables of vectors"""
     lattice = Lattice(2 * np.pi * np.eye(3))
     vectors = np.random.random(size=(10, 3))
     assert np.allclose(lattice.miller_indices(vectors), vectors)
@@ -275,7 +275,7 @@ def test_bounded_reflections_negative():
 
 
 def test_bounded_reflections_zero():
-    """ Check that bounded_reflections returns (000) for a zero bound """
+    """Check that bounded_reflections returns (000) for a zero bound"""
     crystal = Crystal.from_database("C")
     reflections = set(crystal.bounded_reflections(0))
     assert (0, 0, 0) in reflections
@@ -286,7 +286,7 @@ def test_bounded_reflections_zero():
     "crystal", map(Crystal.from_database, islice(Crystal.builtins, 3))
 )
 def test_bounded_reflections_all_within_bounds(crystal):
-    """ Check that every reflection is within the bound """
+    """Check that every reflection is within the bound"""
     bound = 10
     vectors = (
         crystal.scattering_vector(refl) for refl in crystal.bounded_reflections(bound)

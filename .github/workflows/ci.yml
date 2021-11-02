@@ -1,6 +1,11 @@
 name: Continuous integration
 
-on: [push, pull_request]
+on: 
+  push:
+  pull_request:
+  schedule:
+    # Every month
+    - cron: '0 0 1 * *'
 
 jobs:
   build:
@@ -76,7 +81,7 @@ jobs:
       run: |
         python setup.py install
         cd ~
-        python -Wa -m pytest --pyargs crystals
+        python -Wa -m pytest --pyargs crystals --full-trace
     
     - name: Build documentation
       run: |
@@ -87,10 +92,55 @@ jobs:
         python -m sphinx -b doctest docs build
         python -m doctest README.md
 
-    - name: Build wheels
+    - name: Build artifacts
       run: |
-        python setup.py bdist_wheel --dist-dir=wheelhouse
+        python setup.py sdist bdist_wheel
 
-    - uses: actions/upload-artifact@v2
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
       with:
-        path: ./wheelhouse/*.whl
+        name: ${{ runner.os }}-py${{ matrix.python-version }}-artifact
+        path: dist/*
+        retention-days: 7
+
+
+  release:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/download-artifact@v2
+      with:
+        path: artifacts/
+
+    - name: Create release description
+      run: |
+        python release-description.py CHANGELOG.rst > description.md
+        cat description.md
+
+    - name: Move artifacts
+      run: |
+        ls --recursive artifacts/
+        mkdir dist
+        mv --backup=numbered artifacts/*/** dist
+        rm -f dist/*~
+        echo "To be uploaded:"
+        ls dist
+
+    - name: Create release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        body_path: description.md
+        files: |
+          dist/*
+    
+    - name: Upload to PyPI
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}

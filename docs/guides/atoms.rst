@@ -149,7 +149,7 @@ the "2p" to "3d" orbital in one atom of graphite:
         a=2.464Å, b=2.464Å, c=6.711Å
         α=90.000°, β=90.000°, γ=120.000°
     Chemical composition:
-        C: 100.000% >
+         C: 100.000% >
     >>> atom, *_ = sorted(graphite)
     >>> atom.electronic_structure["2p"] -= 1
     >>> atom.electronic_structure["3d"] += 1
@@ -163,7 +163,7 @@ the "2p" to "3d" orbital in one atom of graphite:
         a=2.464Å, b=2.464Å, c=6.711Å
         α=90.000°, β=90.000°, γ=120.000°
     Chemical composition:
-        C: 100.000% >
+         C: 100.000% >
     
 Note that atoms with ground-state electronic structure don't show it explicitly. 
 You could entirely replace the electronic structure of an atom:
@@ -181,4 +181,4 @@ You could entirely replace the electronic structure of an atom:
         a=2.464Å, b=2.464Å, c=6.711Å
         α=90.000°, β=90.000°, γ=120.000°
     Chemical composition:
-        C: 100.000% >
+         C: 100.000% >

@@ -79,32 +79,32 @@ class Element:
 
     @property
     def element_full(self):
-        """ Full element name, e.g. "Hydrogen" """
+        """Full element name, e.g. "Hydrogen" """
         return self.name
 
     @property
     def name(self):
-        """ Full element name, e.g. "Hydrogen" """
+        """Full element name, e.g. "Hydrogen" """
         return ELEM_TO_NAME[self.element]
 
     @property
     def symbol(self):
-        """ Elemental symbol, e.g. "He" """
+        """Elemental symbol, e.g. "He" """
         return self.element
 
     @property
     def atomic_number(self):
-        """ Atomic number """
+        """Atomic number"""
         return ELEM_TO_NUM[self.element]
 
     @property
     def mass(self):
-        """ Atomic mass [u] """
+        """Atomic mass [u]"""
         return ELEM_TO_MASS[self.element]
 
     @property
     def magnetic_moment_ground(self):
-        """ Ground state magnetic moment. """
+        """Ground state magnetic moment."""
         return ELEM_TO_MAGMOM.get(self.element, None)
 
 
@@ -285,7 +285,7 @@ class Atom(Element):
         return new_atom
 
     def __array__(self, *args, **kwargs):
-        """ Returns an array [Z, x, y, z] """
+        """Returns an array [Z, x, y, z]"""
         arr = np.empty(shape=(4,), *args, **kwargs)
         arr[0] = self.atomic_number
         arr[1::] = self.coords_fractional
@@ -615,6 +615,6 @@ class ElectronicStructure:
 
     @property
     def outer_shell(self):
-        """ The outermost shell, or valence orbital. """
+        """The outermost shell, or valence orbital."""
         shells = list(self._structure.keys())
         return shells[-1]

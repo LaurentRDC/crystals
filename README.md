@@ -1,6 +1,6 @@
 crystals
 ========
-[![Documentation Status](https://readthedocs.org/projects/crystals/badge/?version=master)](https://crystals.readthedocs.io/) [![PyPI Package latest release](https://img.shields.io/pypi/v/crystals.svg)](https://pypi.python.org/pypi/crystals) [![Conda-forge Version](https://img.shields.io/conda/vn/conda-forge/crystals.svg)](https://anaconda.org/conda-forge/crystals)
+[![Documentation Status](https://readthedocs.org/projects/crystals/badge/?version=master)](https://crystals.readthedocs.io/) [![PyPI Package latest release](https://img.shields.io/pypi/v/crystals.svg)](https://pypi.python.org/pypi/crystals) [![Conda-forge Version](https://img.shields.io/conda/vn/conda-forge/crystals.svg)](https://anaconda.org/conda-forge/crystals) [![DOI badge](https://img.shields.io/badge/DOI-10.1186%2Fs40679--018--0060--y-blue)](https://doi.org/10.1186/s40679-018-0060-y)
 
 `crystals` is a library of data structure and algorithms to manipulate
 abstract crystals in a Pythonic way. `crystals` helps with reading
@@ -87,6 +87,10 @@ Structure parsing from PDB files has been tested for correctness against
 Atomic weights are reported in the following publication:
 
 > Meija, J., Coplen, T., Berglund, M., et al. (2016). *Atomic weights of the elements 2013* (IUPAC Technical Report). Pure and Applied Chemistry, 88(3), pp. 265-291. Retrieved 30 Nov. 2016, [DOI:10.1515/pac-2015-0305](https://doi.org/10.1515/pac-2015-0305)
+
+Covalent radii are reported in the following article:
+
+> Cordero, B. et al. (2008). *Covalent radii revisited*. Dalton Transactions, issue 21, pp. 2832-2838. The Royal Society of Chemistry. [DOI: 10.1039/B801115j](https://dx.doi.org/10.1039/B801115J)
 
 Support / Report Issues
 -----------------------

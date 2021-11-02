@@ -17,14 +17,22 @@ from spglib import (
 
 from .affine import affine_map, change_of_basis
 from .atom import Atom
+from .atom_data import chemical_symbols
 from .base import AtomicStructure
 from .lattice import Lattice
-from .parsers import CIFParser, CODParser, MPJParser, PDBParser, PWSCFParser
+from .parsers import (
+    CIFParser,
+    CODParser,
+    MPJParser,
+    PDBParser,
+    POSCARParser,
+    PWSCFParser,
+)
 from .spg_data import Hall2HM
-from .writers import write_cif, write_xyz, ase_atoms
+from .writers import write_cif, write_poscar, write_xyz, ase_atoms
 
 CIF_ENTRIES = frozenset((Path(__file__).parent / "cifs").glob("*.cif"))
-
+LONGEST_CHEMICAL_SYMBOL = max(len(s) for s in chemical_symbols)
 
 is_atom = lambda a: isinstance(a, Atom)
 is_structure = lambda s: isinstance(s, AtomicStructure)
@@ -43,13 +51,15 @@ class Crystal(AtomicStructure, Lattice):
 
     * :meth:`Crystal.from_database`: create an instance from the internal database of CIF files;
 
-    * :meth:`Crystal.from_cod`: create an instance from a Crystallography Open Database entry.
+    * :meth:`Crystal.from_cod`: create an instance from a Crystallography Open Database entry;
 
-    * :meth:`Crystal.from_mp`: create an instance from the Materials Project database.
+    * :meth:`Crystal.from_mp`: create an instance from the Materials Project database;
 
-    * :meth:`Crystal.from_pwscf`: create an instance from the output of the PWSCF program.
+    * :meth:`Crystal.from_pwscf`: create an instance from the output of the PWSCF program;
 
-    * :meth:`Crystal.from_ase`: create an instance from an ``ase.Atoms`` instance.
+    * :meth:`Crystal.from_ase`: create an instance from an ``ase.Atoms`` instance;
+
+    * :meth:`Crystal.from_poscar`: create an instance from VASP POSCAR files.
 
     Parameters
     ----------
@@ -96,7 +106,7 @@ class Crystal(AtomicStructure, Lattice):
 
     @property
     def unitcell(self):
-        """ Generator of atoms forming the crystal unit cell. """
+        """Generator of atoms forming the crystal unit cell."""
         return super().__iter__()
 
     @lru_cache(
@@ -283,8 +293,29 @@ class Crystal(AtomicStructure, Lattice):
             **kwargs,
         )
 
+    @classmethod
+    def from_poscar(cls, path, **kwargs):
+        """
+        Returns a Crystal object created from a VASP's POSCAR file.
+        Keyword arguments are passed to the class constructor.
+
+        .. versionadded:: 1.4.0
+
+        Parameters
+        ----------
+        path : path-like
+            File path
+        """
+        with POSCARParser(path) as parser:
+            return cls(
+                unitcell=parser.atoms(),
+                lattice_vectors=parser.lattice_vectors(),
+                source=parser.filename,
+                **kwargs,
+            )
+
     def _spglib_cell(self):
-        """ Returns an array in spglib's cell format. """
+        """Returns an array in spglib's cell format."""
         # To get symmetry information, we only give spglib the unit cell atoms
         # This way, all spglib-related methods (like symmetry()) will act on the unit cell only.
         # This distinction is important for Crystal subclasses, like Supercell.
@@ -390,7 +421,20 @@ class Crystal(AtomicStructure, Lattice):
         cell : AtomicStructure
             Iterable of `crystals.Atom` objects following the supercell dimensions.
         """
-        return Supercell(crystal=self, dimensions=(n1, n2, n3))
+        multicell = list()
+        for atm in self:
+            for factors in product(range(n1), range(n2), range(n3)):
+                fractional_offset = np.asarray(factors)
+                newatm = Atom(
+                    element=atm.element,
+                    coords=atm.coords_fractional + fractional_offset,
+                    displacement=atm.displacement,
+                    magmom=atm.magmom,
+                    occupancy=atm.occupancy,
+                )
+                multicell.append(newatm)
+
+        return Supercell(unitcell=multicell, lattice_vectors=self.lattice_vectors)
 
     def symmetry(self, symprec=1e-2, angle_tolerance=-1.0):
         """
@@ -500,7 +544,7 @@ class Crystal(AtomicStructure, Lattice):
         dataset = get_symmetry(cell=self._spglib_cell(), symprec=symprec)
 
         def _to_affine(r, t):
-            """ Convert rotation and translation into single 4x4 affine transformation """
+            """Convert rotation and translation into single 4x4 affine transformation"""
             m = np.eye(4)
             m[:3, :3] = r
             m[:3, -1] = t
@@ -562,42 +606,42 @@ class Crystal(AtomicStructure, Lattice):
 
     @property
     def international_symbol(self):
-        """ International Tables of Crystallography space-group short symbol. """
+        """International Tables of Crystallography space-group short symbol."""
         return self.symmetry()["international_symbol"]
 
     @property
     def international_full(self):
-        """ International Tables of Crystallography space-group full symbol. """
+        """International Tables of Crystallography space-group full symbol."""
         return self.symmetry()["international_full"]
 
     @property
     def hall_symbol(self):
-        """ Hall symbol. """
+        """Hall symbol."""
         return self.symmetry()["hall_symbol"]
 
     @property
     def hm_symbol(self):
-        """ Hermann-Mauguin symbol. """
+        """Hermann-Mauguin symbol."""
         return self.symmetry()["hm_symbol"]
 
     @property
     def pointgroup(self):
-        """ International Tables of Crystallography point-group. """
+        """International Tables of Crystallography point-group."""
         return self.symmetry()["pointgroup"]
 
     @property
     def international_number(self):
-        """ International Tables of Crystallography space-group number (between 1 and 230). """
+        """International Tables of Crystallography space-group number (between 1 and 230)."""
         return self.symmetry()["international_number"]
 
     @property
     def hall_number(self):
-        """ Hall number (between 1 and 531). """
+        """Hall number (between 1 and 531)."""
         return self.symmetry()["hall_number"]
 
     @property
     def centering(self):
-        """ Centering type of this crystals. """
+        """Centering type of this crystals."""
         return self.symmetry()["centering"]
 
     def indexed_by(self, lattice):
@@ -630,11 +674,11 @@ class Crystal(AtomicStructure, Lattice):
         )
 
     def __str__(self):
-        """ String representation of this instance. Atoms may be omitted. """
+        """String representation of this instance. Atoms may be omitted."""
         return self._to_string(natoms=10)
 
     def __repr__(self):
-        """ Verbose string representation of this instance. """
+        """Verbose string representation of this instance."""
         return self._to_string(natoms=len(self))
 
     def _to_string(self, natoms):
@@ -671,7 +715,7 @@ class Crystal(AtomicStructure, Lattice):
         for chem_symbol, composition in sorted(
             self.chemical_composition.items(), key=lambda t: t[0]
         ):
-            rep += f"\n    {chem_symbol}: {100 * composition:.3f}%"
+            rep += f"\n    {chem_symbol.rjust(LONGEST_CHEMICAL_SYMBOL)}: {100 * composition:.3f}%"
         rep += " >"
         return rep
 
@@ -737,56 +781,36 @@ class Crystal(AtomicStructure, Lattice):
         """
         return ase_atoms(self)
 
+    def to_poscar(self, filename, **kwargs):
+        """
+        Convert this :class:`Crystal` instance to a POSCAR file.
+        Keyword arguments are passed to :meth:`writers.write_poscar`.
 
-class Supercell(AtomicStructure):
+        Note that some information may be lost in the translation. However, we guarantee that
+        reading a structure from a file, and then writing back to the same format is idempotent.
+
+        Parameters
+        ----------
+        filename : path-like
+            Path to a file. If the file already exists, it will be overwritten.
+        kwargs:
+            Keyword arguments are passed to :meth:`writers.write_poscar`.
+        """
+        write_poscar(self, filename, **kwargs)
+
+
+class Supercell(Crystal):
     """
     The :class:`Supercell` class is a set-like container that represents a
     supercell of crystalline structures.
 
-    It is recommended that you do not instantiate a :class:`Supercell` by hand, but rather
+    It is strongly recommended that you do not instantiate a :class:`Supercell` by hand, but rather
     create a :class:`Crystal` object and use the :meth:`Crystal.supercell` method.
 
     To iterate over all atoms in the supercell, use this object as an iterable.
-    To recover the underlying crystal, use the :attr:`Supercell.crystal` attribute.
-
-    Parameters
-    ----------
-    crystal : Crystal
-        Crystal object from which the supercell is assembled.
-    dimensions : 3-tuple of ints
-        Number of cell repeats along the ``a1``, ``a2``, and ``a3`` directions. For example,
-        ``(1, 1, 1)`` represents the trivial supercell.
     """
 
-    def __init__(self, crystal, dimensions, **kwargs):
-        self.crystal = crystal
-        self.dimensions = dimensions
-
-        n1, n2, n3 = self.dimensions
-
-        atoms = list()
-        for atm in crystal:
-            for factors in product(range(n1), range(n2), range(n3)):
-                fractional_offset = np.asarray(factors)
-                newatm = Atom(
-                    element=atm.element,
-                    coords=atm.coords_fractional + fractional_offset,
-                    lattice=Lattice(self.crystal.lattice_vectors),
-                    displacement=atm.displacement,
-                    magmom=atm.magmom,
-                    occupancy=atm.occupancy,
-                )
-                atoms.append(newatm)
-
-        super().__init__(atoms=atoms)
-
-    def __repr__(self):
-        n1, n2, n3 = self.dimensions
-        preamble = f"< Supercell object with dimensions ({n1} x {n2} x {n3}) and the following unit cell:\n"
-
-        lines = repr(self.crystal).splitlines(keepends=True)
-        lines[0] = preamble
-        return "".join(lines)
+    pass
 
 
 @unique
