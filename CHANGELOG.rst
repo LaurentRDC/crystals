@@ -4,6 +4,11 @@ What's new
 
 .. currentmodule:: crystals
 
+Release 1.4.1
+-------------
+
+* Fixed an issue with the `tag` attribute of `Atom`s not being propagated properly (#9)
+
 Release 1.4.0
 -------------
 

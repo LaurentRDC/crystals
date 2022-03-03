@@ -331,7 +331,7 @@ class Lattice:
 
         # Generalized hypotenuse
         def _hypot(*args):
-            return sqrt(sum(map(lambda i: i ** 2, args)))
+            return sqrt(sum(map(lambda i: i**2, args)))
 
         # The above bound was only a first pass. We can refine further
         in_bounds = (
@@ -366,7 +366,7 @@ def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
     # reciprocal lattice
     a_recip = sin(alpha) / (a * unit_volume)
     cos_gamma_recip = (cos(alpha) * cos(beta) - cos(gamma)) / (sin(alpha) * sin(beta))
-    sin_gamma_recip = sqrt(1 - cos_gamma_recip ** 2)
+    sin_gamma_recip = sqrt(1 - cos_gamma_recip**2)
 
     a1 = np.asfarray(
         [1 / a_recip, -cos_gamma_recip / sin_gamma_recip / a_recip, cos(beta) * a]

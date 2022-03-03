@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
 from enum import Enum, unique
 from operator import attrgetter
 from functools import lru_cache
-from glob import glob
 from itertools import islice, product, chain, combinations
 from pathlib import Path
 
@@ -425,14 +425,9 @@ class Crystal(AtomicStructure, Lattice):
         for atm in self:
             for factors in product(range(n1), range(n2), range(n3)):
                 fractional_offset = np.asarray(factors)
-                newatm = Atom(
-                    element=atm.element,
-                    coords=atm.coords_fractional + fractional_offset,
-                    displacement=atm.displacement,
-                    magmom=atm.magmom,
-                    occupancy=atm.occupancy,
-                )
-                multicell.append(newatm)
+                newatom = deepcopy(atm)
+                newatom.coords_fractional += fractional_offset
+                multicell.append(newatom)
 
         return Supercell(unitcell=multicell, lattice_vectors=self.lattice_vectors)
 

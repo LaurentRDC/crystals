@@ -193,6 +193,7 @@ class Atom(Element):
                 and distance_fractional(self, other) < 1e-3
                 and (self.lattice == other.lattice)
                 and np.allclose(self.displacement, other.displacement, atol=1e-3)
+                and self.tag == other.tag
                 and (self.electronic_structure == other.electronic_structure)
             )
         return False
@@ -205,6 +206,7 @@ class Atom(Element):
                 tuple(np.round(self.coords_fractional, 4)),
                 self.lattice,
                 tuple(np.round(self.displacement, 3)),
+                self.tag,
                 hash(self.electronic_structure),
             )
         )

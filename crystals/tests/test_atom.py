@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
-from random import randint, random, seed
+from random import random, seed
 import pickle
 
 import numpy as np
@@ -97,17 +97,24 @@ def test_atom_init():
     assert by_element == by_number
 
 
-@pytest.mark.parametrize(
-    "atom", map(lambda s: Atom(s, [0, 0, 0]), islice(chemical_symbols, 50))
-)
-def test_atom_equality(atom):
+@pytest.mark.parametrize("tag", [None, 1, 2])
+@pytest.mark.parametrize("symbol", islice(chemical_symbols, 50))
+def test_atom_equality(symbol, tag):
     """Test __eq__ for atoms"""
+    atom = Atom(symbol, coords=[0, 0, 0], tag=tag)
     other = deepcopy(atom)
     assert atom == atom
     assert atom == other
+    assert hash(atom) == hash(other)
 
     other.coords_fractional = atom.coords_fractional + 1
     assert atom != other
+    assert hash(atom) != hash(other)
+
+    other = deepcopy(atom)
+    other.tag = 5
+    assert atom != other
+    assert hash(atom) != hash(other)
 
 
 @pytest.mark.parametrize(
