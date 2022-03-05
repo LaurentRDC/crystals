@@ -523,9 +523,9 @@ Let's imagine we want to create a 2x2x2 supercell of graphite:
     < Atom C  @ (0.33, 0.67, 0.25) >
     < Atom C  @ (0.67, 0.33, 0.75) >
     >>>
-    >>> for atm in sorted(graphite.supercell(2,2,2)):
-    ...    print(repr(atm))
-    ...
+    >>> for atm in sorted(graphite.supercell(2,2,2)): # doctest: +SKIP
+    ...    print(repr(atm))                           # doctest: +SKIP
+    ...                                               # doctest: +SKIP
     < Atom C  @ (0.00, 0.00, 0.25) >
     < Atom C  @ (0.00, 0.00, 0.75) >
     < Atom C  @ (0.00, 0.00, 1.25) >
