@@ -197,6 +197,20 @@ def test_supercell_constructors(name):
     assert len(s) == 8 * len(c)
 
 
+@pytest.mark.parametrize("n1", [1, 2, 3])
+@pytest.mark.parametrize("n2", [1, 2, 3])
+@pytest.mark.parametrize("n3", [1, 2, 3])
+def test_supercell_scaled_lattice_vectors(n1, n2, n3):
+    """Test the `scaled_lattice_vectors` attribute of the `Supercell` class."""
+    c = Crystal.from_database("C")
+    a1, a2, a3 = c.lattice_vectors
+    sa1, sa2, sa3 = c.supercell(n1, n2, n3).scaled_lattice_vectors
+
+    assert np.allclose(n1 * a1, sa1)
+    assert np.allclose(n2 * a2, sa2)
+    assert np.allclose(n3 * a3, sa3)
+
+
 @pytest.mark.parametrize("tag", [None, 1, 2])
 @pytest.mark.parametrize("occupancy", [1.0, 1.5, 2])
 @pytest.mark.parametrize("symbol", ["H", "He", "C"])

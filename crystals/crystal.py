@@ -418,7 +418,7 @@ class Crystal(AtomicStructure, Lattice):
 
         Returns
         -------
-        cell : AtomicStructure
+        cell : Supercell
             Iterable of `crystals.Atom` objects following the supercell dimensions.
         """
         multicell = list()
@@ -429,7 +429,11 @@ class Crystal(AtomicStructure, Lattice):
                 newatom.coords_fractional += fractional_offset
                 multicell.append(newatom)
 
-        return Supercell(unitcell=multicell, lattice_vectors=self.lattice_vectors)
+        return Supercell(
+            unitcell=multicell,
+            lattice_vectors=self.lattice_vectors,
+            dimensions=(n1, n2, n3),
+        )
 
     def symmetry(self, symprec=1e-2, angle_tolerance=-1.0):
         """
@@ -797,7 +801,8 @@ class Crystal(AtomicStructure, Lattice):
 class Supercell(Crystal):
     """
     The :class:`Supercell` class is a set-like container that represents a
-    supercell of crystalline structures.
+    supercell of crystalline structures. It has all the same attributes as a :class:`Crystal`, with
+    the addition of :attr:`Supercell.scaled_lattice_vectors` and :attr:`Supercell.dimensions`.
 
     It is strongly recommended that you do not instantiate a :class:`Supercell` by hand, but rather
     create a :class:`Crystal` object and use the :meth:`Crystal.supercell` method.
@@ -805,7 +810,19 @@ class Supercell(Crystal):
     To iterate over all atoms in the supercell, use this object as an iterable.
     """
 
-    pass
+    def __init__(self, dimensions, **kwargs):
+        super().__init__(**kwargs)
+        self.dimensions = dimensions
+
+    @property
+    def scaled_lattice_vectors(self):
+        """3-tuple of lattice vectors scaled by the dimensions of the supercell. If the supercell is (2x2x2) unit cells,
+        then the scaled lattice vectors are all 2x of the unit cell lattice vectors.
+
+        .. versionadded:: 1.5.0
+        """
+        n1, n2, n3 = self.dimensions
+        return (n1 * self.a1, n2 * self.a2, n3 * self.a3)
 
 
 @unique

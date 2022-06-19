@@ -4,10 +4,15 @@ What's new
 
 .. currentmodule:: crystals
 
+Release 1.5.0
+-------------
+
+* Added the :attr:`Supercell.scaled_lattice_vectors` property and associated documentation (#11).
+
 Release 1.4.1
 -------------
 
-* Fixed an issue with the `tag` attribute of `Atom`s not being propagated properly (#9)
+* Fixed an issue with the `tag` attribute of `Atom`s not being propagated properly (#9).
 
 Release 1.4.0
 -------------
