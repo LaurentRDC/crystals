@@ -6,7 +6,7 @@ from operator import itemgetter
 from functools import reduce
 from itertools import chain
 from math import gcd
-from typing import Any, Callable, Iterable, Iterator, Optional, Union
+from typing import Any, Callable, Dict, Iterable, Iterator, Optional, Union
 
 from numpy.typing import ArrayLike
 import numpy as np
@@ -161,7 +161,7 @@ class AtomicStructure:
         return AtomicStructure(atoms=filter(predicate, iter(self)))
 
     @property
-    def chemical_composition(self) -> OrderedDict[str, float]:
+    def chemical_composition(self) -> Dict[str, float]:
         """
         Chemical composition of this structure as an ordered dictionary. Keys are elemental symbols.
         Elements are in descending order of prevalence.
