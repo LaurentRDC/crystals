@@ -2,7 +2,6 @@
 """
 Atomic structure parsers.
 """
-import gzip
 import re
 from typing import Any, Iterable, Optional, Tuple, Union
 import warnings
@@ -10,7 +9,7 @@ from abc import abstractmethod
 from contextlib import AbstractContextManager, suppress
 from functools import lru_cache
 from itertools import repeat
-from os import PathLike, environ, remove
+from os import PathLike, environ
 from pathlib import Path
 from platform import system
 from string import digits, punctuation
@@ -147,7 +146,7 @@ class PDBParser(AbstractStructureParser):
     def download_pdb_file(
         pdb_code: str,
         download_dir: Optional[PathLike] = None,
-        server: str = "ftp://ftp.wwpdb.org",
+        server: str = "https://files.rcsb.org",
         overwrite: bool = False,
     ) -> Path:
         """
@@ -161,7 +160,7 @@ class PDBParser(AbstractStructureParser):
         download_dir : path-like object
             Directory where to save the PDB file. Default is a local folder in the current directory
         server : str, optional
-            Address of the FTP server from which to download the PDB file. Default is the main server.
+            Root address of the server from which to download the PDB file. Default is the main server.
         overwrite : bool, optional
             If True, existing PDB file with the same structure will be overwritten. Default is False.
 
@@ -170,14 +169,6 @@ class PDBParser(AbstractStructureParser):
         file : pathlib.Path
             Pointer to the downloaded file
         """
-        # Get the compressed PDB structure
-        code = pdb_code.lower()
-        archive_fn = Path(f"pdb{code}.ent.gz")
-        pdb_dir = "divided"
-        url = (
-            server + f"/pub/pdb/data/structures/{pdb_dir}/pdb/{code[1:3]}/{archive_fn}"
-        )
-        # Where does the final PDB file get saved?
         if download_dir is None:
             path = STRUCTURE_CACHE
         else:
@@ -185,21 +176,17 @@ class PDBParser(AbstractStructureParser):
 
         path.mkdir(exist_ok=True)
 
-        filename = path / archive_fn
-        final_file = path / f"pdb{code}.ent"  # (decompressed)
+        final_file = path / f"pdb{pdb_code.lower()}.ent"  # (decompressed)
 
         # Skip download if the file already exists
         if (not overwrite) and (final_file.exists()):
             return final_file
 
-        urlretrieve(url, filename)
+        resp = requests.get(server + f"/download/{pdb_code.upper()}.pdb")
+        resp.raise_for_status()
 
-        # Uncompress the archive, delete when done
-        # Can't use context manager with gzip.open until Python 2.7
-        with gzip.open(filename, "rb") as gz:
-            with open(final_file, "wb") as out:
-                out.writelines(gz)
-        remove(filename)
+        with open(final_file, "wb") as out:
+            out.write(resp.content)
 
         return Path(final_file)
 

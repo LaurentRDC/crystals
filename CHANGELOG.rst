@@ -9,6 +9,7 @@ Release 1.5.0
 
 * Added some typing information.
 * Added the :attr:`Supercell.scaled_lattice_vectors` property and associated documentation (#11).
+* Protein Data Bank downloads are now done through HTTPS rather than FTP, which is recommended by the RCSB data bank.
 * Fixed some documentation formatting.
 
 Release 1.4.1
