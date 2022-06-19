@@ -7,7 +7,9 @@ What's new
 Release 1.5.0
 -------------
 
+* Added some typing information.
 * Added the :attr:`Supercell.scaled_lattice_vectors` property and associated documentation (#11).
+* Fixed some documentation formatting.
 
 Release 1.4.1
 -------------

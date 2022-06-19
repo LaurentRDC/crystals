@@ -360,19 +360,19 @@ Thanks to `spglib <http://atztogo.github.io/spglib/>`_, we can get space-group i
 
 In the above example, :data:`spg_info` is a dictionary with the following keys:
 
-* ``'international_symbol'``: International Tables of Crystallography space-group symbol (short);
+1. ``'international_symbol'``: International Tables of Crystallography space-group symbol (short);
 
-* ``'international_full'``: International Tables of Crystallography space-group full symbol;
+2. ``'international_full'``: International Tables of Crystallography space-group full symbol;
 
-* ``'hall_symbol'`` : Hall symbol;
+3. ``'hall_symbol'`` : Hall symbol;
 
-* ``'hm_symbol'`` : Hermann-Mauguin symbol;
+4. ``'hm_symbol'`` : Hermann-Mauguin symbol;
 
-* ``'pointgroup'`` : International Tables of Crystallography point-group;
+5. ``'pointgroup'`` : International Tables of Crystallography point-group;
 
-* ``'international_number'`` : International Tables of Crystallography space-group number (between 1 and 230);
+6. ``'international_number'`` : International Tables of Crystallography space-group number (between 1 and 230);
 
-* ``'hall_number'`` : Hall number (between 1 and 531).
+7. ``'hall_number'`` : Hall number (between 1 and 531).
 
 Each of those items are also available directly from the :class:`Crystal` instance. The Hall number of a crystal structure 
 is located in the :attr:`Crystal.hall_number` attribute, the short international symbol is located in the :attr:`Crystal.international_symbol`. 
