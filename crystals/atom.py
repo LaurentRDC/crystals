@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from multiprocessing.dummy import Array
+from typing import Any, Callable, Dict, Optional, Union
+from numpy.typing import ArrayLike
 import numpy as np
+
 from enum import Enum, auto, unique
 from collections import namedtuple, OrderedDict
 from copy import deepcopy
@@ -17,6 +21,9 @@ from .atom_data import (
     atomic_names,
 )
 from .lattice import Lattice
+
+
+ElementLike = Union[str, int, "Element"]
 
 
 # TODO: make this class an enumeration?
@@ -40,7 +47,7 @@ class Element:
     valid_symbols = frozenset(chemical_symbols)
     valid_names = frozenset(atomic_names)
 
-    def __init__(self, element, *args, **kwargs):
+    def __init__(self, element: ElementLike, *args, **kwargs):
         if isinstance(element, int):
             try:
                 element = NUM_TO_ELEM[element]
@@ -61,49 +68,49 @@ class Element:
         elif element in self.valid_names:
             self.element = NAME_TO_ELEM[element]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.symbol
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"< {self.name} >"
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if isinstance(other, Element):
             return self.element == other.element
         return NotImplemented
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         # Technically, if atomic_number is an int, hash(atomic_number) = atomic_number
         # However, just in case this won't be true in the future, we still use the hash() function
         return hash(self.atomic_number)
 
     @property
-    def element_full(self):
+    def element_full(self) -> str:
         """Full element name, e.g. "Hydrogen" """
         return self.name
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Full element name, e.g. "Hydrogen" """
         return ELEM_TO_NAME[self.element]
 
     @property
-    def symbol(self):
+    def symbol(self) -> str:
         """Elemental symbol, e.g. "He" """
         return self.element
 
     @property
-    def atomic_number(self):
+    def atomic_number(self) -> int:
         """Atomic number"""
         return ELEM_TO_NUM[self.element]
 
     @property
-    def mass(self):
+    def mass(self) -> float:
         """Atomic mass [u]"""
         return ELEM_TO_MASS[self.element]
 
     @property
-    def magnetic_moment_ground(self):
+    def magnetic_moment_ground(self) -> float:
         """Ground state magnetic moment."""
         return ELEM_TO_MAGMOM.get(self.element, None)
 
@@ -148,14 +155,14 @@ class Atom(Element):
 
     def __init__(
         self,
-        element,
-        coords,
-        lattice=None,
-        displacement=None,
-        magmom=None,
-        occupancy=1.0,
-        tag=None,
-        electronic_structure=None,
+        element: ElementLike,
+        coords: ArrayLike,
+        lattice: Optional[Union[Lattice, ArrayLike]] = None,
+        displacement: ArrayLike = None,
+        magmom: Optional[float] = None,
+        occupancy: float = 1.0,
+        tag: Optional[Any] = None,
+        electronic_structure: Optional["ElectronicStructure"] = None,
         **kwargs,
     ):
         super().__init__(element=element)
@@ -175,7 +182,7 @@ class Atom(Element):
             ElectronicStructure.ground_state(self.element) or electronic_structure
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         x, y, z = tuple(self.coords_fractional)
         r = f"< Atom {self.element:<2} @ ({x:.2f}, {y:.2f}, {z:.2f})"
         # No point in polluting the representation if the electronic structure was not
@@ -185,7 +192,7 @@ class Atom(Element):
         r += " >"
         return r
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if isinstance(other, Atom):
             return (
                 super().__eq__(other)
@@ -198,7 +205,7 @@ class Atom(Element):
             )
         return False
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(
             (
                 super().__hash__(),
@@ -211,7 +218,7 @@ class Atom(Element):
             )
         )
 
-    def __lt__(self, other):
+    def __lt__(self, other) -> bool:
         # Here's a cool fact:
         # Sorting n-tuples works as follows:
         #   1. Sort by the first elements
@@ -228,7 +235,7 @@ class Atom(Element):
         )
 
     @classmethod
-    def from_ase(cls, atom):
+    def from_ase(cls, atom) -> "Atom":
         """
         Returns an Atom instance from an ASE atom
 
@@ -247,7 +254,7 @@ class Atom(Element):
         )
 
     @property
-    def coords_cartesian(self):
+    def coords_cartesian(self) -> np.ndarray:
         """
         Real-space position of the atom on the lattice, in Angstroms.
 
@@ -262,7 +269,7 @@ class Atom(Element):
         """
         return real_coords(self.coords_fractional, self.lattice.lattice_vectors)
 
-    def transform(self, *matrices):
+    def transform(self, *matrices: ArrayLike) -> "Atom":
         """
         Return an Atom with fractional coordinates transformed according to symmetry operators.
 
@@ -286,7 +293,7 @@ class Atom(Element):
 
         return new_atom
 
-    def __array__(self, *args, **kwargs):
+    def __array__(self, *args, **kwargs) -> np.ndarray:
         """Returns an array [Z, x, y, z]"""
         arr = np.empty(shape=(4,), *args, **kwargs)
         arr[0] = self.atomic_number
@@ -294,7 +301,7 @@ class Atom(Element):
         return arr
 
 
-def real_coords(frac_coords, lattice_vectors):
+def real_coords(frac_coords: ArrayLike, lattice_vectors: ArrayLike) -> np.ndarray:
     """
     Calculates the real-space coordinates of the atom from fractional coordinates and lattice vectors.
 
@@ -313,7 +320,7 @@ def real_coords(frac_coords, lattice_vectors):
     return transform(COB, frac_coords)
 
 
-def frac_coords(real_coords, lattice_vectors):
+def frac_coords(real_coords: ArrayLike, lattice_vectors: ArrayLike) -> np.ndarray:
     """
     Calculates the fractional coordinates of the atom from real-space coordinates and lattice vectors.
 
@@ -332,7 +339,7 @@ def frac_coords(real_coords, lattice_vectors):
     return transform(COB, real_coords)
 
 
-def distance_fractional(atm1, atm2):
+def distance_fractional(atm1: Atom, atm2: Atom) -> float:
     """
     Calculate the distance between two atoms in fractional coordinates.
 
@@ -357,7 +364,7 @@ def distance_fractional(atm1, atm2):
     return np.linalg.norm(atm1.coords_fractional - atm2.coords_fractional)
 
 
-def distance_cartesian(atm1, atm2):
+def distance_cartesian(atm1: Atom, atm2: Atom) -> float:
     """
     Calculate the distance between two atoms in cartesian coordinates.
 
@@ -382,7 +389,7 @@ def distance_cartesian(atm1, atm2):
     return np.linalg.norm(atm1.coords_cartesian - atm2.coords_cartesian)
 
 
-def is_element(element):
+def is_element(element: ElementLike) -> Callable[[Atom], bool]:
     """
     Create a function that checks whether an atom is of a certain element.
 
@@ -452,12 +459,12 @@ class Orbital(Enum):
     six_d = "6d"
     seven_p = "7p"
 
-    def __lt__(self, other):
+    def __lt__(self, other: "Orbital") -> bool:
         madelung_rule = [v for k, v in Orbital.__members__.items()]
         return madelung_rule.index(self) < madelung_rule.index(other)
 
     @classmethod
-    def maximum_electrons(cls, shell):
+    def maximum_electrons(cls, shell: Union[str, "Orbital"]) -> int:
         """
         Maximum number of electrons that can be placed in an orbital.
 
@@ -529,7 +536,7 @@ class ElectronicStructure:
     electronic structures can arise from ultrafast photoexcitation.
     """
 
-    def __init__(self, shells):
+    def __init__(self, shells: Dict[Union[str, Orbital], int]):
         shells = {Orbital(k): v for k, v in shells.items()}
 
         # Subclassing OrderedDict causes problems with pickling
@@ -538,7 +545,7 @@ class ElectronicStructure:
         for k, v in shells.items():
             self.__setitem__(k, v)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: Union[str, Orbital], value: int):
         # We check that the number of electrons in each Orbital does not
         # go above maximum possible.
         shell = Orbital(key)
@@ -553,7 +560,7 @@ class ElectronicStructure:
         # by re-creating the OrderedDict, filled
         self._structure = OrderedDict(sorted(self._structure.items()))
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: Union[str, Orbital]) -> int:
         # In case the key doesn't exist, we return 0
         # (i.e. 0 electrons in this orbital) because this allows
         # to add electrons in-place, e.g.:
@@ -566,23 +573,23 @@ class ElectronicStructure:
         except KeyError:
             return 0
 
-    def __str__(self):
+    def __str__(self) -> str:
         result = ""
         for shell, occ in self._structure.items():
             result += shell.value + f"{occ}".translate(superscript_trans)
         return result
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"< ElectronicStructure: {str(self)} >"
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(str(self))
 
-    def __eq__(self, other):
+    def __eq__(self, other: "ElectronicStructure") -> bool:
         return str(self) == str(other)
 
     @classmethod
-    def ground_state(cls, element):
+    def ground_state(cls, element: ElementLike) -> "ElectronicStructure":
         """
         Ground state electronic structure for a particular element.
 
@@ -616,7 +623,7 @@ class ElectronicStructure:
         return cls(structure)
 
     @property
-    def outer_shell(self):
+    def outer_shell(self) -> Orbital:
         """The outermost shell, or valence orbital."""
         shells = list(self._structure.keys())
         return shells[-1]

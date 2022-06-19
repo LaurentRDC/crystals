@@ -2,15 +2,17 @@
 from enum import Enum, unique
 from functools import partial, wraps
 from itertools import count, product, repeat, takewhile
-from math import cos, isclose, radians, degrees, sin, sqrt, tan
+from math import cos, isclose, radians, sin, sqrt
+from typing import Any, Generator, Iterator, Iterable, Tuple, Union
 
+from numpy.typing import ArrayLike
 import numpy as np
 from numpy.linalg import norm
 
 from .affine import change_basis_mesh, change_of_basis
 
 
-def primed(gen):
+def primed(gen: Generator) -> Generator:
     """
     Decorator that primes a generator function, i.e. runs the function
     until the first ``yield`` statement. Useful in cases where there
@@ -26,7 +28,7 @@ def primed(gen):
     return primed_gen
 
 
-def matmulrow(matrix, arr):
+def matmulrow(matrix: np.ndarray, arr: np.ndarray) -> np.ndarray:
     """Row-wise matrix multiplication."""
     return np.transpose(matrix @ arr.T)
 
@@ -63,31 +65,33 @@ class Lattice:
         Lattice vectors.
     """
 
-    def __init__(self, lattice_vectors, **kwargs):
+    def __init__(self, lattice_vectors: ArrayLike, **kwargs):
         a1, a2, a3 = lattice_vectors
         self.a1 = np.asarray(a1, dtype=float)
         self.a2 = np.asarray(a2, dtype=float)
         self.a3 = np.asarray(a3, dtype=float)
         super().__init__(**kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         a, b, c, alpha, beta, gamma = self.lattice_parameters
         return f"< Lattice object with parameters {a:.3f}Å, {b:.3f}Å, {c:.3f}Å, {alpha:.2f}°, {beta:.2f}°, {gamma:.2f}° >"
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.lattice_parameters)
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, Lattice):
             return np.allclose(self.lattice_vectors, other.lattice_vectors, atol=1e-3)
         return NotImplemented
 
-    def __array__(self, *args, **kwargs):
+    def __array__(self, *args, **kwargs) -> np.ndarray:
         """Returns a 3x3 float array in which each row is a lattice vector"""
         return np.array(self.lattice_vectors, *args, **kwargs)
 
     @classmethod
-    def from_parameters(cls, a, b, c, alpha, beta, gamma):
+    def from_parameters(
+        cls, a: float, b: float, c: float, alpha: float, beta: float, gamma: float
+    ):
         """
         Create a Lattice instance from three lengths and angles.
 
@@ -105,7 +109,7 @@ class Lattice:
         return cls(lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma))
 
     @property
-    def lattice_parameters(self):
+    def lattice_parameters(self) -> Tuple[float, float, float, float, float, float]:
         """Lattice parameters as three lengths [Å] and three angles [degrees]."""
         a, b, c = norm(self.a1), norm(self.a2), norm(self.a3)
         alpha = np.arccos(np.vdot(self.a2, self.a3) / (b * c))
@@ -114,31 +118,31 @@ class Lattice:
         return a, b, c, np.rad2deg(alpha), np.rad2deg(beta), np.rad2deg(gamma)
 
     @property
-    def lattice_system(self):
+    def lattice_system(self) -> "LatticeSystem":
         """One of the seven lattice system, returned in the form of the :class:`LatticeSystem` enumeration."""
         return lattice_system(*self.lattice_parameters, atol=5e-2)
 
     @property
-    def volume(self):
+    def volume(self) -> float:
         """Lattice cell volume Angtroms cubed"""
         return np.dot(self.a1, np.cross(self.a2, self.a3))
 
     @property
-    def lattice_vectors(self):
+    def lattice_vectors(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Iterable of lattice vectors"""
         return self.a1, self.a2, self.a3
 
     @lattice_vectors.setter
-    def lattice_vectors(self, vectors):
+    def lattice_vectors(self, vectors: ArrayLike):
         self.a1, self.a2, self.a3 = vectors
 
     @property
-    def reciprocal(self):
+    def reciprocal(self) -> "Lattice":
         """Reciprocal lattice"""
         return Lattice(lattice_vectors=self.reciprocal_vectors)
 
     @property
-    def reciprocal_vectors(self):
+    def reciprocal_vectors(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Reciprocal lattice vectors, defined as:
 
@@ -155,7 +159,7 @@ class Lattice:
         return b1, b2, b3
 
     @property
-    def periodicity(self):
+    def periodicity(self) -> Tuple[float, float, float]:
         """
         Crystal periodicity in x, y and z direction from the lattice constants.
         This is effectively a bounding cube for the unit cell, which is itself a unit cell.
@@ -171,7 +175,7 @@ class Lattice:
         lv = np.abs(np.array(self.lattice_vectors))
         return tuple(lv.sum(axis=0))
 
-    def scattering_vector(self, reflection):
+    def scattering_vector(self, reflection: ArrayLike) -> np.ndarray:
         """
         Scattering vector from Miller indices.
 
@@ -192,7 +196,7 @@ class Lattice:
         COB = change_of_basis(basis1=self.reciprocal_vectors, basis2=np.eye(3))
         return matmulrow(COB, np.asarray(reflection))
 
-    def miller_indices(self, scattering_vector):
+    def miller_indices(self, scattering_vector: ArrayLike) -> np.ndarray:
         """
         Miller indices from scattering vector components.
 
@@ -214,7 +218,10 @@ class Lattice:
         return matmulrow(COB, np.asarray(scattering_vector))
 
     @staticmethod
-    def frac_mesh(*xi, indexing="xy"):
+    def frac_mesh(
+        *xi,
+        indexing: str = "xy",  # Not using Literal type because it landed in Python 3.8
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Coordinate arrays for fractional coordinates.
 
@@ -249,7 +256,11 @@ class Lattice:
 
         return np.meshgrid(*xi, indexing=indexing)
 
-    def mesh(self, *xi, indexing="xy"):
+    def mesh(
+        self,
+        *xi: np.ndarray,
+        indexing: str = "xy",  # Not using Literal type because it landed in Python 3.8
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Cartesian coordinate arrays from fractional coordinate vectors.
 
@@ -285,7 +296,9 @@ class Lattice:
     # Primed generators allows for checks on creation
     # All lines of code before the first 'yield' will run at first
     @primed
-    def bounded_reflections(self, bound, min_bound=0):
+    def bounded_reflections(
+        self, bound: float, min_bound: float = 0
+    ) -> Iterator[Tuple[int, int, int]]:
         """
         Generates reflections (hkl) with norm(G) <= bound
 
@@ -340,7 +353,9 @@ class Lattice:
         yield from filter(in_bounds, refls)
 
 
-def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
+def lattice_vectors_from_parameters(
+    a: float, b: float, c: float, alpha: float, beta: float, gamma: float
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
 
     Parameters
@@ -378,7 +393,15 @@ def lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma):
 
 # TODO: also determine body-centered, primitive, face-centered, etc.
 #       https://en.wikipedia.org/wiki/Bravais_lattice#Bravais_lattices_in_3_dimensions
-def lattice_system(a, b, c, alpha, beta, gamma, atol=1e-2):
+def lattice_system(
+    a: float,
+    b: float,
+    c: float,
+    alpha: float,
+    beta: float,
+    gamma: float,
+    atol: float = 1e-2,
+) -> LatticeSystem:
     """
     Determine the lattice system. All cyclic permutations are checked,
     so that no convention on ordering of lattice parameters is assumed.
@@ -461,7 +484,7 @@ def _two_equal(iterable, atol):
     return False
 
 
-def cyclic(iterable):
+def cyclic(iterable: Iterable[Any]) -> Iterable[Iterable[Any]]:
     """
     Yields cyclic permutations of an iterable.
 

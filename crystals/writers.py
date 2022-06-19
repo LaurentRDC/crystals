@@ -5,13 +5,15 @@ Conversion between ``crystals`` data structures and other modules.
 These functions are not expected to be used on their own; see the associated
  `Crystal` methods instead, like `Crystal.to_cif`.
 """
-from abc import abstractmethod
-from contextlib import AbstractContextManager, redirect_stdout
+from contextlib import redirect_stdout
 from io import StringIO
 from itertools import groupby
+from os import PathLike
+from typing import Iterable, Optional
 
 import numpy as np
 from CifFile import CifBlock, CifFile
+from .atom import Atom
 
 from . import __version__
 
@@ -33,7 +35,7 @@ CIF_HEADER = """
 """
 
 # TODO: test against known XYZ file
-def write_xyz(crystal, fname, comment=None):
+def write_xyz(crystal: Iterable[Atom], fname: PathLike, comment: Optional[str] = None):
     """
     Generate an atomic coordinates .xyz file from a crystal structure.
 
@@ -68,7 +70,7 @@ def write_xyz(crystal, fname, comment=None):
 
 
 # TODO: write the asymmetric cell + symmetry operatrs
-def write_cif(crystal, fname):
+def write_cif(crystal: "Crystal", fname: PathLike):
     """
     Generate an atomic coordinates .cif file from a crystal structure.
 
@@ -145,7 +147,7 @@ def write_cif(crystal, fname):
         f.write("\n".join(lines[13::]))  # Skip the fixed header
 
 
-def ase_atoms(crystal, **kwargs):
+def ase_atoms(crystal: "Crystal", **kwargs):
     """
     Convert a :class:`crystals.Crystal` object into an :class:`ase.Atoms` object.
     Keyword arguments are passed to :class:`ase.Atoms` constructor.
@@ -182,7 +184,13 @@ def ase_atoms(crystal, **kwargs):
     )
 
 
-def write_poscar(crystal, fname, comment=None, scaling_factor=1.0, cartesian=False):
+def write_poscar(
+    crystal: "Crystal",
+    fname: PathLike,
+    comment: Optional[str] = None,
+    scaling_factor: float = 1.0,
+    cartesian: bool = False,
+):
     """
     Generate a POSCAR file from a crystal structure.
 

@@ -2,14 +2,17 @@
 
 from collections import Counter, OrderedDict
 from copy import deepcopy
-from operator import attrgetter, itemgetter
+from operator import itemgetter
 from functools import reduce
 from itertools import chain
 from math import gcd
+from typing import Any, Callable, Iterable, Iterator, Optional, Union
 
+from numpy.typing import ArrayLike
 import numpy as np
 
 from .affine import affine_map
+from .atom import Atom
 
 
 class AtomicStructure:
@@ -33,18 +36,23 @@ class AtomicStructure:
         a secondary structure in a protein.
     """
 
-    def __init__(self, atoms=None, substructures=None, **kwargs):
+    def __init__(
+        self,
+        atoms: Optional[Iterable[Atom]] = None,
+        substructures: Optional[Iterable["AtomicStructure"]] = None,
+        **kwargs,
+    ):
         self.atoms = frozenset(atoms or {})
         self.substructures = frozenset(substructures or {})
         super().__init__(**kwargs)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Atom]:
         """Yields :class:`Atom` instances from the structure and substructures
         recursively. Order is not guaranteed."""
         yield from iter(self.atoms)
         yield from chain.from_iterable(self.substructures)
 
-    def __contains__(self, item):
+    def __contains__(self, item: Union[Atom, "AtomicStructure"]) -> bool:
         """Check containership of :class:`Atom` instances or :class:`AtomicStructure` substructures recursively."""
         if isinstance(item, AtomicStructure):
             return item in self.substructures
@@ -56,15 +64,15 @@ class AtomicStructure:
             (item in struct) for struct in chain([self.atoms], self.substructures)
         )
 
-    def __len__(self):
+    def __len__(self) -> int:
         """Number of :class:`Atom` instances present in the structure and substructures"""
         return len(self.atoms) + sum(len(struct) for struct in self.substructures)
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         """An :class:`AtomicStructure` is `False` if empty, and `True` otherwise"""
         return bool(self.atoms) or bool(self.substructures)
 
-    def __add__(self, other):
+    def __add__(self, other: "AtomicStructure") -> "AtomicStructure":
         """Create a new structure made from the combination of two structures."""
         # We defer construction to the current class. Therefore, subclasses of AtomicStructure
         # will add into their own class
@@ -73,17 +81,17 @@ class AtomicStructure:
             substructures=deepcopy(self.substructures) | deepcopy(other.substructures),
         )
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         if isinstance(other, AtomicStructure):
             return (self.atoms == other.atoms) and (
                 self.substructures == other.substructures
             )
         return NotImplemented
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.atoms) | hash(self.substructures)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Verbose string representation of this instance."""
         # AtomicStructure subclasses need not override this method
         # since the class name is dynamically determined
@@ -103,7 +111,7 @@ class AtomicStructure:
 
         return rep + " >"
 
-    def __array__(self, *args, **kwargs):
+    def __array__(self, *args, **kwargs) -> np.ndarray:
         """
         Returns an array in which each row represents an :class:`Atom` instance.
         Atoms are ordered by atomic number.
@@ -114,7 +122,9 @@ class AtomicStructure:
             arr[row, :] = np.array(atm, *args, **kwargs)
         return arr
 
-    def itersorted(self, *, key=None, reverse=False):
+    def itersorted(
+        self, *, key: Callable[[Atom], Any] = None, reverse: bool = False
+    ) -> Iterator[Atom]:
         """
         Yields :class:`Atom` in sorted order. By default, atoms are sorted by element.
 
@@ -132,7 +142,7 @@ class AtomicStructure:
         # TODO: deprecate
         yield from sorted(iter(self), key=key, reverse=reverse)
 
-    def satisfying(self, predicate):
+    def satisfying(self, predicate: Callable[[Atom], bool]) -> "AtomicStructure":
         """
         Builds a new AtomicStructure from atoms satisfying a predicate.
 
@@ -151,7 +161,7 @@ class AtomicStructure:
         return AtomicStructure(atoms=filter(predicate, iter(self)))
 
     @property
-    def chemical_composition(self):
+    def chemical_composition(self) -> OrderedDict[str, float]:
         """
         Chemical composition of this structure as an ordered dictionary. Keys are elemental symbols.
         Elements are in descending order of prevalence.
@@ -176,7 +186,7 @@ class AtomicStructure:
         return OrderedDict((k, v / number_atoms) for k, v in sorted_by_percentage)
 
     @property
-    def chemical_formula(self):
+    def chemical_formula(self) -> str:
         """
         Empirical chemical formula for this structure based on the chemical symbols.
         The string is returned in Hill notation: symbols are alphabetically ordered
@@ -217,7 +227,7 @@ class AtomicStructure:
             f"{symbol}{count}" if count > 1 else symbol for symbol, count in elements
         )
 
-    def transform(self, *operators):
+    def transform(self, *operators: ArrayLike) -> "AtomicStructure":
         """
         Return a transformed AtomicStructure based on symmetry operators.
 
