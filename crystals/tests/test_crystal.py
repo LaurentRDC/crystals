@@ -10,7 +10,11 @@ from contextlib import suppress
 import numpy as np
 from crystals import Atom, AtomicStructure, CenteringType, Crystal
 from crystals.affine import translation_matrix
-from crystals.crystal import symmetry_expansion, symmetry_reduction
+from crystals.crystal import (
+    symmetry_expansion,
+    symmetry_reduction,
+    ACCEPTABLE_SITE_SYMMETRIES,
+)
 import pytest
 
 np.random.seed(23)
@@ -223,6 +227,25 @@ def test_supercell_preserve_attributes(tag, symbol, occupancy):
     for supercell_atom in s:
         assert supercell_atom.tag == atom.tag
         assert supercell_atom.symbol == atom.symbol
+
+
+# The two tested site symmetry measures aren't *always* equivalent, but often are
+@pytest.mark.parametrize(
+    "site_symmetry_measure", ["crystallographic_orbits", "equivalent_atoms"]
+)
+@pytest.mark.parametrize(
+    "crystal, num_distinct_sites", (["C", 2], ["vo2-m1", 3], ["vo2-rutile", 2])
+)
+def test_groupby(site_symmetry_measure, crystal, num_distinct_sites):
+    cryst = Crystal.from_database(crystal)
+    gps = cryst.groupby(site_symmetry_measure)
+    assert len(gps) == num_distinct_sites
+
+
+def test_groupby_unknown_symmetry():
+    cryst = Crystal.from_database("diamond")
+    with pytest.raises(ValueError):
+        cryst.groupby("this should not work")
 
 
 def test_indexed_by_trivial_reindexing():

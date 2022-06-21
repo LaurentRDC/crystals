@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+from collections import namedtuple
 from copy import deepcopy
 from enum import Enum, unique
 from functools import lru_cache
-from itertools import chain, combinations, islice, product
+from itertools import chain, combinations, islice, product, groupby, starmap
 from operator import attrgetter
 from os import PathLike
 from pathlib import Path
@@ -36,6 +37,14 @@ from .writers import ase_atoms, write_cif, write_poscar, write_xyz
 
 CIF_ENTRIES = frozenset((Path(__file__).parent / "cifs").glob("*.cif"))
 LONGEST_CHEMICAL_SYMBOL = max(len(s) for s in chemical_symbols)
+
+ACCEPTABLE_SITE_SYMMETRIES = frozenset(
+    {
+        "wyckoffs",
+        "crystallographic_orbits",
+        "equivalent_atoms",
+    }
+)
 
 is_atom = lambda a: isinstance(a, Atom)
 is_structure = lambda s: isinstance(s, AtomicStructure)
@@ -489,25 +498,25 @@ class Crystal(AtomicStructure, Lattice):
         info : dict
             Dictionary of space-group information. The following keys are available:
 
-            * ``'international_symbol'``: International Tables of Crystallography
-              space-group symbol (short);
+                * ``'international_symbol'``: International Tables of Crystallography
+                  space-group symbol (short);
 
-            * ``'international_full'``: International Tables of
-              Crystallography space-group full symbol;
+                * ``'international_full'``: International Tables of
+                  Crystallography space-group full symbol;
 
-            * ``'hall_symbol'`` : Hall symbol;
+                * ``'hall_symbol'`` : Hall symbol;
 
-            * ``'hm_symbol'`` : Hermann-Mauguin symbol;
+                * ``'hm_symbol'`` : Hermann-Mauguin symbol;
 
-            *``'centering'``: Centering-type ("P", "F", etc.);
+                * ``'centering'``: Centering-type ("P", "F", etc.);
 
-            * ``'pointgroup'`` : International Tables of
-              Crystallography point-group;
+                * ``'pointgroup'`` : International Tables of
+                  Crystallography point-group;
 
-            * ``'international_number'`` : International Tables of
-              Crystallography space-group number (between 1 and 230);
+                * ``'international_number'`` : International Tables of
+                  Crystallography space-group number (between 1 and 230);
 
-            * ``'hall_number'`` : Hall number (between 1 and 531).
+                * ``'hall_number'`` : Hall number (between 1 and 531).
 
         Raises
         ------
@@ -680,6 +689,87 @@ class Crystal(AtomicStructure, Lattice):
     def centering(self) -> "CenteringType":
         """Centering type of this crystals."""
         return self.symmetry()["centering"]
+
+    # TODO: interpolate the docstring to specify the allowed values of `by`.
+    #       f-strings cannot be used as docstrings unfortunately.
+    def groupby(
+        self,
+        by: str,
+        symprec: float = 1e-2,
+        angle_tolerance: float = -1.0,
+    ) -> Dict[Any, Iterable[Atom]]:
+        """
+        Group unit cell atoms by some measure of site symmetry, for example Wyckoff letters
+        or crystallographic orbits.
+
+        .. versionadded:: 1.6.0
+
+        Parameters
+        ----------
+        by : str
+            Measure of site symmetry by which to group atoms. Can be one of "wyckoffs", "crystallographic_orbits",
+            or "equivalent_atoms". See the documentation of `spglib` for a description of these quantities.
+        symprec : float, optional
+            Symmetry-search distance tolerance in Cartesian coordinates [Angstroms].
+        angle_tolerance: float, optional
+            Symmetry-search tolerance in degrees. If the value is negative (default),
+            an internally optimized routine is used to judge symmetry.
+
+        Returns
+        -------
+        groups: dict
+            Dictionary where each key is a distinct site symmetry (e.g. a distinct orbit), and values are
+            iterable of :class:`Atom` which share the same site symmetry.
+
+        Raises
+        ------
+        RuntimeError
+            If symmetry-determination has not succeeded.
+        ValueError
+            If `by` is not one of the supported values.
+
+        Notes
+        -----
+        Note that crystals generated from the Protein Data Bank are often incomplete;
+        in such cases the site symmetry information will be incorrect.
+        """
+        if by not in ACCEPTABLE_SITE_SYMMETRIES:
+            raise ValueError(
+                f"Cannot group atoms by site-symmetry '{by}'. Expected one of: {ACCEPTABLE_SITE_SYMMETRIES}."
+            )
+
+        # Iterating over the atoms of a `Crystal` has an undefined order. As such,
+        # we need to first 'freeze' the iteration order, and create a spglib-compatible
+        # cell *with this order*. That's why we can't re-use `Crystal._spglib_cell`.
+        sortkey = lambda atm: np.linalg.norm(atm.coords_fractional)
+        atoms = sorted(self.unitcell, key=sortkey)
+
+        unitcell_array = np.stack([np.asarray(atm) for atm in atoms])
+        spglib_cell = (
+            np.array(self.lattice_vectors),
+            unitcell_array[:, 1:],
+            unitcell_array[:, 0],
+        )
+
+        symmetry_dataset = get_symmetry_dataset(
+            cell=spglib_cell, symprec=symprec, angle_tolerance=angle_tolerance
+        )
+
+        mksite = namedtuple("Site", ("atom", *ACCEPTABLE_SITE_SYMMETRIES))
+
+        sites = starmap(
+            mksite,
+            zip(
+                atoms,
+                *(symmetry_dataset[measure] for measure in ACCEPTABLE_SITE_SYMMETRIES),
+            ),
+        )
+
+        by = attrgetter(by)
+        return {
+            k: sorted((site.atom for site in v), key=sortkey)
+            for k, v in groupby(iterable=sorted(sites, key=by), key=by)
+        }
 
     def indexed_by(self, lattice: Union[Lattice, np.ndarray]) -> "Crystal":
         """

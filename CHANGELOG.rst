@@ -4,6 +4,11 @@ What's new
 
 .. currentmodule:: crystals
 
+Release 1.6.0
+-------------
+
+* Added the :meth:`Crystal.groupby` method to group unit cell atoms by site-symmetry (#12).
+
 Release 1.5.0
 -------------
 
@@ -15,7 +20,7 @@ Release 1.5.0
 Release 1.4.1
 -------------
 
-* Fixed an issue with the `tag` attribute of `Atom`s not being propagated properly (#9).
+* Fixed an issue with the `tag` attribute of `Atom` not being propagated properly (#9).
 
 Release 1.4.0
 -------------

@@ -402,6 +402,24 @@ and the translation is the right-most column. Example with iteration:
 
 Symmetry operations in reciprocal space are also made available via :meth:`Crystal.reciprocal_symmetry_operations`.
 
+
+Grouping atoms by site-symmetry
+-------------------------------
+
+For various reasons, it might be useful to know which of the atoms in a :class:`Crystal` are related by some site symmetry, for example Wyckoff letters
+or crystallographic orbits. This can be done with the :meth:`Crystal.groupby` method, which groups atoms according to their site symmetry. For example:
+
+    >>> graphite = Crystal.from_database('C')
+    >>> groups = graphite.groupby(by="crystallographic_orbits")
+    >>> for orbit, atoms in groups.items():
+    ...     print(f"Orbit {orbit}: {atoms}")
+    ... 
+    Orbit 0: [< Atom C  @ (0.00, 0.00, 0.25) >, < Atom C  @ (0.00, 0.00, 0.75) >]
+    Orbit 2: [< Atom C  @ (0.33, 0.67, 0.25) >, < Atom C  @ (0.67, 0.33, 0.75) >]
+
+Supported site-symmetry measures are currently `"crystallographic_orbits"`, `"wyckoffs"`, and `"equivalent_atoms"`. See 
+the `spglib <http://atztogo.github.io/spglib/>`_ documentation for a description of these measures of symmetry.
+
 Cell refinements and manipulations
 ----------------------------------
 
