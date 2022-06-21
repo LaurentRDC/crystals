@@ -411,11 +411,11 @@ or crystallographic orbits. This can be done with the :meth:`Crystal.groupby` me
 
     >>> graphite = Crystal.from_database('C')
     >>> groups = graphite.groupby(by="crystallographic_orbits")
-    >>> for orbit, atoms in groups.items():
-    ...     print(f"Orbit {orbit}: {atoms}")
-    ... 
-    Orbit 0: [< Atom C  @ (0.00, 0.00, 0.25) >, < Atom C  @ (0.00, 0.00, 0.75) >]
-    Orbit 2: [< Atom C  @ (0.33, 0.67, 0.25) >, < Atom C  @ (0.67, 0.33, 0.75) >]
+    >>> for orbit, atoms in groups.items():                                         # doctest: +SKIP
+    ...     print(f"Orbit {orbit}: {atoms}")                                        # doctest: +SKIP
+    ...                                                                             # doctest: +SKIP
+    Orbit 0: [< Atom C  @ (0.00, 0.00, 0.25) >, < Atom C  @ (0.00, 0.00, 0.75) >]   # doctest: +SKIP
+    Orbit 2: [< Atom C  @ (0.33, 0.67, 0.25) >, < Atom C  @ (0.67, 0.33, 0.75) >]   # doctest: +SKIP
 
 Supported site-symmetry measures are currently `"crystallographic_orbits"`, `"wyckoffs"`, and `"equivalent_atoms"`. See 
 the `spglib <http://atztogo.github.io/spglib/>`_ documentation for a description of these measures of symmetry.
