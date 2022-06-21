@@ -222,6 +222,19 @@ def test_orbital_maximum_electrons():
         assert maxima[shell.value[-1]] == Orbital.maximum_electrons(shell)
 
 
+@pytest.mark.parametrize("element, structure", (["C", {"1s": 2, "2s": 2, "2p": 2}],))
+def test_electronic_structure_ground_state_examples(element, structure):
+    gs = ElectronicStructure.ground_state(element)
+    assert gs == ElectronicStructure(shells=structure)
+
+
+@pytest.mark.parametrize("element", range(1, 24))
+def test_electronic_structure_ground_state_num_electrons(element):
+    gs = ElectronicStructure.ground_state(element)
+    num_electrons = sum(gs[k] for k in gs)
+    assert num_electrons == element
+
+
 def test_electronic_structure_maximum_electrons():
     """Test that an error is raised for impossible electronic structures."""
     with pytest.raises(ValueError):

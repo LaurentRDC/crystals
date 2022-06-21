@@ -545,6 +545,9 @@ class ElectronicStructure:
         for k, v in shells.items():
             self.__setitem__(k, v)
 
+    def __iter__(self):
+        yield from self._structure
+
     def __setitem__(self, key: Union[str, Orbital], value: int):
         # We check that the number of electrons in each Orbital does not
         # go above maximum possible.
