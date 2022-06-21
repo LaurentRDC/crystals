@@ -612,7 +612,7 @@ class ElectronicStructure:
         num_elec = element.atomic_number
 
         structure = dict()
-        for shell in Orbital:
+        for shell in sorted(Orbital):
             shell_elec = min([Orbital.maximum_electrons(shell), num_elec])
             structure[shell] = shell_elec
             num_elec -= shell_elec
