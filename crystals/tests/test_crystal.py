@@ -2,7 +2,7 @@
 import tempfile
 from copy import deepcopy
 from functools import lru_cache
-from itertools import islice
+from itertools import islice, chain
 from pathlib import Path
 import socket
 from contextlib import suppress
@@ -237,12 +237,23 @@ def test_supercell_preserve_attributes(tag, symbol, occupancy):
     "crystal, num_distinct_sites", (["C", 2], ["vo2-m1", 3], ["vo2-rutile", 2])
 )
 def test_groupby(site_symmetry_measure, crystal, num_distinct_sites):
+    """Test the Crystal.groupby method with known structures."""
     cryst = Crystal.from_database(crystal)
     gps = cryst.groupby(site_symmetry_measure)
     assert len(gps) == num_distinct_sites
 
 
+@pytest.mark.parametrize("by", ACCEPTABLE_SITE_SYMMETRIES)
+@pytest.mark.parametrize("crystal", Crystal.builtins)
+def test_groupby_invariants(by, crystal):
+    """Test that the grouping of atoms contains all atoms from the source crystal, and only those atoms."""
+    cryst = Crystal.from_database(crystal)
+    gps = cryst.groupby(by=by)
+    assert set(chain.from_iterable(gps.values())) == set(cryst)
+
+
 def test_groupby_unknown_symmetry():
+    """Test that unknown symmetries passed to `Crystal.groupby` raise a ValueError."""
     cryst = Crystal.from_database("diamond")
     with pytest.raises(ValueError):
         cryst.groupby("this should not work")
