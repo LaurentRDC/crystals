@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
-#$Date: 2015-01-27 21:58:39 +0200 (Tue, 27 Jan 2015) $
-#$Revision: 130149 $
-#$URL: svn://www.crystallography.net/cod/cif/1/01/09/1010995.cif $
+#$Date: 2022-09-25 22:10:12 +0300 (Sun, 25 Sep 2022) $
+#$Revision: 278158 $
+#$URL: file:///home/coder/svn-repositories/cod/cif/1/01/09/1010995.cif $
 #------------------------------------------------------------------------------
 #
 # This file is available in the Crystallography Open Database (COD),
@@ -30,7 +30,7 @@ _journal_volume                  75
 _journal_year                    1930
 _chemical_compound_source        synthetic
 _chemical_formula_structural     'Si C'
-_chemical_formula_sum            'Si C'
+_chemical_formula_sum            'C Si'
 _chemical_name_mineral           'Moissanite 3C'
 _chemical_name_systematic        'Silicon carbide'
 _space_group_IT_number           216
@@ -47,6 +47,7 @@ _cell_length_b                   4.348(5)
 _cell_length_c                   4.348(5)
 _cell_volume                     82.2
 _exptl_crystal_density_meas      3.2
+_cod_original_formula_sum        'Si C'
 _cod_database_code               1010995
 loop_
 _symmetry_equiv_pos_as_xyz
