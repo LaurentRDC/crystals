@@ -114,7 +114,7 @@ def write_cif(crystal: "Crystal", fname: PathLike):
     # and not the asymmetric unit cell + symmetry operators
     # This is valid CIF! And it is much simpler to implement
     # TODO: how to determine asymmetric cell + symmetry operations?
-    atoms = list(crystal.primitive().unitcell)
+    atoms = list(crystal.unitcell)
     symbols = [atm.symbol for atm in atoms]
     xf = [atm.coords_fractional[0] for atm in atoms]
     yf = [atm.coords_fractional[1] for atm in atoms]
