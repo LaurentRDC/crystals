@@ -4,6 +4,11 @@ What's new
 
 .. currentmodule:: crystals
 
+Release 1.6.1
+-------------
+
+* Fixed an issue where writing some crystal structures to CIF did not work correctly (#13).
+
 Release 1.6.0
 -------------
 
