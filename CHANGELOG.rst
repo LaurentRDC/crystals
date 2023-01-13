@@ -9,6 +9,8 @@ Release 1.6.2
 
 * Fixed an issue where the `crystals` version was not correctly interpolated when writing CIFs (#14).
 * Added file name to some parser warnings (#15).
+* Added support for spglib 2.0.
+* Added explicit testing for Python 3.10 and Python 3.11.
 
 Release 1.6.1
 -------------
