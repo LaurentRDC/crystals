@@ -7,7 +7,8 @@ import numpy as np
 from tempfile import TemporaryDirectory
 
 import pytest
-from crystals import Crystal, Atom
+from crystals import Crystal, Atom, __version__
+from crystals.writers import CIF_HEADER
 
 try:
     import ase
@@ -52,6 +53,11 @@ def test_cif_writer_idempotence(name):
         cryst2 = Crystal.from_cif(f)
         assert cryst == cryst2
 
+
+def test_cif_writer_writes_version():
+    """Test that the `crystals` version is contained in the CIF header. """
+    # See https://github.com/LaurentRDC/crystals/issues/14
+    assert f"`crystals` {__version__}" in CIF_HEADER
 
 def test_supercell_preserved_in_cif():
     """See issue #13."""
