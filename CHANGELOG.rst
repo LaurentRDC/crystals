@@ -4,6 +4,12 @@ What's new
 
 .. currentmodule:: crystals
 
+Release 1.6.2
+-------------
+
+* Fixed an issue where the `crystals` version was not correctly interpolated when writing CIFs (#14).
+* Added file name to some parser warnings (#15).
+
 Release 1.6.1
 -------------
 
