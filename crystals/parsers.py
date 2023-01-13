@@ -636,7 +636,7 @@ class CIFParser(AbstractStructureParser):
                 equivalent_sites_str = SymOpsHall[self.hall_symbol()]
             elif len(equivalent_sites_str) != len(SymOpsHall[self.hall_symbol()]):
                 warnings.warn(
-                    "The number of equivalent sites is not in line with the database. The file might be incomplete"
+                    f"The number of equivalent sites is not in line with the database. The file {self.filename} might be incomplete"
                 )
 
         return list(map(self.sym_ops_from_equiv, equivalent_sites_str))
