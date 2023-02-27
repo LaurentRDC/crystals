@@ -692,10 +692,15 @@ class CIFParser(AbstractStructureParser):
             xs = tmpdata.get("_atom_site_fract_x")
             ys = tmpdata.get("_atom_site_fract_y")
             zs = tmpdata.get("_atom_site_fract_z")
-            Bs = tmpdata.get('_atom_site_B_iso_or_equiv')
-
-            if Bs is None:
-                Bs = [0]
+            Bs = tmpdata.get('_atom_site_B_iso_or_equiv') 
+            Us = tmpdata.get('_atom_site_U_iso_or_equiv') 
+            
+            if Bs is not None: 
+                msds = np.array(Bs).astype(float)/(8*np.pi**2)
+            elif Us is not None: 
+                msds =  Us
+            else:
+                msds = [0.0]*len(xs)
 
         # TODO: handle wildcards like '?', '.' in xs, ys, zs
 
@@ -716,7 +721,7 @@ class CIFParser(AbstractStructureParser):
         )  # See issue #7
 
         atoms = list()
-        for e, x, y, z, occ, bs in zip(elements, xs, ys, zs, occupancies, Bs):
+        for e, x, y, z, occ, bs in zip(elements, xs, ys, zs, occupancies, msds):
             coords = np.array(
                 [
                     get_number_with_esd(x)[0],
@@ -731,7 +736,7 @@ class CIFParser(AbstractStructureParser):
                 coords = transform(cart_trans_matrix, coords)
                 coords[:] = frac_coords(coords, self.lattice_vectors())
 
-            atoms.append(Atom(element=e, coords=np.mod(coords, 1), occupancy=occ, displacement=bs))
+            atoms.append(Atom(element=e, coords=np.mod(coords, 1), occupancy=occ, meanSquareDisplacement=msds))
 
         return atoms
 
@@ -1243,6 +1248,6 @@ def main():
     print(a.atoms())
 
     for atom in a.atoms():
-        print(atom.displacement)
+        print(atom.meanSquareDisplacement)
 if __name__ == '__main__':
     main()

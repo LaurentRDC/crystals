@@ -211,15 +211,7 @@ _atom_site_occupancy
 _atom_site_fract_x
 _atom_site_fract_y
 _atom_site_fract_z
-# _atom_site_B_iso_or_equiv
- Site1  Si 1.0  0.0  0.0  0.0  #0.20000
+_atom_site_U_iso_or_equiv
+ Site1  Si 1.0  0.0  0.0  0.0  0.12500
+ Site2  Ga 1.0  0.4  0.4  0.4  0.24000
 
-# loop_
-# _atom_site_aniso_label
-# _atom_site_aniso_U_11
-# _atom_site_aniso_U_22
-# _atom_site_aniso_U_33
-# _atom_site_aniso_U_23
-# _atom_site_aniso_U_13
-# _atom_site_aniso_U_12
-# Site1   0.20000 0.20000 0.20000 0.00000 0.00000 0.00000
