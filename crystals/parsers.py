@@ -692,6 +692,11 @@ class CIFParser(AbstractStructureParser):
             xs = tmpdata.get("_atom_site_fract_x")
             ys = tmpdata.get("_atom_site_fract_y")
             zs = tmpdata.get("_atom_site_fract_z")
+            Bs = tmpdata.get('_atom_site_B_iso_or_equiv')
+
+            if Bs is None:
+                Bs = [0]
+
         # TODO: handle wildcards like '?', '.' in xs, ys, zs
 
         elements = tmpdata.get("_atom_site_type_symbol")
@@ -711,7 +716,7 @@ class CIFParser(AbstractStructureParser):
         )  # See issue #7
 
         atoms = list()
-        for e, x, y, z, occ in zip(elements, xs, ys, zs, occupancies):
+        for e, x, y, z, occ, bs in zip(elements, xs, ys, zs, occupancies, Bs):
             coords = np.array(
                 [
                     get_number_with_esd(x)[0],
@@ -726,7 +731,7 @@ class CIFParser(AbstractStructureParser):
                 coords = transform(cart_trans_matrix, coords)
                 coords[:] = frac_coords(coords, self.lattice_vectors())
 
-            atoms.append(Atom(element=e, coords=np.mod(coords, 1), occupancy=occ))
+            atoms.append(Atom(element=e, coords=np.mod(coords, 1), occupancy=occ, displacement=bs))
 
         return atoms
 
@@ -1231,3 +1236,13 @@ class POSCARParser(AbstractStructureParser):
         lv : list of ndarrays, shape (3,)
         """
         return self._lattice_vectors
+
+def main():
+    print('test')
+    a = CIFParser('fcc_si.cif')
+    print(a.atoms())
+
+    for atom in a.atoms():
+        print(atom.displacement)
+if __name__ == '__main__':
+    main()
