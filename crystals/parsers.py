@@ -696,7 +696,8 @@ class CIFParser(AbstractStructureParser):
             Us = tmpdata.get('_atom_site_U_iso_or_equiv') 
             
             if Bs is not None: 
-                msds = np.array(Bs).astype(float)/(8*np.pi**2)
+                msds = (np.array(Bs).astype(float)/(8*np.pi**2)).astype(str)
+                print(type(msds))
             elif Us is not None: 
                 msds =  Us
             else:

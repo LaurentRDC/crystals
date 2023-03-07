@@ -150,6 +150,8 @@ class Crystal(AtomicStructure, Lattice):
             File path
         """
         with CIFParser(filename=path) as parser:
+
+            print(type(parser.atoms()))
             return cls(
                 unitcell=symmetry_expansion(
                     parser.atoms(), parser.symmetry_operators()
