@@ -213,5 +213,5 @@ _atom_site_fract_y
 _atom_site_fract_z
 _atom_site_B_iso_or_equiv
  Site1  Si 1.0  0.0  0.0  0.0  0.12500
- Site2  Ga 1.0  0.4  0.4  0.4  0.24000
+ Site2  Ga 1.0  0.25  0.25  0.25  0.24000
 

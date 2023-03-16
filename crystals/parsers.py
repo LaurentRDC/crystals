@@ -694,10 +694,13 @@ class CIFParser(AbstractStructureParser):
             zs = tmpdata.get("_atom_site_fract_z")
             Bs = tmpdata.get('_atom_site_B_iso_or_equiv') 
             Us = tmpdata.get('_atom_site_U_iso_or_equiv') 
-            
+
             if Bs is not None: 
-                msds = (np.array(Bs).astype(float)/(8*np.pi**2)).astype(str)
-                print(type(msds))
+                msds = list((np.array(Bs).astype(float)/(8*np.pi**2)).astype(str))
+                #msds = str(msds)
+
+                # print(msds)
+
             elif Us is not None: 
                 msds =  Us
             else:
@@ -721,7 +724,12 @@ class CIFParser(AbstractStructureParser):
             lambda x: get_number_with_esd(x)[0], occupancies
         )  # See issue #7
 
+        msds = map(
+            lambda x: get_number_with_esd(x)[0], msds
+        ) 
+
         atoms = list()
+
         for e, x, y, z, occ, bs in zip(elements, xs, ys, zs, occupancies, msds):
             coords = np.array(
                 [
@@ -736,8 +744,7 @@ class CIFParser(AbstractStructureParser):
             if cartesian:
                 coords = transform(cart_trans_matrix, coords)
                 coords[:] = frac_coords(coords, self.lattice_vectors())
-
-            atoms.append(Atom(element=e, coords=np.mod(coords, 1), occupancy=occ, meanSquareDisplacement=msds))
+            atoms.append(Atom(element=e, coords=np.mod(coords, 1), occupancy=occ, meanSquareDisplacement=bs))
 
         return atoms
 
@@ -1244,9 +1251,8 @@ class POSCARParser(AbstractStructureParser):
         return self._lattice_vectors
 
 def main():
-    print('test')
     a = CIFParser('fcc_si.cif')
-    print(a.atoms())
+    # print(a.atoms())
 
     for atom in a.atoms():
         print(atom.meanSquareDisplacement)
