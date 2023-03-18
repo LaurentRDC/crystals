@@ -107,6 +107,24 @@ class Lattice:
         ValueError : if lattice parameters are invalid.
         """
         return cls(lattice_vectors_from_parameters(a, b, c, alpha, beta, gamma))
+    
+
+    @property
+    def direct_tensor(self):      
+        array = np.array([[eval(f'np.vdot(self.a{i}, self.a{j})', {'self':self, 'np':np}) 
+                           for i in range(1,4)] 
+                           for j in range(1,4)]
+            )
+        return array * (array > 1e-5)
+        
+    @property
+    def recip_tensor(self):      
+        
+        direct = self.direct_tensor
+        array = np.linalg.inv(direct)
+
+
+        return array * (array > 1e-5)
 
     @property
     def lattice_parameters(self) -> Tuple[float, float, float, float, float, float]:
@@ -174,6 +192,11 @@ class Lattice:
         # absolutes of columns
         lv = np.abs(np.array(self.lattice_vectors))
         return tuple(lv.sum(axis=0))
+    
+    def gLength(self, ghkl) -> float:
+        gsq = np.vdot(ghkl, np.matmul(self.recip_tensor, ghkl))
+
+        return np.sqrt(gsq) 
 
     def scattering_vector(self, reflection: ArrayLike) -> np.ndarray:
         """
