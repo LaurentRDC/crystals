@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2017-10-14 23:18:49 +0300 (Sat, 14 Oct 2017) $
-#$Revision: 202019 $
+#$Date: 2023-03-26 10:30:59 +0300 (Sun, 26 Mar 2023) $
+#$Revision: 282067 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/84/9008494.cif $
 #------------------------------------------------------------------------------
 #
@@ -30,6 +30,7 @@ _journal_volume                  1
 _journal_year                    1963
 _chemical_formula_sum            Dy
 _chemical_name_common            Dysprosium
+_chemical_name_mineral           Dysprosium
 _space_group_IT_number           194
 _symmetry_space_group_name_Hall  '-P 6c 2c'
 _symmetry_space_group_name_H-M   'P 63/m m c'
@@ -40,11 +41,12 @@ _cell_length_a                   3.584
 _cell_length_b                   3.584
 _cell_length_c                   5.668
 _cell_volume                     63.052
+_database_code_amcsd             0011171
 _diffrn_ambient_temperature      49
 _exptl_crystal_density_diffrn    8.559
 _cod_database_code               9008494
 loop_
-_symmetry_equiv_pos_as_xyz
+_space_group_symop_operation_xyz
 x,y,z
 -x,-x+y,1/2+z
 x,x-y,1/2-z
@@ -80,3 +82,4 @@ _cod_related_entry_id
 _cod_related_entry_database
 _cod_related_entry_code
 1 ChemSpider 22355
+2 AMCSD 0011171

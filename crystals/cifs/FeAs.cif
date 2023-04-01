@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2016-11-13 17:22:27 +0200 (Sun, 13 Nov 2016) $
-#$Revision: 188410 $
+#$Date: 2023-03-26 11:09:57 +0300 (Sun, 26 Mar 2023) $
+#$Revision: 282068 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/76/9007668.cif $
 #------------------------------------------------------------------------------
 #
@@ -21,7 +21,6 @@ _publ_author_name
 _publ_section_title
 ;
  Room- and high-pressure crystal chemistry of CoAs and FeAs
- Locality: synthetic
  Note: anisoB's taken from ICSD
  Sample: Pnam refinement, P = .0001 GPa
 ;
@@ -32,6 +31,7 @@ _journal_page_last               20
 _journal_paper_doi               10.1107/S0108768184001695
 _journal_volume                  40
 _journal_year                    1984
+_chemical_compound_source        Synthetic
 _chemical_formula_sum            'As Fe'
 _chemical_name_mineral           Westerveldite
 _space_group_IT_number           62
@@ -44,12 +44,13 @@ _cell_length_a                   5.4401
 _cell_length_b                   6.0259
 _cell_length_c                   3.3712
 _cell_volume                     110.513
+_database_code_amcsd             0009797
 _diffrn_ambient_pressure         100
 _exptl_crystal_density_diffrn    7.860
 _cod_original_formula_sum        'Fe As'
 _cod_database_code               9007668
 loop_
-_symmetry_equiv_pos_as_xyz
+_space_group_symop_operation_xyz
 x,y,z
 x,y,1/2-z
 -x,-y,1/2+z
@@ -75,3 +76,8 @@ _atom_site_fract_y
 _atom_site_fract_z
 Fe 0.00330 0.19930 0.25000
 As 0.19920 0.57730 0.25000
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 AMCSD 0009797

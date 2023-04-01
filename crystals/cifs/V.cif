@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2017-10-15 03:23:08 +0300 (Sun, 15 Oct 2017) $
-#$Revision: 202022 $
+#$Date: 2023-03-26 10:30:59 +0300 (Sun, 26 Mar 2023) $
+#$Revision: 282067 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008557.cif $
 #------------------------------------------------------------------------------
 #
@@ -29,6 +29,7 @@ _journal_volume                  1
 _journal_year                    1963
 _chemical_formula_sum            V
 _chemical_name_common            Vanadium
+_chemical_name_mineral           Vanadium
 _space_group_IT_number           229
 _symmetry_space_group_name_Hall  '-I 4 2 3'
 _symmetry_space_group_name_H-M   'I m -3 m'
@@ -39,11 +40,12 @@ _cell_length_a                   3.0240
 _cell_length_b                   3.0240
 _cell_length_c                   3.0240
 _cell_volume                     27.653
+_database_code_amcsd             0011235
 _exptl_crystal_density_diffrn    6.118
 _cod_original_sg_symbol_H-M      'I m 3 m'
 _cod_database_code               9008557
 loop_
-_symmetry_equiv_pos_as_xyz
+_space_group_symop_operation_xyz
 x,y,z
 1/2+x,1/2+y,1/2+z
 z,-x,y
@@ -152,3 +154,4 @@ _cod_related_entry_database
 _cod_related_entry_code
 1 ChemSpider 22426
 2 MPOD 1000064
+3 AMCSD 0011235

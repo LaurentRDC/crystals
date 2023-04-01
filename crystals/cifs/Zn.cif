@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2017-10-15 03:23:08 +0300 (Sun, 15 Oct 2017) $
-#$Revision: 202022 $
+#$Date: 2023-03-26 10:30:59 +0300 (Sun, 26 Mar 2023) $
+#$Revision: 282067 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008522.cif $
 #------------------------------------------------------------------------------
 #
@@ -39,10 +39,11 @@ _cell_length_a                   2.6648
 _cell_length_b                   2.6648
 _cell_length_c                   4.9467
 _cell_volume                     30.421
+_database_code_amcsd             0011200
 _exptl_crystal_density_diffrn    7.139
 _cod_database_code               9008522
 loop_
-_symmetry_equiv_pos_as_xyz
+_space_group_symop_operation_xyz
 x,y,z
 -x,-x+y,1/2+z
 x,x-y,1/2-z
@@ -85,3 +86,4 @@ _cod_related_entry_code
 6 MPOD 1000173
 7 MPOD 1000174
 8 MPOD 1000213
+9 AMCSD 0011200

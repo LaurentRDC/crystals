@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
-#$Date: 2016-02-16 14:49:47 +0200 (Tue, 16 Feb 2016) $
-#$Revision: 176465 $
-#$URL: svn://www.crystallography.net/cod/cif/9/00/88/9008845.cif $
+#$Date: 2023-03-26 11:09:57 +0300 (Sun, 26 Mar 2023) $
+#$Revision: 282068 $
+#$URL: file:///home/coder/svn-repositories/cod/cif/9/00/88/9008845.cif $
 #------------------------------------------------------------------------------
 #
 # This file is available in the Crystallography Open Database (COD),
@@ -39,11 +39,13 @@ _cell_length_a                   5.6537
 _cell_length_b                   5.6537
 _cell_length_c                   5.6537
 _cell_volume                     180.717
+_database_code_amcsd             0011523
 _exptl_crystal_density_diffrn    5.316
 _cod_original_formula_sum        'Ga As'
 _cod_database_code               9008845
+_amcsd_formula_title             GaAs
 loop_
-_symmetry_equiv_pos_as_xyz
+_space_group_symop_operation_xyz
 x,y,z
 x,1/2+y,1/2+z
 1/2+x,y,1/2+z
@@ -147,3 +149,8 @@ _atom_site_fract_y
 _atom_site_fract_z
 Ga 0.00000 0.00000 0.00000
 As 0.25000 0.25000 0.25000
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 AMCSD 0011523
