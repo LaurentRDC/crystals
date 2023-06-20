@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2017-10-15 03:23:08 +0300 (Sun, 15 Oct 2017) $
-#$Revision: 202022 $
+#$Date: 2023-03-26 10:30:59 +0300 (Sun, 26 Mar 2023) $
+#$Revision: 282067 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/84/9008480.cif $
 #------------------------------------------------------------------------------
 #
@@ -39,11 +39,12 @@ _cell_length_a                   3.9231
 _cell_length_b                   3.9231
 _cell_length_c                   3.9231
 _cell_volume                     60.379
+_database_code_amcsd             0011157
 _exptl_crystal_density_diffrn    21.460
 _cod_original_sg_symbol_H-M      'F m 3 m'
 _cod_database_code               9008480
 loop_
-_symmetry_equiv_pos_as_xyz
+_space_group_symop_operation_xyz
 x,y,z
 x,1/2+y,1/2+z
 1/2+x,y,1/2+z
@@ -248,3 +249,4 @@ _cod_related_entry_database
 _cod_related_entry_code
 1 ChemSpider 22381
 2 MPOD 1000054
+3 AMCSD 0011157

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
-from random import randint, random, seed
+from random import random, seed
 import pickle
 
 import numpy as np
@@ -97,17 +97,24 @@ def test_atom_init():
     assert by_element == by_number
 
 
-@pytest.mark.parametrize(
-    "atom", map(lambda s: Atom(s, [0, 0, 0]), islice(chemical_symbols, 50))
-)
-def test_atom_equality(atom):
+@pytest.mark.parametrize("tag", [None, 1, 2])
+@pytest.mark.parametrize("symbol", islice(chemical_symbols, 50))
+def test_atom_equality(symbol, tag):
     """Test __eq__ for atoms"""
+    atom = Atom(symbol, coords=[0, 0, 0], tag=tag)
     other = deepcopy(atom)
     assert atom == atom
     assert atom == other
+    assert hash(atom) == hash(other)
 
     other.coords_fractional = atom.coords_fractional + 1
     assert atom != other
+    assert hash(atom) != hash(other)
+
+    other = deepcopy(atom)
+    other.tag = 5
+    assert atom != other
+    assert hash(atom) != hash(other)
 
 
 @pytest.mark.parametrize(
@@ -213,6 +220,19 @@ def test_orbital_maximum_electrons():
     maxima = {"s": 2, "p": 6, "d": 10, "f": 14}
     for shell in Orbital:
         assert maxima[shell.value[-1]] == Orbital.maximum_electrons(shell)
+
+
+@pytest.mark.parametrize("element, structure", (["C", {"1s": 2, "2s": 2, "2p": 2}],))
+def test_electronic_structure_ground_state_examples(element, structure):
+    gs = ElectronicStructure.ground_state(element)
+    assert gs == ElectronicStructure(shells=structure)
+
+
+@pytest.mark.parametrize("element", range(1, 24))
+def test_electronic_structure_ground_state_num_electrons(element):
+    gs = ElectronicStructure.ground_state(element)
+    num_electrons = sum(gs[k] for k in gs)
+    assert num_electrons == element
 
 
 def test_electronic_structure_maximum_electrons():

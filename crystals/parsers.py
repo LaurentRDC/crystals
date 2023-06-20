@@ -2,21 +2,20 @@
 """
 Atomic structure parsers.
 """
-import gzip
 import re
-import sys
+from typing import Any, Iterable, Optional, Tuple, Union
 import warnings
 from abc import abstractmethod
 from contextlib import AbstractContextManager, suppress
 from functools import lru_cache
 from itertools import repeat
-from os import environ, remove
+from os import PathLike, environ
 from pathlib import Path
 from platform import system
 from string import digits, punctuation
 from tempfile import gettempdir
 from urllib.error import URLError
-from urllib.request import Request, urlopen, urlretrieve
+from urllib.request import urlretrieve
 from warnings import warn
 
 import numpy as np
@@ -28,7 +27,7 @@ from numpy.linalg import inv
 from . import __version__
 from .affine import affine_map, transform
 from .atom import Atom, frac_coords
-from .biological import Helix, Residue, Sheet
+from .biological import Helix, Residue, SecondaryStructure, Sheet
 from .lattice import Lattice
 from .spg_data import HM2Hall, Number2Hall, SymOpsHall
 
@@ -46,7 +45,7 @@ as the `MATERIALS_PROJECT_API_KEY` environment variable.
 """
 
 
-def get_number_with_esd(x):
+def get_number_with_esd(x: Any) -> Tuple[float, float]:
     """pycifrw's version cannot handle floats, only strings."""
     try:
         return Cif.get_number_with_esd(x)
@@ -76,7 +75,7 @@ class AbstractStructureParser(AbstractContextManager):
         pass
 
     @abstractmethod
-    def lattice_vectors(self):
+    def lattice_vectors(self) -> Iterable[np.ndarray]:
         """
         Returns the lattice vectors associated to a structure.
 
@@ -86,7 +85,7 @@ class AbstractStructureParser(AbstractContextManager):
         """
         pass
 
-    def symmetry_operators(self):
+    def symmetry_operators(self) -> Iterable[np.ndarray]:
         """
         Returns the symmetry operators that map the fractional atomic positions in a
         structure to the crystal *conventional* unit cell.
@@ -129,7 +128,9 @@ class PDBParser(AbstractStructureParser):
         number is provided, files will always be overwritten.
     """
 
-    def __init__(self, ID, download_dir=None, overwrite=False):
+    def __init__(
+        self, ID: str, download_dir: Optional[PathLike] = None, overwrite: bool = False
+    ):
         if download_dir is None:
             download_dir = STRUCTURE_CACHE
 
@@ -143,8 +144,11 @@ class PDBParser(AbstractStructureParser):
 
     @staticmethod
     def download_pdb_file(
-        pdb_code, download_dir=None, server="ftp://ftp.wwpdb.org", overwrite=False
-    ):
+        pdb_code: str,
+        download_dir: Optional[PathLike] = None,
+        server: str = "https://files.rcsb.org",
+        overwrite: bool = False,
+    ) -> Path:
         """
         Retrieves a PDB structure file from a PDB server and
         stores it in a local file tree.
@@ -156,7 +160,7 @@ class PDBParser(AbstractStructureParser):
         download_dir : path-like object
             Directory where to save the PDB file. Default is a local folder in the current directory
         server : str, optional
-            Address of the FTP server from which to download the PDB file. Default is the main server.
+            Root address of the server from which to download the PDB file. Default is the main server.
         overwrite : bool, optional
             If True, existing PDB file with the same structure will be overwritten. Default is False.
 
@@ -165,14 +169,6 @@ class PDBParser(AbstractStructureParser):
         file : pathlib.Path
             Pointer to the downloaded file
         """
-        # Get the compressed PDB structure
-        code = pdb_code.lower()
-        archive_fn = Path(f"pdb{code}.ent.gz")
-        pdb_dir = "divided"
-        url = (
-            server + f"/pub/pdb/data/structures/{pdb_dir}/pdb/{code[1:3]}/{archive_fn}"
-        )
-        # Where does the final PDB file get saved?
         if download_dir is None:
             path = STRUCTURE_CACHE
         else:
@@ -180,30 +176,26 @@ class PDBParser(AbstractStructureParser):
 
         path.mkdir(exist_ok=True)
 
-        filename = path / archive_fn
-        final_file = path / f"pdb{code}.ent"  # (decompressed)
+        final_file = path / f"pdb{pdb_code.lower()}.ent"  # (decompressed)
 
         # Skip download if the file already exists
         if (not overwrite) and (final_file.exists()):
             return final_file
 
-        urlretrieve(url, filename)
+        resp = requests.get(server + f"/download/{pdb_code.upper()}.pdb")
+        resp.raise_for_status()
 
-        # Uncompress the archive, delete when done
-        # Can't use context manager with gzip.open until Python 2.7
-        with gzip.open(filename, "rb") as gz:
-            with open(final_file, "wb") as out:
-                out.writelines(gz)
-        remove(filename)
+        with open(final_file, "wb") as out:
+            out.write(resp.content)
 
         return Path(final_file)
 
     @property
-    def filename(self):
+    def filename(self) -> str:
         return self._handle.name
 
     @lru_cache(maxsize=1)
-    def lattice_vectors(self):
+    def lattice_vectors(self) -> Iterable[np.ndarray]:
         """
         Returns the lattice vectors associated to a PDB structure.
 
@@ -232,7 +224,9 @@ class PDBParser(AbstractStructureParser):
 
         return Lattice.from_parameters(a, b, c, alpha, beta, gamma).lattice_vectors
 
-    def helices(self, ignored=("HOH", "LI1", "SQU")):
+    def helices(
+        self, ignored: Iterable[str] = ("HOH", "LI1", "SQU")
+    ) -> Iterable[Helix]:
         """Returns an iterable of helices present in the protein.
 
         Parameters
@@ -264,7 +258,7 @@ class PDBParser(AbstractStructureParser):
 
         return helices
 
-    def sheets(self, ignored=("HOH", "LI1", "SQU")):
+    def sheets(self, ignored: Iterable[str] = ("HOH", "LI1", "SQU")) -> Iterable[Sheet]:
         """Returns an iterable of sheets present in the protein.
 
         Parameters
@@ -296,7 +290,9 @@ class PDBParser(AbstractStructureParser):
 
         return sheets
 
-    def secondary_structures(self, ignored=("HOH", "LI1", "SQU")):
+    def secondary_structures(
+        self, ignored: Iterable[str] = ("HOH", "LI1", "SQU")
+    ) -> Iterable[SecondaryStructure]:
         """Iterable of all secondary structures present in this file.
 
         Parameters
@@ -308,9 +304,11 @@ class PDBParser(AbstractStructureParser):
         -------
         structures : iterable of SecondaryStructure instances
         """
-        return list(self.sheets()) + list(self.helices())
+        return list(self.sheets(ignored=ignored)) + list(self.helices(ignored=ignored))
 
-    def residues(self, ignored=("HOH", "LI1", "SQU")):
+    def residues(
+        self, ignored: Iterable[str] = ("HOH", "LI1", "SQU")
+    ) -> Iterable[Residue]:
         """
         Iterable of residues present in the structure.
 
@@ -370,7 +368,7 @@ class PDBParser(AbstractStructureParser):
             )
         return structures
 
-    def atoms(self):
+    def atoms(self) -> Iterable[Atom]:
         """
         Returns a list of atoms associated with a PDB structure in fractional coordinates.
         These atoms form the asymmetric unit cell.
@@ -405,7 +403,7 @@ class PDBParser(AbstractStructureParser):
             )
         return atoms
 
-    def symmetry_operators(self):
+    def symmetry_operators(self) -> Iterable[np.ndarray]:
         """
         Returns the symmetry operators that map the atomic positions in a
         PDB file to the crystal unit cell.
@@ -458,7 +456,7 @@ class CIFParser(AbstractStructureParser):
         Location of the CIF file.
     """
 
-    def __init__(self, filename, **kwargs):
+    def __init__(self, filename: PathLike, **kwargs):
         # ReadCIF would get confused between local files and URLs
         # Therefore, more clear to pass an open file
         self._handle = open(filename, mode="r")
@@ -468,11 +466,11 @@ class CIFParser(AbstractStructureParser):
         self._handle.close()
 
     @property
-    def filename(self):
+    def filename(self) -> str:
         return self._handle.name
 
     @staticmethod
-    def sym_ops_from_equiv(equiv_site):
+    def sym_ops_from_equiv(equiv_site: Union[str, Iterable[str]]) -> np.ndarray:
         """Parse a symmetry operator from an equivalent-site representation
 
         Parameters
@@ -528,7 +526,7 @@ class CIFParser(AbstractStructureParser):
                 return block
 
     @lru_cache(maxsize=1)
-    def hall_symbol(self):
+    def hall_symbol(self) -> str:
         """Returns the Hall symbol"""
         block = self.structure_block
 
@@ -571,7 +569,7 @@ class CIFParser(AbstractStructureParser):
         return hall_symbol
 
     @lru_cache(maxsize=1)
-    def lattice_parameters(self):
+    def lattice_parameters(self) -> Tuple[float, float, float, float, float, float]:
         """
         Returns the lattice parameters associated to a CIF structure.
 
@@ -601,7 +599,7 @@ class CIFParser(AbstractStructureParser):
         return a, b, c, alpha, beta, gamma
 
     @lru_cache(maxsize=1)
-    def lattice_vectors(self):
+    def lattice_vectors(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Returns the lattice vectors associated to a CIF structure.
 
@@ -611,7 +609,7 @@ class CIFParser(AbstractStructureParser):
         """
         return Lattice.from_parameters(*self.lattice_parameters()).lattice_vectors
 
-    def symmetry_operators(self):
+    def symmetry_operators(self) -> Iterable[np.ndarray]:
         """
         Returns the symmetry operators that map the fractional atomic positions in a
         CIF file to the crystal *conventional* unit cell.
@@ -638,12 +636,12 @@ class CIFParser(AbstractStructureParser):
                 equivalent_sites_str = SymOpsHall[self.hall_symbol()]
             elif len(equivalent_sites_str) != len(SymOpsHall[self.hall_symbol()]):
                 warnings.warn(
-                    "The number of equivalent sites is not in line with the database. The file might be incomplete"
+                    f"The number of equivalent sites is not in line with the database. The file {self.filename} might be incomplete"
                 )
 
         return list(map(self.sym_ops_from_equiv, equivalent_sites_str))
 
-    def atoms(self):
+    def atoms(self) -> Iterable[Atom]:
         """
         Asymmetric unit cell. Combine with CIFParser.symmetry_operators() for a full unit cell.
 
@@ -764,7 +762,12 @@ class CODParser(CIFParser):
     )
 
     def __init__(
-        self, num, revision=None, download_dir=None, overwrite=False, **kwargs
+        self,
+        num: int,
+        revision: Optional[int] = None,
+        download_dir: Optional[PathLike] = None,
+        overwrite: bool = False,
+        **kwargs,
     ):
         if download_dir is None:
             download_dir = STRUCTURE_CACHE
@@ -774,7 +777,13 @@ class CODParser(CIFParser):
         )
 
     @classmethod
-    def download_cif(cls, download_dir, num, revision=None, overwrite=False):
+    def download_cif(
+        cls,
+        download_dir: PathLike,
+        num: int,
+        revision: Optional[int] = None,
+        overwrite: bool = False,
+    ) -> Path:
         """
         Download a CIF file from the Crystallography Open Database.
 
@@ -874,7 +883,12 @@ class MPJParser(CIFParser):
     """
 
     def __init__(
-        self, query, api_key=None, download_dir=None, overwrite=False, **kwargs
+        self,
+        query: str,
+        api_key: Optional[str] = None,
+        download_dir: Optional[PathLike] = None,
+        overwrite: bool = False,
+        **kwargs,
     ):
         if download_dir is None:
             download_dir = STRUCTURE_CACHE
@@ -885,7 +899,13 @@ class MPJParser(CIFParser):
             if api_key is None:
                 raise ValueError(MISSING_MP_API_KEY_MESSAGE)
         super().__init__(
-            filename=self.download_cif(api_key, query, download_dir), **kwargs
+            filename=self.download_cif(
+                api_key=api_key,
+                query=query,
+                download_dir=download_dir,
+                overwrite=overwrite,
+            ),
+            **kwargs,
         )
 
     @property
@@ -898,7 +918,13 @@ class MPJParser(CIFParser):
         *_, material_id = firstline.split(":")
         return material_id.strip()
 
-    def download_cif(self, api_key, query, download_dir, overwrite=False):
+    def download_cif(
+        self,
+        query: str,
+        api_key: Optional[str] = None,
+        download_dir: Optional[PathLike] = None,
+        overwrite: bool = False,
+    ) -> Path:
         """
         Download a CIF file from the Materials Project Database.
 
@@ -983,7 +1009,7 @@ class PWSCFParser(AbstractStructureParser):
     # Conversion factor from bohr radius to angstroms
     _bohr_to_angs = 0.529_177_249
 
-    def __init__(self, filename, **kwargs):
+    def __init__(self, filename: PathLike, **kwargs):
         self.filename = filename
 
         with open(filename, mode="r") as f:
@@ -993,7 +1019,7 @@ class PWSCFParser(AbstractStructureParser):
         pass
 
     @property
-    def alat(self):
+    def alat(self) -> float:
         """Get the lattice parameter [Bohr radius]"""
         match = re.search(
             r"\s*(lattice parameter [(]alat[)])\s*=\s*(?P<alat>\d+[.]\d+)\s*(a.u.)",
@@ -1007,7 +1033,7 @@ class PWSCFParser(AbstractStructureParser):
         return float(match.group("alat"))
 
     @property
-    def natoms(self):
+    def natoms(self) -> int:
         """Number of atoms defined per cell"""
         match = re.search(
             r"(\s*number of atoms/cell\s*)[=]\s*(?P<natoms>\d+)", self._filecontent
@@ -1020,7 +1046,7 @@ class PWSCFParser(AbstractStructureParser):
         return int(match.group("natoms"))
 
     @property
-    def celldm(self):
+    def celldm(self) -> Tuple[float, float, float, float, float, float]:
         """Crystallographic constants as defined by INPUT_PW. They are, in order:
 
         * a,b,c in ANGSTROM
@@ -1045,7 +1071,7 @@ class PWSCFParser(AbstractStructureParser):
 
         return params
 
-    def lattice_vectors_alat(self):
+    def lattice_vectors_alat(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Returns the lattice vectors associated to a structure. These lattice vectors are in
         units of `lattice parameters` [alat].
@@ -1066,7 +1092,7 @@ class PWSCFParser(AbstractStructureParser):
 
         return tuple(np.array(tuple(map(float, a))) for a in (a1, a2, a3))
 
-    def reciprocal_vectors_alat(self):
+    def reciprocal_vectors_alat(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Returns the reciprocal lattice vectors associated to a structure, in units of :math:`2 \\pi / alat`.
 
@@ -1086,7 +1112,7 @@ class PWSCFParser(AbstractStructureParser):
 
         return tuple(np.array(tuple(map(float, b))) for b in (b1, b2, b3))
 
-    def lattice_vectors(self):
+    def lattice_vectors(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Returns the lattice vectors associated to a structure [:math:`Å`].
 
@@ -1098,7 +1124,7 @@ class PWSCFParser(AbstractStructureParser):
         scale = self._bohr_to_angs * self.alat * np.eye(3)
         return tuple(map(np.squeeze, np.vsplit(scale @ vectors, 3)))
 
-    def atoms(self):
+    def atoms(self) -> Iterable[Atom]:
         """
         Asymmetric unit cell.
 
@@ -1144,7 +1170,7 @@ class POSCARParser(AbstractStructureParser):
         Location of the POSCAR file.
     """
 
-    def __init__(self, filename, **kwargs):
+    def __init__(self, filename: PathLike, **kwargs):
         self.filename = filename
 
         with open(filename, mode="r") as f:
@@ -1186,7 +1212,7 @@ class POSCARParser(AbstractStructureParser):
     def __exit__(self, *args, **kwargs):
         pass
 
-    def atoms(self):
+    def atoms(self) -> Iterable[Atom]:
         """
         Unit cell.
 
@@ -1196,7 +1222,7 @@ class POSCARParser(AbstractStructureParser):
         """
         return self._atoms
 
-    def lattice_vectors(self):
+    def lattice_vectors(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Returns the lattice vectors associated to a POSCAR structure.
 

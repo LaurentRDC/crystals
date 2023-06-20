@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from typing import Iterable
 from .affine import affine_map
 from .base import AtomicStructure
+from numpy.typing import ArrayLike
 
 
 class Residue(AtomicStructure):
@@ -17,12 +19,14 @@ class Residue(AtomicStructure):
         Sequence number within a protein.
     """
 
-    def __init__(self, atoms, name, sequence_number, **kwargs):
+    def __init__(
+        self, atoms: AtomicStructure, name: str, sequence_number: int, **kwargs
+    ):
         super().__init__(atoms=atoms, **kwargs)
         self.name = name
         self.sequence_number = int(sequence_number)
 
-    def transform(self, *operators):
+    def transform(self, *operators: ArrayLike) -> "Residue":
         """
         Return a transformed Residue based on symmetry operators.
 
@@ -63,16 +67,16 @@ class SecondaryStructure(AtomicStructure):
         Sequence number within a protein.
     """
 
-    def __init__(self, residues, sequence_number, **kwargs):
+    def __init__(self, residues: Iterable[Residue], sequence_number: int, **kwargs):
         super().__init__(substructures=residues, **kwargs)
         self.sequence_number = int(sequence_number)
 
     @property
-    def residues(self):
+    def residues(self) -> Iterable[Residue]:
         """Residues making this structure."""
         return self.substructures
 
-    def transform(self, *operators):
+    def transform(self, *operators: ArrayLike) -> "SecondaryStructure":
         """
         Return a transformed SecondaryStructure based on symmetry operators.
 
@@ -110,7 +114,7 @@ class Helix(SecondaryStructure):
         Sequence number within a protein.
     """
 
-    def transform(self, *operators):
+    def transform(self, *operators: ArrayLike) -> "Helix":
         """
         Return a transformed helix based on symmetry operators.
 
@@ -137,7 +141,7 @@ class Sheet(SecondaryStructure):
         Sequence number within a protein.
     """
 
-    def transform(self, *operators):
+    def transform(self, *operators: ArrayLike) -> "Sheet":
         """
         Return a transformed sheet based on symmetry operators.
 

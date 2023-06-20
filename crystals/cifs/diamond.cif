@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
-#$Date: 2016-02-18 13:08:31 +0200 (Thu, 18 Feb 2016) $
-#$Revision: 176725 $
-#$URL: svn://www.crystallography.net/cod/cif/9/00/85/9008564.cif $
+#$Date: 2023-03-26 11:09:57 +0300 (Sun, 26 Mar 2023) $
+#$Revision: 282068 $
+#$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008564.cif $
 #------------------------------------------------------------------------------
 #
 # This file is available in the Crystallography Open Database (COD),
@@ -39,11 +39,12 @@ _cell_length_a                   3.56679
 _cell_length_b                   3.56679
 _cell_length_c                   3.56679
 _cell_volume                     45.377
+_database_code_amcsd             0011242
 _exptl_crystal_density_diffrn    3.516
 _cod_original_sg_symbol_H-M      'F d 3 m'
 _cod_database_code               9008564
 loop_
-_symmetry_equiv_pos_as_xyz
+_space_group_symop_operation_xyz
 x,y,z
 x,1/2+y,1/2+z
 1/2+x,y,1/2+z
@@ -242,3 +243,8 @@ _atom_site_fract_x
 _atom_site_fract_y
 _atom_site_fract_z
 C 0.00000 0.00000 0.00000
+loop_
+_cod_related_entry_id
+_cod_related_entry_database
+_cod_related_entry_code
+1 AMCSD 0011242

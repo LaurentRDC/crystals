@@ -4,6 +4,37 @@ What's new
 
 .. currentmodule:: crystals
 
+Release 1.6.2
+-------------
+
+* Fixed an issue where the `crystals` version was not correctly interpolated when writing CIFs (#14).
+* Added file name to some parser warnings (#15).
+* Added support for spglib 2.0.
+* Added explicit testing for Python 3.10 and Python 3.11.
+
+Release 1.6.1
+-------------
+
+* Fixed an issue where writing some crystal structures to CIF did not work correctly (#13).
+
+Release 1.6.0
+-------------
+
+* Added the :meth:`Crystal.groupby` method to group unit cell atoms by site-symmetry (#12).
+
+Release 1.5.0
+-------------
+
+* Added some typing information.
+* Added the :attr:`Supercell.scaled_lattice_vectors` property and associated documentation (#11).
+* Protein Data Bank downloads are now done through HTTPS rather than FTP, which is recommended by the RCSB data bank.
+* Fixed some documentation formatting.
+
+Release 1.4.1
+-------------
+
+* Fixed an issue with the `tag` attribute of `Atom` not being propagated properly (#9).
+
 Release 1.4.0
 -------------
 

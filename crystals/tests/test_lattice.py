@@ -51,7 +51,7 @@ def test_lattice_array_dtype():
     """Test that the data-type of array(Lattice(...)) is respected"""
     arr = np.random.random(size=(3, 3))
     lattice = Lattice(arr)
-    assert np.array(lattice, dtype=np.int32).dtype, np.int32
+    assert np.array(lattice, dtype=int).dtype, int
 
 
 def test_lattice_frac_mesh():

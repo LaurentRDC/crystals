@@ -45,7 +45,7 @@ The list of ``peaks`` are peak positions in three-dimensional reciprocal space. 
     >>> lattice, hkls = index_dirax(peaks)
     >>> lattice
     < Lattice object with parameters 3.638Å, 3.638Å, 3.638Å, 90.00°, 90.00°, 90.00° >
-    >>> hkls.astype(np.int)
+    >>> hkls.astype(int)
     array([[0, 0, 0],
            [1, 0, 0],
            [0, 1, 0],

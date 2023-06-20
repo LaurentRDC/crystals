@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2017-10-15 03:23:08 +0300 (Sun, 15 Oct 2017) $
-#$Revision: 202022 $
+#$Date: 2023-03-26 10:30:59 +0300 (Sun, 26 Mar 2023) $
+#$Revision: 282067 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008523.cif $
 #------------------------------------------------------------------------------
 #
@@ -29,6 +29,7 @@ _journal_volume                  1
 _journal_year                    1963
 _chemical_formula_sum            Zr
 _chemical_name_common            Zirconium
+_chemical_name_mineral           Zirconium
 _space_group_IT_number           194
 _symmetry_space_group_name_Hall  '-P 6c 2c'
 _symmetry_space_group_name_H-M   'P 63/m m c'
@@ -39,10 +40,11 @@ _cell_length_a                   3.232
 _cell_length_b                   3.232
 _cell_length_c                   5.147
 _cell_volume                     46.562
+_database_code_amcsd             0011201
 _exptl_crystal_density_diffrn    6.507
 _cod_database_code               9008523
 loop_
-_symmetry_equiv_pos_as_xyz
+_space_group_symop_operation_xyz
 x,y,z
 -x,-x+y,1/2+z
 x,x-y,1/2-z
@@ -79,3 +81,4 @@ _cod_related_entry_database
 _cod_related_entry_code
 1 ChemSpider 22431
 2 MPOD 1000214
+3 AMCSD 0011201

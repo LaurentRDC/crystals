@@ -3,11 +3,12 @@
 import tempfile
 from itertools import islice
 from pathlib import Path
-from random import choice, randint
-
 import numpy as np
+from tempfile import TemporaryDirectory
+
 import pytest
-from crystals import Crystal
+from crystals import Crystal, Atom, __version__
+from crystals.writers import CIF_HEADER
 
 try:
     import ase
@@ -51,6 +52,31 @@ def test_cif_writer_idempotence(name):
         cryst.to_cif(f)
         cryst2 = Crystal.from_cif(f)
         assert cryst == cryst2
+
+
+def test_cif_writer_writes_version():
+    """Test that the `crystals` version is contained in the CIF header. """
+    # See https://github.com/LaurentRDC/crystals/issues/14
+    assert f"`crystals` {__version__}" in CIF_HEADER
+
+def test_supercell_preserved_in_cif():
+    """See issue #13."""
+    a = np.asfarray([3, 0.2, 0])
+    b = np.asfarray([0.4, 8, 0])
+    c = np.asfarray([0, 0, 9])
+
+    dimer = Crystal(
+        unitcell=[Atom("C", coords=(0.5, 0, 0)), Atom("C", coords=(0, 0, 0))],
+        lattice_vectors=[a * 2, b, c],
+    )
+    with TemporaryDirectory() as tmpdir:
+
+        dimer.to_cif(Path(tmpdir) / "dimer.cif")
+        from_file = Crystal.from_cif(Path(tmpdir) / "dimer.cif")
+
+    assert set(tuple(atm.coords_fractional) for atm in dimer.unitcell) == set(
+        tuple(atm.coords_fractional) for atm in from_file.unitcell
+    )
 
 
 @pytest.mark.parametrize("name", Crystal.builtins)

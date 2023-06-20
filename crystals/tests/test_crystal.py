@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
-import os
-import pickle
 import tempfile
-from copy import copy, deepcopy
-from functools import wraps, lru_cache
-from itertools import islice
-from math import radians
+from copy import deepcopy
+from functools import lru_cache
+from itertools import islice, chain
 from pathlib import Path
 import socket
 from contextlib import suppress
 
 import numpy as np
-from crystals import Atom, AtomicStructure, CenteringType, Crystal, Lattice
-from crystals.affine import rotation_matrix, transform, translation_matrix
-from crystals.crystal import symmetry_expansion, symmetry_reduction
+from crystals import Atom, AtomicStructure, CenteringType, Crystal
+from crystals.affine import translation_matrix
+from crystals.crystal import (
+    symmetry_expansion,
+    symmetry_reduction,
+    ACCEPTABLE_SITE_SYMMETRIES,
+)
 import pytest
 
 np.random.seed(23)
@@ -198,6 +199,64 @@ def test_supercell_constructors(name):
     s = c.supercell(2, 2, 2)
 
     assert len(s) == 8 * len(c)
+
+
+@pytest.mark.parametrize("n1", [1, 2, 3])
+@pytest.mark.parametrize("n2", [1, 2, 3])
+@pytest.mark.parametrize("n3", [1, 2, 3])
+def test_supercell_scaled_lattice_vectors(n1, n2, n3):
+    """Test the `scaled_lattice_vectors` attribute of the `Supercell` class."""
+    c = Crystal.from_database("C")
+    a1, a2, a3 = c.lattice_vectors
+    sa1, sa2, sa3 = c.supercell(n1, n2, n3).scaled_lattice_vectors
+
+    assert np.allclose(n1 * a1, sa1)
+    assert np.allclose(n2 * a2, sa2)
+    assert np.allclose(n3 * a3, sa3)
+
+
+@pytest.mark.parametrize("tag", [None, 1, 2])
+@pytest.mark.parametrize("occupancy", [1.0, 1.5, 2])
+@pytest.mark.parametrize("symbol", ["H", "He", "C"])
+def test_supercell_preserve_attributes(tag, symbol, occupancy):
+    """Test that the `Crystal.supercell` method preserves atom attributes (see issue #9)"""
+    atom = Atom(element=symbol, coords=[0, 0, 0], tag=tag, occupancy=occupancy)
+    c = Crystal(unitcell=[atom], lattice_vectors=3 * np.eye(3))
+    s = c.supercell(2, 2, 2)
+
+    for supercell_atom in s:
+        assert supercell_atom.tag == atom.tag
+        assert supercell_atom.symbol == atom.symbol
+
+
+# The two tested site symmetry measures aren't *always* equivalent, but often are
+@pytest.mark.parametrize(
+    "site_symmetry_measure", ["crystallographic_orbits", "equivalent_atoms"]
+)
+@pytest.mark.parametrize(
+    "crystal, num_distinct_sites", (["C", 2], ["vo2-m1", 3], ["vo2-rutile", 2])
+)
+def test_groupby(site_symmetry_measure, crystal, num_distinct_sites):
+    """Test the Crystal.groupby method with known structures."""
+    cryst = Crystal.from_database(crystal)
+    gps = cryst.groupby(site_symmetry_measure)
+    assert len(gps) == num_distinct_sites
+
+
+@pytest.mark.parametrize("by", ACCEPTABLE_SITE_SYMMETRIES)
+@pytest.mark.parametrize("crystal", Crystal.builtins)
+def test_groupby_invariants(by, crystal):
+    """Test that the grouping of atoms contains all atoms from the source crystal, and only those atoms."""
+    cryst = Crystal.from_database(crystal)
+    gps = cryst.groupby(by=by)
+    assert set(chain.from_iterable(gps.values())) == set(cryst)
+
+
+def test_groupby_unknown_symmetry():
+    """Test that unknown symmetries passed to `Crystal.groupby` raise a ValueError."""
+    cryst = Crystal.from_database("diamond")
+    with pytest.raises(ValueError):
+        cryst.groupby("this should not work")
 
 
 def test_indexed_by_trivial_reindexing():
