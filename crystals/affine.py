@@ -10,8 +10,8 @@ This module is not directly exported by the `crystals` library. Use it with caut
 import math
 from typing import Tuple
 
-from numpy.typing import ArrayLike
 import numpy as np
+from numpy.typing import ArrayLike
 
 Basis = Tuple[ArrayLike, ArrayLike, ArrayLike]
 

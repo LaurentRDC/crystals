@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
 import os
 import sys
+from datetime import datetime
 
 currentpath = os.path.dirname(__file__)
 sys.path.append(os.path.join(currentpath, ".."))

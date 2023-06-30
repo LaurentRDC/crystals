@@ -1,27 +1,26 @@
 # -*- coding: utf-8 -*-
 
+from collections import OrderedDict, namedtuple
+from copy import deepcopy
+from enum import Enum, auto, unique
 from multiprocessing.dummy import Array
 from typing import Any, Callable, Dict, Optional, Union
-from numpy.typing import ArrayLike
-import numpy as np
 
-from enum import Enum, auto, unique
-from collections import namedtuple, OrderedDict
-from copy import deepcopy
+import numpy as np
+from numpy.typing import ArrayLike
 
 from .affine import change_of_basis, transform
 from .atom_data import (
     ELEM_TO_MAGMOM,
     ELEM_TO_MASS,
     ELEM_TO_NAME,
-    NAME_TO_ELEM,
     ELEM_TO_NUM,
+    NAME_TO_ELEM,
     NUM_TO_ELEM,
-    chemical_symbols,
     atomic_names,
+    chemical_symbols,
 )
 from .lattice import Lattice
-
 
 ElementLike = Union[str, int, "Element"]
 
