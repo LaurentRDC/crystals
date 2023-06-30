@@ -39,6 +39,7 @@ with open("README.md", encoding="utf-8") as f:
 with open("requirements.txt") as f:
     REQUIREMENTS = [line for line in f.read().split("\n") if len(line.strip())]
 
+
 # Support for openmp
 # This idea is from scikit-image:
 # https://github.com/scikit-image/scikit-image/
@@ -81,7 +82,7 @@ class BuildExtWithOpenMP(build_ext):
         return True
 
     def build_extensions(self):
-        """ Hook into extension building to set compiler flags """
+        """Hook into extension building to set compiler flags"""
         if self.compiler.compiler_type == "msvc":
             compile_flags = ["/openmp"]
             link_flags = []

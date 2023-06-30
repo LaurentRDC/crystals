@@ -9,7 +9,7 @@ DATADIR = Path(__file__).parent / "data"
 
 
 def test_index_pink_desy_data():
-    """ Test index_pink with data provided by DESY's Yaroslav Gevorkov """
+    """Test index_pink with data provided by DESY's Yaroslav Gevorkov"""
     intensities = np.loadtxt(DATADIR / "intensities_new")
     peaks = np.loadtxt(DATADIR / "peaksOnDetector_m_new").T
     peaks = np.array(peaks[:, ::-1])
@@ -33,4 +33,6 @@ def test_index_pink_desy_data():
     )
     assert num_indexed > 100
 
-    assert np.allclose(np.linalg.norm(indexed, axis=0), np.linalg.norm(basis, axis=0), atol=0.005)
+    assert np.allclose(
+        np.linalg.norm(indexed, axis=0), np.linalg.norm(basis, axis=0), atol=0.005
+    )
