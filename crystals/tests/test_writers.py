@@ -55,9 +55,10 @@ def test_cif_writer_idempotence(name):
 
 
 def test_cif_writer_writes_version():
-    """Test that the `crystals` version is contained in the CIF header. """
+    """Test that the `crystals` version is contained in the CIF header."""
     # See https://github.com/LaurentRDC/crystals/issues/14
     assert f"`crystals` {__version__}" in CIF_HEADER
+
 
 def test_supercell_preserved_in_cif():
     """See issue #13."""
@@ -70,7 +71,6 @@ def test_supercell_preserved_in_cif():
         lattice_vectors=[a * 2, b, c],
     )
     with TemporaryDirectory() as tmpdir:
-
         dimer.to_cif(Path(tmpdir) / "dimer.cif")
         from_file = Crystal.from_cif(Path(tmpdir) / "dimer.cif")
 

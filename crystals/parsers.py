@@ -421,7 +421,6 @@ class PDBParser(AbstractStructureParser):
         for line in filter(
             lambda l: l.startswith("REMARK 290") and ("SMTRY" in l), self._handle
         ):
-
             op_num = line[22:23]
             if op_num not in sym_ops:
                 sym_ops[op_num] = {"rotation": list(), "translation": list()}
@@ -1174,7 +1173,6 @@ class POSCARParser(AbstractStructureParser):
         self.filename = filename
 
         with open(filename, mode="r") as f:
-
             next(f)
 
             scaling_factor = float(next(f))
