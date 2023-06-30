@@ -6,6 +6,7 @@ crystals command-line utilities
 import argparse
 import sys
 from pathlib import Path
+
 from . import Crystal, __version__
 
 constructors = {

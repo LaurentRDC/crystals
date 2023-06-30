@@ -3,7 +3,6 @@
 Atomic structure parsers.
 """
 import re
-from typing import Any, Iterable, Optional, Tuple, Union
 import warnings
 from abc import abstractmethod
 from contextlib import AbstractContextManager, suppress
@@ -14,14 +13,15 @@ from pathlib import Path
 from platform import system
 from string import digits, punctuation
 from tempfile import gettempdir
+from typing import Any, Iterable, Optional, Tuple, Union
 from urllib.error import URLError
 from urllib.request import urlretrieve
 from warnings import warn
 
+import CifFile as Cif
 import numpy as np
 import requests
 from CifFile import ReadCif
-import CifFile as Cif
 from numpy.linalg import inv
 
 from . import __version__

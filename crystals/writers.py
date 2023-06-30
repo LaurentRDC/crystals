@@ -13,9 +13,9 @@ from typing import Iterable, Optional
 
 import numpy as np
 from CifFile import CifBlock, CifFile
-from .atom import Atom
 
 from . import __version__
+from .atom import Atom
 
 try:
     import ase

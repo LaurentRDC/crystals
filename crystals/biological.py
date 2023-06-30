@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from typing import Iterable
+
+from numpy.typing import ArrayLike
+
 from .affine import affine_map
 from .base import AtomicStructure
-from numpy.typing import ArrayLike
 
 
 class Residue(AtomicStructure):

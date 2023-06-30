@@ -2,14 +2,14 @@
 
 from collections import Counter, OrderedDict
 from copy import deepcopy
-from operator import itemgetter
 from functools import reduce
 from itertools import chain
 from math import gcd
+from operator import itemgetter
 from typing import Any, Callable, Dict, Iterable, Iterator, Optional, Union
 
-from numpy.typing import ArrayLike
 import numpy as np
+from numpy.typing import ArrayLike
 
 from .affine import affine_map
 from .atom import Atom

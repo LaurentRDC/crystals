@@ -3,7 +3,7 @@ from collections import namedtuple
 from copy import deepcopy
 from enum import Enum, unique
 from functools import lru_cache
-from itertools import chain, combinations, islice, product, groupby, starmap
+from itertools import chain, combinations, groupby, islice, product, starmap
 from operator import attrgetter
 from os import PathLike
 from pathlib import Path

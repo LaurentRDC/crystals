@@ -3,11 +3,11 @@ from enum import Enum, unique
 from functools import partial, wraps
 from itertools import count, product, repeat, takewhile
 from math import cos, isclose, radians, sin, sqrt
-from typing import Any, Generator, Iterator, Iterable, Tuple, Union
+from typing import Any, Generator, Iterable, Iterator, Tuple, Union
 
-from numpy.typing import ArrayLike
 import numpy as np
 from numpy.linalg import norm
+from numpy.typing import ArrayLike
 
 from .affine import change_basis_mesh, change_of_basis
 
