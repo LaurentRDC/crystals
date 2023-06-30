@@ -34,6 +34,7 @@ CIF_HEADER = f"""
 # For more information on this type of file, please visit https://www.iucr.org/resources/cif
 """
 
+
 # TODO: test against known XYZ file
 def write_xyz(crystal: Iterable[Atom], fname: PathLike, comment: Optional[str] = None):
     """
