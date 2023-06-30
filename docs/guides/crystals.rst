@@ -49,18 +49,18 @@ and the structure file will be taken care of by :mod:`crystals`:
     >>> hemoglobin = Crystal.from_pdb('1gzx')
     >>> print(hemoglobin)
     < Crystal object with following unit cell:
-        Atom C  @ (-0.25, 0.08, 0.05)
-        Atom C  @ (-0.24, 0.06, 0.16)
-        Atom C  @ (-0.24, 0.12, 0.15)
-        Atom C  @ (-0.23, -0.05, 0.09)
-        Atom C  @ (-0.23, 0.08, 0.06)
-        Atom C  @ (-0.23, 0.08, 0.15)
-        Atom C  @ (-0.23, 0.08, 0.04)
-        Atom C  @ (-0.23, 0.02, 0.15)
-        Atom C  @ (-0.22, 0.12, 0.16)
-        Atom C  @ (-0.22, 0.02, 0.12)
+        Atom C  @ (-0.50, 0.17, -0.05)
+        Atom C  @ (-0.49, 0.19, -0.16)
+        Atom C  @ (-0.49, 0.13, -0.15)
+        Atom C  @ (-0.48, 0.30, -0.09)
+        Atom C  @ (-0.48, 0.17, -0.06)
+        Atom C  @ (-0.48, 0.17, -0.15)
+        Atom C  @ (-0.48, 0.17, -0.04)
+        Atom C  @ (-0.48, 0.23, -0.15)
+        Atom C  @ (-0.47, 0.13, -0.16)
+        Atom C  @ (-0.47, 0.23, -0.12)
           ... omitting 4554 atoms ...
-          ... use repr() to show the full cell ...
+          ... use repr() to show the full cell ... 
     Lattice parameters:
         a=97.050Å, b=99.500Å, c=66.110Å
         α=90.000°, β=90.000°, γ=90.000°
