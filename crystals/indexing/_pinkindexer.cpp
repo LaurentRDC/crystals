@@ -153,7 +153,7 @@ static PyObject * index_pink(PyObject *self, PyObject *args, PyObject *kwargs) {
     Vector3f cStar(lat[2][0], lat[2][1], lat[2][2]);
     Matrix3f basis;
     basis << aStar, bStar, cStar;
-    Lattice sampleReciprocalLattice_1A(basis);
+    Lattice sampleReciprocalLattice_1A = Lattice(basis);
 
     static ExperimentSettings settings = ExperimentSettings(
         beamEnergy_eV, 

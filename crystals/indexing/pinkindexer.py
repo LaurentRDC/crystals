@@ -2,9 +2,11 @@
 """
 Crystal structure indexing with the pinkindexer algorithm.
 """
+import faulthandler
+from dataclasses import dataclass
+from enum import IntEnum, unique
 from typing import Tuple
 from warnings import warn
-from enum import IntEnum, unique
 
 import numpy as np
 
@@ -58,14 +60,39 @@ class RefinementType(IntEnum):
     first_fixed_then_variable_lattice_parameters_center_adjustment_multi_seed = 6
 
 
+@dataclass(frozen=True)
+class Geometry:
+    """Parameters from a geometry file (*.geom)."""
+
+    camera_length: float
+    camera_offset: float
+    resolution: float
+    detector_half_width: int
+
+    @property
+    def pixel_length(self) -> float:
+        """Length of a pixel in meters."""
+        return 1 / self.resolution
+
+    @property
+    def detector_distance(self) -> float:
+        """Returns the detector distance in meters."""
+        return self.camera_length + self.camera_offset
+
+    @property
+    def detector_radius(self) -> float:
+        """Returns the detector radius (or half-width) in meters."""
+        return self.detector_half_width * self.pixel_length
+
+
 def index_pink(
     peaks,
     intensities,
-    detector_distance,
     beam_energy,
     divergence_angle,
     non_monochromaticity,
-    detector_radius,
+    detector_distance: float,
+    detector_radius: float,
     tolerance: float,
     reflection_radius: float,
     initial_reciprocal_guess,
@@ -80,7 +107,7 @@ def index_pink(
     monochromatic radiation source, a polychromatic source or with radiation
     of very short wavelength.
 
-    .. versionadded:: 1.3.1
+    .. versionadded:: 1.7.0
 
     Parameters
     ----------
@@ -148,6 +175,9 @@ def index_pink(
             f"Expected peaks to be an (N,2) iterable, but got {peaks.shape}"
         )
 
+    # We enable `faulthandler` in order to
+    # catch segmentation faults in pinkindexer as exceptions.
+    faulthandler.enable()
     try:
         recip, num_indexed = _pinkindexer.index_pink(
             intensities=intensities,
@@ -168,6 +198,8 @@ def index_pink(
     except _pinkindexer.PinkIndexerError:
         warn("Indexing has failed; returning the initial guess")
         raise IndexingError()
+    finally:
+        faulthandler.disable()
 
     if num_indexed == 0:
         raise IndexingError("Indexing has failed; no peaks were successfully indexed.")
