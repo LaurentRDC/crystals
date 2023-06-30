@@ -37,9 +37,16 @@ non_monochromaticity: float
 detector_radius : float
     Detector radius [m]
 tolerance : float
-    I don't know what that is yet.
+    Relative tolerance which determines when a peak has been successfully fit.
 reciprocal_lattice : ndarray, shape (3,3)
     Initial guess for the reciprocal lattice [1/A]
+considered_peaks_count: int
+    Controls the number of Bragg spots which are used to compute the indexing solution.
+angle_resolution: int
+    Set the resolution of the rotogram in terms of number of voxels $N$ 
+    spanning $-\arctan \pi/4$ to $\arctan \pi/4$
+refinement_type: int
+    Determines which type of refinement to perform after initial indexing.
 num_threads : int
     Number of threads to use for indexing.
 
@@ -69,6 +76,7 @@ static PyObject * index_pink(PyObject *self, PyObject *args, PyObject *kwargs) {
     float detectorRadius_m;
     float tolerance;
     float reflectionRadius_1_per_A;
+    int considered_peaks_count, angle_resolution, refinement_type;
     int num_threads;
     PyArrayObject * py_peaks;
     PyArrayObject * py_intensities;
@@ -85,12 +93,15 @@ static PyObject * index_pink(PyObject *self, PyObject *args, PyObject *kwargs) {
                             , "tolerance"
                             , "reflectionRadius_1_per_A"
                             , "reciprocal_lattice"
+                            , "considered_peaks_count"
+                            , "angle_resolution"
+                            , "refinement_type"
                             , "num_threads"
                             , NULL 
                             };
 
     if (!PyArg_ParseTupleAndKeywords(
-        args, kwargs, "OOfffffffOi", kwlist,
+        args, kwargs, "OOfffffffOiiii", kwlist,
         &py_peaks,
         &py_intensities, 
         &detectorDistance_m, 
@@ -101,6 +112,9 @@ static PyObject * index_pink(PyObject *self, PyObject *args, PyObject *kwargs) {
         &tolerance, 
         &reflectionRadius_1_per_A,
         &py_sample_lattice,
+        &considered_peaks_count,
+        &angle_resolution,
+        &refinement_type,
         &num_threads))
         return NULL;
 
@@ -152,11 +166,15 @@ static PyObject * index_pink(PyObject *self, PyObject *args, PyObject *kwargs) {
         reflectionRadius_1_per_A
     );
 
+    PinkIndexer::ConsideredPeaksCount consideredPeaksCount = static_cast<PinkIndexer::ConsideredPeaksCount>(considered_peaks_count);
+    PinkIndexer::AngleResolution angleResolution = static_cast<PinkIndexer::AngleResolution>(angle_resolution);
+    PinkIndexer::RefinementType refinementType = static_cast<PinkIndexer::RefinementType>(refinement_type);
+
     PinkIndexer indexer(
         settings, 
-        PinkIndexer::ConsideredPeaksCount::standard, 
-        PinkIndexer::AngleResolution::standard, 
-        PinkIndexer::RefinementType::firstFixedThenVariableLatticeParameters, 
+        consideredPeaksCount, 
+        angleResolution, 
+        refinementType, 
         0.2 //maxResolutionForIndexing_1_per_A
     );
 
