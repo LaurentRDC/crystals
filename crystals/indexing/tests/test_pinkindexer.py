@@ -19,7 +19,7 @@ def test_index_pink_desy_data():
 
     basis = np.diag([0.0126422250316056, 0.0126422250316056, 0.0263157894736842])
 
-    indexed, num_indexed = _pinkindexer.index_pink(
+    indexed, num_indexed = index_pink(
         peaks=peaks,
         intensities=intensities,
         detector_distance=float(0.2500),
@@ -27,8 +27,10 @@ def test_index_pink_desy_data():
         divergence_angle=float(0.1 * np.pi / 180),
         non_monochromaticity=float(0.25),
         detector_radius=float(88.6e-6 * 1300),
-        reciprocal_lattice=basis,
+        tolerance=0.02,
+        reflection_radius=2.528445006321113e-04,
+        initial_reciprocal_guess=basis,
     )
+    assert num_indexed > 100
 
-    # TODO: this is a very low bar to set...
-    assert num_indexed > 0
+    assert np.allclose(np.linalg.norm(indexed, axis=0), np.linalg.norm(basis, axis=0), atol=0.005)

@@ -25,7 +25,7 @@ Parameters
 peaks : ndarray, shape (N, 2)
     Peak locations on detector [m]
 intensities : ndarray, shape (N,)
-    Scatterign intensity for each peak in `peaks` [a.u.]
+    Scattering intensity for each peak in `peaks` [a.u.]
 detector_distance : float
     Distance between the sample and detector [m]
 beam_energy : float
@@ -36,8 +36,12 @@ non_monochromaticity: float
     I don't know what that is yet.
 detector_radius : float
     Detector radius [m]
+tolerance : float
+    I don't know what that is yet.
 reciprocal_lattice : ndarray, shape (3,3)
     Initial guess for the reciprocal lattice [1/A]
+num_threads : int
+    Number of threads to use for indexing.
 
 Returns
 -------
@@ -59,27 +63,45 @@ static PyObject *PinkIndexerError = NULL;
 
 static PyObject * index_pink(PyObject *self, PyObject *args, PyObject *kwargs) {
     float detectorDistance_m;
-    float beamEenergy_eV;
+    float beamEnergy_eV;
     float divergenceAngle_deg;
     float nonMonochromaticity;
     float detectorRadius_m;
+    float tolerance;
+    float reflectionRadius_1_per_A;
+    int num_threads;
     PyArrayObject * py_peaks;
     PyArrayObject * py_intensities;
     PyArrayObject * py_sample_lattice;
     
 
-    static char *kwlist[] = {"peaks", "intensities", "detector_distance", "beam_energy", "divergence_angle", "non_monochromaticity", "detector_radius", "reciprocal_lattice", NULL };
+    static char *kwlist[] = { "peaks"
+                            , "intensities"
+                            , "detector_distance"
+                            , "beam_energy"
+                            , "divergence_angle"
+                            , "non_monochromaticity"
+                            , "detector_radius"
+                            , "tolerance"
+                            , "reflectionRadius_1_per_A"
+                            , "reciprocal_lattice"
+                            , "num_threads"
+                            , NULL 
+                            };
 
     if (!PyArg_ParseTupleAndKeywords(
-        args, kwargs, "OOfffffO", kwlist,
+        args, kwargs, "OOfffffffOi", kwlist,
         &py_peaks,
         &py_intensities, 
         &detectorDistance_m, 
-        &beamEenergy_eV, 
+        &beamEnergy_eV, 
         &divergenceAngle_deg, 
         &nonMonochromaticity, 
-        &detectorRadius_m, 
-        &py_sample_lattice))
+        &detectorRadius_m,
+        &tolerance, 
+        &reflectionRadius_1_per_A,
+        &py_sample_lattice,
+        &num_threads))
         return NULL;
 
     // Cast data into Eigen types
@@ -120,14 +142,14 @@ static PyObject * index_pink(PyObject *self, PyObject *args, PyObject *kwargs) {
     Lattice sampleReciprocalLattice_1A(basis);
 
     static ExperimentSettings settings = ExperimentSettings(
-        beamEenergy_eV, 
+        beamEnergy_eV, 
         detectorDistance_m, 
         detectorRadius_m, 
         divergenceAngle_deg, 
         nonMonochromaticity, 
         sampleReciprocalLattice_1A,
-        0.02,                       // tolerance 
-        2.528445006321113e-04       // reflectionRadius_1_per_A
+        tolerance,
+        reflectionRadius_1_per_A
     );
 
     PinkIndexer indexer(
@@ -141,12 +163,11 @@ static PyObject * index_pink(PyObject *self, PyObject *args, PyObject *kwargs) {
     Lattice indexedLattice;
     int num_indexed;
     try {
-        int threadCount = 6;
         Eigen::Array<bool, Eigen::Dynamic, 1> fittedPeaks;
         Vector2f centerShift;
         // Returns the number of fitted peaks according to tolerance
         // Therefore, if result is 0, indexing has failed.
-        num_indexed = indexer.indexPattern(indexedLattice, centerShift, fittedPeaks, intensities, peaksOnDetector_m, threadCount);
+        num_indexed = indexer.indexPattern(indexedLattice, centerShift, fittedPeaks, intensities, peaksOnDetector_m, num_threads);
     } 
     catch (exception &e)
     {
