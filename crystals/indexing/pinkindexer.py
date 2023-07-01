@@ -10,6 +10,7 @@ from warnings import warn
 
 import numpy as np
 
+from ..lattice import Lattice
 from . import _pinkindexer
 from .common import IndexingError
 
@@ -31,7 +32,7 @@ class ConsideredPeaksCount(IntEnum):
 @unique
 class AngleResolution(IntEnum):
     """This enumeration controls the resolution of the rotogram in terms of number of
-    voxels $N$ spanning $-\arctan \pi/4$ to $\arctan \pi/4$
+    voxels spanning :math:`-\\arctan \\pi/4` to :math:`\\arctan \\pi/4`
 
     Choosing larger voxels (lower resolution) leads to a faster calculation but
     lower precision in the initial step of determining the orientation from the rotogram.
@@ -95,17 +96,20 @@ def index_pink(
     detector_radius: float,
     tolerance: float,
     reflection_radius: float,
-    initial_reciprocal_guess,
+    initial_guess: Lattice,
     considered_peaks_count: ConsideredPeaksCount = ConsideredPeaksCount.standard,
     angle_resolution: AngleResolution = AngleResolution.standard,
     refinement_type: RefinementType = RefinementType.first_fixed_then_variable_lattice_parameters,
     num_threads: int = 6,
-) -> Tuple[np.ndarray, int]:
+) -> Tuple[Lattice, int]:
     """
-    Index reflections using pinkindexer, and indexing routine that can be
+    Index reflections using `pinkindexer`, an indexing routine that can be
     used in a variety of contexts including measurements made with a
     monochromatic radiation source, a polychromatic source or with radiation
     of very short wavelength.
+
+    Some of the inputs below may not be known. In case, you may use the `Geometry` class
+    to derive some of these inputs. See the user guide for an example.
 
     .. versionadded:: 1.7.0
 
@@ -129,15 +133,15 @@ def index_pink(
         I don't know what that is yet.
     reflection_radius : float
         I don't know what that is yet [1/A]
-    initial_reciprocal_guess : ndarray, shape (3,3)
-        Initial guess of the reciprocal lattice vectors of the crystal
-        structure. These vectors must representa] a *primitive* lattice.
-    considered_peaks_count: ConsideredPeaksCount, optional
+    initial_guess : Lattice
+        Initial guess of the real-space lattice vectors of the crystal
+        structure. These vectors must represent a **primitive** lattice.
+    considered_peaks_count: :class:`crystals.indexing.pinkindexer.ConsideredPeaksCount`, optional
         Controls the number of Bragg spots which are used to compute the indexing solution.
-    angle_resolution: AngleResolution, optional
-        Set the resolution of the rotogram in terms of number of voxels $N$
-        spanning $-\arctan \pi/4$ to $\arctan \pi/4$
-    refinement_type: RefinementType, optional
+    angle_resolution: :class:`crystals.indexing.pinkindexer.AngleResolution`, optional
+        Set the resolution of the rotogram in terms of number of voxels
+        spanning :math:`-\\arctan \\pi/4` to :math:`\\arctan \\pi/4`
+    refinement_type: :class:`crystals.indexing.pinkindexer.RefinementType`, optional
         Determines which type of refinement to perform after initial indexing.
     num_threads : int, optional
         Number of threads to use for indexing.
@@ -175,6 +179,11 @@ def index_pink(
             f"Expected peaks to be an (N,2) iterable, but got {peaks.shape}"
         )
 
+    # The unit convention for reciprocal lattice vectors in `crystals`
+    # is that reciprocal lattice vectors have dimensions (rad/angstrom)
+    # while pinkindexer expects (1/angstrom)
+    guess = np.asarray(initial_guess.reciprocal) / (2 * np.pi)
+
     # We enable `faulthandler` in order to
     # catch segmentation faults in pinkindexer as exceptions.
     faulthandler.enable()
@@ -189,7 +198,7 @@ def index_pink(
             detector_radius=float(detector_radius),
             tolerance=tolerance,
             reflectionRadius_1_per_A=reflection_radius,
-            reciprocal_lattice=initial_reciprocal_guess,
+            reciprocal_lattice=guess,
             considered_peaks_count=int(considered_peaks_count),
             angle_resolution=int(angle_resolution),
             refinement_type=int(refinement_type),
@@ -204,4 +213,4 @@ def index_pink(
     if num_indexed == 0:
         raise IndexingError("Indexing has failed; no peaks were successfully indexed.")
 
-    return np.asarray(recip), num_indexed
+    return Lattice(2 * np.pi * np.asarray(recip)).reciprocal, num_indexed
