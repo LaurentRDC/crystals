@@ -81,7 +81,7 @@ Finally, we're ready to index using :func:`index_pink`::
     ...     non_monochromaticity=4e-2,                  # Non-monochromaticity, or energy bandwidth, in fraction of the beam energy
     ...     detector_radius=geom.detector_radius,       
     ...     tolerance=0.03,                             # Fractional tolerance to consider a peak being successfully indexed as part of the refinement procedure
-    ...     reflection_radius=2.66e-10,                 # Average radius of the peaks in meters
+    ...     reflection_radius=0.000010,                 # Average radius of the peaks (1/A)
     ...     initial_guess=guess,
     ... )
 

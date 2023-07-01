@@ -100,7 +100,7 @@ def index_pink(
     considered_peaks_count: ConsideredPeaksCount = ConsideredPeaksCount.standard,
     angle_resolution: AngleResolution = AngleResolution.standard,
     refinement_type: RefinementType = RefinementType.first_fixed_then_variable_lattice_parameters,
-    num_threads: int = 6,
+    num_threads: int = 1,
 ) -> Tuple[Lattice, int]:
     """
     Index reflections using `pinkindexer`, an indexing routine that can be
@@ -126,16 +126,16 @@ def index_pink(
     divergence_angle : float
         Divergence angle [deg]
     non_monochromaticity: float
-        I don't know what that is yet.
+        Bandwidth of the beam energy, as a fraction of the beam energy [a.u.].
     detector_radius : float
-        Detector radius [m]
+        Detector radius, or half-width. [m]
     tolerance : float
-        I don't know what that is yet.
+        Fractional tolerance for reflections to be considered indexed during refinement [a.u.].
     reflection_radius : float
-        I don't know what that is yet [1/A]
+        Radius of a typical reflection [1/A]
     initial_guess : Lattice
         Initial guess of the real-space lattice vectors of the crystal
-        structure. These vectors must represent a **primitive** lattice.
+        structure. This must represent a **primitive** lattice.
     considered_peaks_count: :class:`crystals.indexing.pinkindexer.ConsideredPeaksCount`, optional
         Controls the number of Bragg spots which are used to compute the indexing solution.
     angle_resolution: :class:`crystals.indexing.pinkindexer.AngleResolution`, optional
