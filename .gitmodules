@@ -1,0 +1,3 @@
+[submodule "pinkindexer"]
+	path = pinkindexer
+	url = https://stash.desy.de/scm/~gevorkov/pinkindexer.git
