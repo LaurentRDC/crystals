@@ -79,7 +79,7 @@ jobs:
       env:
         MATERIALS_PROJECT_API_KEY: ${{ secrets.MATERIALS_PROJECT_API_KEY }}
       run: |
-        python setup.py install
+        pip install .
         cd ~
         python -Wa -m pytest --pyargs crystals --full-trace
     
