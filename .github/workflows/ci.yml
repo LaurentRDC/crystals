@@ -125,6 +125,9 @@ jobs:
         mkdir dist
         mv --backup=numbered artifacts/*/** dist
         rm -f dist/*~
+        # Linux wheels cannot be uploaded to pypi
+        # https://peps.python.org/pep-0513/#rationale
+        rm -f dist/*linux**.whl
         echo "To be uploaded:"
         ls dist
 
