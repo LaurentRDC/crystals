@@ -4,17 +4,21 @@
 # Required
 version: 2
 
-submodules:
-  include: all
-
-# Build documentation in the docs/ directory with Sphinx
 sphinx:
   configuration: docs/conf.py
 
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.10"
+  jobs:
+    post_checkout:
+      - git submodule init
+      - git submodule update
+    pre_build:
+      - python setup.py build_ext --inplace
+
 python:
-  version: 3
   install:
     - requirements: requirements.txt
     - requirements: dev-requirements.txt
-    - method: setuptools
-      path: .
