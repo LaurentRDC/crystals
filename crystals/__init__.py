@@ -34,7 +34,7 @@ from .crystal import (
     symmetry_expansion,
     symmetry_reduction,
 )
-from .indexing import IndexingError, index_dirax, index_pink
+from .indexing import IndexingError, index_dirax
 from .lattice import Lattice, LatticeSystem, lattice_system
 from .parsers import CIFParser, CODParser, MPJParser, ParseError, PDBParser, PWSCFParser
 from .writers import ase_atoms

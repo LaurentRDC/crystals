@@ -98,21 +98,6 @@ class BuildExtWithOpenMP(build_ext):
         return super().build_extensions()
 
 
-PINKINDEXER = Path(".") / "pinkindexer"
-pinkindexer_ext = Extension(
-    "crystals.indexing._pinkindexer",
-    include_dirs=[
-        numpy.get_include(),
-        PINKINDEXER / "src",
-        PINKINDEXER / "include",
-        PINKINDEXER / "include" / "Eigen",
-    ],
-    sources=["crystals/indexing/_pinkindexer.cpp"]
-    + [str(p) for p in (PINKINDEXER / "src").glob("*.cpp")],
-    extra_compile_args=["-std=c++11"] if platform.system() != "Windows" else [],
-)
-
-
 if __name__ == "__main__":
     setup(
         name=PACKAGE_NAME,
@@ -137,7 +122,6 @@ if __name__ == "__main__":
         packages=find_packages(),
         data_files=[("crystals\\cifs", CIF_FILES)],
         include_package_data=True,
-        ext_modules=[pinkindexer_ext],
         cmdclass=dict(build_ext=BuildExtWithOpenMP),
         zip_safe=False,
         entry_points={"console_scripts": ["crystals = crystals.__main__:main"]},

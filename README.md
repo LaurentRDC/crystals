@@ -32,10 +32,6 @@ from the conda-forge channel:
     git clone https://github.com/LaurentRDC/crystals.git
     cd crystals
     
-    # Pull the source for third-party C++ libraries, such as pinkindexer 
-    git submodule update --init --recursive
-    python setup.py build_ext
-
     # If you want to use crystals, use `install`
     python setup.py install 
 

@@ -13,4 +13,3 @@ If there's a particular method you would like to see included, please do not hes
     :maxdepth: 2
     
     indexing/dirax
-    indexing/pinkindexer

@@ -8,9 +8,6 @@ recursive-include crystals/cifs *.cif
 recursive-include crystals/tests/data *
 recursive-include crystals/indexing/tests/data *
 
-recursive-include pinkindexer/src
-recursive-include pinkindexer/include
-
 recursive-exclude docs *
 
 global-exclude *.py[cod] __pycache__ *.so *.dylib

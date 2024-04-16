@@ -4,11 +4,6 @@ What's new
 
 .. currentmodule:: crystals
 
-Release 1.7.0a
---------------
-
-* A new indexing algorithm has been integrated (:func:`index_pink`), which is particularly well-suited to serial pink-beam X-ray and electron diffraction indexing (#19). This algorithm is notoriously hard to test; if you find any issues, feel free to `raise an issue <https://github.com/LaurentRDC/crystals/issues/new>`_ on GitHub 
-
 Release 1.6.2
 -------------
 
