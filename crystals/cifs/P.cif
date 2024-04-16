@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------
-#$Date: 2013-05-05 17:21:46 +0300 (Sun, 05 May 2013) $
-#$Revision: 85285 $
-#$URL: svn://www.crystallography.net/cod/cif/9/00/85/9008572.cif $
+#$Date: 2023-11-14 20:05:30 +0200 (Tue, 14 Nov 2023) $
+#$Revision: 287588 $
+#$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008572.cif $
 #------------------------------------------------------------------------------
 #
 # This file is available in the Crystallography Open Database (COD),
@@ -30,8 +30,10 @@ _journal_year                    1963
 _chemical_formula_sum            P
 _chemical_name_common            Phosphorus
 _space_group_IT_number           64
+_space_group_name_Hall           '-B 2ab 2'
+_space_group_name_H-M_alt        'B m e b'
 _symmetry_space_group_name_Hall  '-B 2ab 2'
-_symmetry_space_group_name_H-M   'B m a b'
+_symmetry_space_group_name_H-M   'B m e b'
 _cell_angle_alpha                90
 _cell_angle_beta                 90
 _cell_angle_gamma                90
@@ -40,6 +42,7 @@ _cell_length_b                   4.38
 _cell_length_c                   10.50
 _cell_volume                     152.227
 _exptl_crystal_density_diffrn    2.703
+_cod_original_sg_symbol_H-M      'B m a b'
 _cod_database_code               9008572
 loop_
 _symmetry_equiv_pos_as_xyz
@@ -65,3 +68,4 @@ _atom_site_fract_x
 _atom_site_fract_y
 _atom_site_fract_z
 P 0.00000 0.09000 0.09800
+_database_code_amcsd 0011250

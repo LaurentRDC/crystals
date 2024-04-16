@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2017-10-15 03:23:08 +0300 (Sun, 15 Oct 2017) $
-#$Revision: 202022 $
+#$Date: 2023-11-11 21:14:37 +0200 (Sat, 11 Nov 2023) $
+#$Revision: 287551 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/84/9008465.cif $
 #------------------------------------------------------------------------------
 #
@@ -248,3 +248,7 @@ _cod_related_entry_database
 _cod_related_entry_code
 1 ChemSpider 22411
 2 MPOD 1000010
+3 AMCSD 0009169
+4 AMCSD 0011142
+_database_code_amcsd 0011142
+_cod_duplicate_entry 9010987

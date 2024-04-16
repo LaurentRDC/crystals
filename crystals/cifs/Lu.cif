@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2017-10-14 23:18:49 +0300 (Sat, 14 Oct 2017) $
-#$Revision: 202019 $
+#$Date: 2023-11-11 21:14:37 +0200 (Sat, 11 Nov 2023) $
+#$Revision: 287551 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/01/09/9010998.cif $
 #------------------------------------------------------------------------------
 #
@@ -83,3 +83,36 @@ _cod_related_entry_id
 _cod_related_entry_database
 _cod_related_entry_code
 1 ChemSpider 22371
+2 AMCSD 0009180
+3 AMCSD 0011182
+_database_code_amcsd 0009180
+loop_
+_citation_author_citation_id
+_citation_author_name
+2 'Wyckoff, R. W. G.'
+loop_
+_citation_id
+_citation_coordinate_linkage
+_citation_title
+_citation_country
+_citation_page_first
+_citation_page_last
+_citation_year
+_citation_journal_abbrev
+_citation_journal_volume
+_citation_journal_issue
+_citation_journal_id_ASTM
+_citation_journal_id_ISSN
+_citation_book_title
+_citation_book_publisher
+_citation_book_publisher_city
+_citation_book_id_ISBN
+_citation_special_details
+  2  yes
+;Crystal Structures
+;
+  US  7  83  1963  'Crystal Structures'  1  .
+  .  .  .  'Interscience Publishers' 'New York, London, Sydney' .
+;The Wyckoff, R. W. G. book contains republication of the atomic coordinates
+of this structure.
+;

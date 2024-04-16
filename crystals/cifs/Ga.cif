@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2017-10-14 23:18:49 +0300 (Sat, 14 Oct 2017) $
-#$Revision: 202019 $
+#$Date: 2023-11-14 20:05:30 +0200 (Tue, 14 Nov 2023) $
+#$Revision: 287588 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008562.cif $
 #------------------------------------------------------------------------------
 #
@@ -29,8 +29,10 @@ _journal_year                    1963
 _chemical_formula_sum            Ga
 _chemical_name_common            Gallium
 _space_group_IT_number           64
+_space_group_name_Hall           '-B 2ab 2'
+_space_group_name_H-M_alt        'B m e b'
 _symmetry_space_group_name_Hall  '-B 2ab 2'
-_symmetry_space_group_name_H-M   'B m a b'
+_symmetry_space_group_name_H-M   'B m e b'
 _cell_angle_alpha                90
 _cell_angle_beta                 90
 _cell_angle_gamma                90
@@ -39,6 +41,7 @@ _cell_length_b                   4.5167
 _cell_length_c                   7.6448
 _cell_volume                     155.751
 _exptl_crystal_density_diffrn    5.947
+_cod_original_sg_symbol_H-M      'B m a b'
 _cod_database_code               9008562
 loop_
 _symmetry_equiv_pos_as_xyz
@@ -69,3 +72,4 @@ _cod_related_entry_id
 _cod_related_entry_database
 _cod_related_entry_code
 1 ChemSpider 4514603
+_database_code_amcsd 0011240

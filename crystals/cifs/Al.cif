@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2017-10-15 03:23:08 +0300 (Sun, 15 Oct 2017) $
-#$Revision: 202022 $
+#$Date: 2023-11-11 15:25:56 +0200 (Sat, 11 Nov 2023) $
+#$Revision: 287548 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/84/9008460.cif $
 #------------------------------------------------------------------------------
 #
@@ -247,3 +247,14 @@ _cod_related_entry_code
 3 MPOD 1000003
 4 MPOD 1000093
 5 MPOD 1000121
+6 AMCSD 0011136
+7 AMCSD 0011137
+loop_
+_[local]_alternative_name_id
+_[local]_alternative_name_type
+_[local]_alternative_name_source
+_[local]_alternative_name_source_id
+_[local]_alternative_name_value
+1 mineral AMCSD 0011136 "Aluminum"
+2 mineral AMCSD 0011137 "Aluminium"
+_amcsd_database_code 0011136
