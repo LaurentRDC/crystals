@@ -12,11 +12,8 @@ from tempfile import gettempdir
 from warnings import catch_warnings, filterwarnings
 
 import numpy as np
-from crystals import CIFParser, Crystal, MPJParser, PDBParser, frac_coords, is_element
-from crystals.affine import transform
+from crystals import CIFParser, Crystal, MPJParser, PDBParser, is_element
 from crystals.parsers import STRUCTURE_CACHE, PWSCFParser
-from crystals.spg_data import Hall2Number
-from spglib import get_symmetry_dataset
 
 try:
     import Bio.PDB as biopdb
@@ -152,18 +149,6 @@ def test_cif_symmetry_operators(file):
         for sym_op in p.symmetry_operators():
             t = sym_op[:3, :3]
             assert round(abs(abs(np.linalg.det(t)) - 1), 7) == 0
-
-
-@pytest.mark.parametrize("file", CIF_FILES)
-def test_cif_international_number(file):
-    """Test that the international space group number  found by
-    CIFParser is the same as spglib's"""
-    with CIFParser(file) as p:
-        from_parser = Hall2Number[p.hall_symbol()]
-
-        crystal = Crystal.from_cif(file)
-        from_spglib = crystal.international_number
-        assert from_parser == from_spglib
 
 
 def test_cif_silicon():

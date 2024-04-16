@@ -555,7 +555,7 @@ class CIFParser(AbstractStructureParser):
             )
 
             if table_number is not None:
-                hall_symbol = Number2Hall[int(table_number)]
+                hall_symbol = Number2Hall.get(int(table_number))
 
         if hall_symbol is None:
             raise ParseError("Hall symbol could not be inferred")

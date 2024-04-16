@@ -531,18 +531,29 @@ class Crystal(AtomicStructure, Lattice):
             cell=self._spglib_cell(), symprec=symprec, angle_tolerance=angle_tolerance
         )
 
+        err_msg = get_error_message()
+        if err_msg != "no error":
+            raise RuntimeError(
+                f"[SPGLIB] Symmetry-determination has returned the following error: {err_msg}"
+            )
+
         if dataset is None:
             raise RuntimeError("[SPGLIB] Symmetry-determination has not found a match.")
 
         spg_type = get_spacegroup_type(dataset["hall_number"])
-        hm_symbol = Hall2HM[dataset["hall"]]
+        try:
+            hm_symbol = Hall2HM[dataset["hall"]]
+        except KeyError:
+            raise RuntimeError(
+                f"[SPGLIB] Unknown Hermann-Mauguin symbol associated to Hall symbol \"{dataset['hall']}\""
+            )
 
         # We do not distinguish between base-centered "A", "B", and "C"
         # "A" and "B" are translated to "C"
         centering = CenteringType(
             hm_symbol[0] if hm_symbol[0] not in {"A", "B"} else "C"
         )
-        info = {
+        return {
             "international_symbol": dataset["international"],
             "hall_symbol": dataset["hall"],
             "hm_symbol": hm_symbol,
@@ -552,14 +563,6 @@ class Crystal(AtomicStructure, Lattice):
             "international_full": spg_type["international_full"],
             "pointgroup": spg_type["pointgroup_international"],
         }
-
-        err_msg = get_error_message()
-        if err_msg != "no error":
-            raise RuntimeError(
-                "[SPGLIB] Symmetry-determination has returned the following error: {err_msg}"
-            )
-
-        return info
 
     def symmetry_operations(self, symprec: float = 1e-2) -> Iterable[np.ndarray]:
         """
