@@ -3,9 +3,6 @@ name: Continuous integration
 on: 
   push:
   pull_request:
-  schedule:
-    # Every month
-    - cron: '0 0 1 * *'
 
 jobs:
   build:
@@ -25,7 +22,7 @@ jobs:
         submodules: true
 
     - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -53,25 +50,6 @@ jobs:
         pip install numpy wheel
         pip install -r requirements.txt
         pip install -r dev-requirements.txt
-    
-    # MacOS gets special attention because it does not
-    # include openMP
-    - name: Build C++ extensions (MacOS)
-      if: matrix.os == 'macos-latest'
-      run: |
-        brew install libomp
-        python setup.py build_ext --inplace
-      env:
-        CC: /usr/bin/clang
-        CXX: /usr/bin/clang++
-        CPPFLAGS: "-Xpreprocessor -fopenmp"
-        CFLAGS: "-Wno-implicit-function-declaration -I/usr/local/opt/libomp/include"
-        CXXFLAGS: "-I/usr/local/opt/libomp/include"
-        LDFLAGS: "-Wl,-rpath,/usr/local/opt/libomp/lib -L/usr/local/opt/libomp/lib -lomp"
-
-    - name: Build C++ extensions
-      run: |
-        python setup.py build_ext --inplace
 
     # Note the use of the -Wa flag to show DeprecationWarnings
     # We test the package as-installed. 
