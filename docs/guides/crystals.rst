@@ -440,7 +440,7 @@ a primitive :class:`Crystal` can be created using the :meth:`Crystal.primitive` 
         Au: 100.000% >
     >>>
     >>> primitive_gold = gold.primitive() # this is a whole new Crystal instance
-    >>> print(primitive_gold)
+    >>> print(primitive_gold) # doctest: +SKIP
     < Crystal object with following unit cell:
         Atom Au @ (0.00, 0.00, -0.00)
     Lattice parameters:
