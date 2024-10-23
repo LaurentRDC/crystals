@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2023-03-26 10:30:59 +0300 (Sun, 26 Mar 2023) $
-#$Revision: 282067 $
+#$Date: 2024-05-06 10:39:41 +0300 (Mon, 06 May 2024) $
+#$Revision: 291735 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008513.cif $
 #------------------------------------------------------------------------------
 #
@@ -39,6 +39,7 @@ _cell_length_a                   2.70389
 _cell_length_b                   2.70389
 _cell_length_c                   4.28168
 _cell_volume                     27.110
+_cell_formula_units_Z            2
 _database_code_amcsd             0011191
 _exptl_crystal_density_diffrn    12.382
 _cod_database_code               9008513

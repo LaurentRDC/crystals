@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2023-03-26 11:09:57 +0300 (Sun, 26 Mar 2023) $
-#$Revision: 282068 $
+#$Date: 2024-05-16 09:36:09 +0300 (Thu, 16 May 2024) $
+#$Revision: 291877 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/01/15/9011577.cif $
 #------------------------------------------------------------------------------
 #
@@ -41,6 +41,7 @@ _cell_angle_gamma                120
 _cell_length_a                   2.464
 _cell_length_b                   2.464
 _cell_length_c                   6.711
+_cell_formula_units_Z            4
 _cell_volume                     35.286
 _database_code_amcsd             0014675
 _exptl_crystal_density_diffrn    2.261

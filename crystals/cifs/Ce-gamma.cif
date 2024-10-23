@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2023-11-11 21:14:37 +0200 (Sat, 11 Nov 2023) $
-#$Revision: 287551 $
+#$Date: 2024-05-06 10:39:41 +0300 (Mon, 06 May 2024) $
+#$Revision: 291735 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/84/9008465.cif $
 #------------------------------------------------------------------------------
 #
@@ -39,6 +39,7 @@ _cell_length_a                   5.1612
 _cell_length_b                   5.1612
 _cell_length_c                   5.1612
 _cell_volume                     137.484
+_cell_formula_units_Z            4
 _exptl_crystal_density_diffrn    6.769
 _cod_original_sg_symbol_H-M      'F m 3 m'
 _cod_database_code               9008465

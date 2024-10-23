@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2023-11-14 20:05:30 +0200 (Tue, 14 Nov 2023) $
-#$Revision: 287588 $
+#$Date: 2024-05-06 10:39:41 +0300 (Mon, 06 May 2024) $
+#$Revision: 291735 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008572.cif $
 #------------------------------------------------------------------------------
 #
@@ -40,6 +40,7 @@ _cell_angle_gamma                90
 _cell_length_a                   3.31
 _cell_length_b                   4.38
 _cell_length_c                   10.50
+_cell_formula_units_Z            8
 _cell_volume                     152.227
 _exptl_crystal_density_diffrn    2.703
 _cod_original_sg_symbol_H-M      'B m a b'

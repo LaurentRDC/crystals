@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2023-11-11 21:14:37 +0200 (Sat, 11 Nov 2023) $
-#$Revision: 287551 $
+#$Date: 2024-05-06 10:39:41 +0300 (Mon, 06 May 2024) $
+#$Revision: 291735 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/00/85/9008549.cif $
 #------------------------------------------------------------------------------
 #
@@ -39,6 +39,7 @@ _cell_angle_gamma                90
 _cell_length_a                   5.585
 _cell_length_b                   5.585
 _cell_length_c                   5.585
+_cell_formula_units_Z            2
 _cell_volume                     174.209
 _diffrn_ambient_temperature      5
 _exptl_crystal_density_diffrn    1.629

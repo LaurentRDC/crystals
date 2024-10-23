@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------
-#$Date: 2023-11-11 21:14:37 +0200 (Sat, 11 Nov 2023) $
-#$Revision: 287551 $
+#$Date: 2024-05-09 11:47:05 +0300 (Thu, 09 May 2024) $
+#$Revision: 291792 $
 #$URL: file:///home/coder/svn-repositories/cod/cif/9/01/09/9010996.cif $
 #------------------------------------------------------------------------------
 #
@@ -43,6 +43,7 @@ _cell_angle_gamma                120
 _cell_length_a                   3.5375
 _cell_length_b                   3.5375
 _cell_length_c                   5.5546
+_cell_formula_units_Z            2
 _cell_volume                     60.197
 _exptl_crystal_density_diffrn    9.320
 _cod_database_code               9010996
