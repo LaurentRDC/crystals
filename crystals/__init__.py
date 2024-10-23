@@ -3,9 +3,9 @@
 This package allows for manipulation and modelling of atomic structures in crystalline form.
 """
 __author__ = "Laurent P. René de Cotret"
-__email__ = "laurent.renedecotret@mail.mcgill.ca"
+__email__ = "laurent.decotret@outlook.com"
 __license__ = "GPLv3"
-__version__ = "1.7.0a1"
+__version__ = "1.7.0"
 
 from .atom import (
     Atom,

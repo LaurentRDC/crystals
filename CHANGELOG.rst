@@ -4,6 +4,10 @@ What's new
 
 .. currentmodule:: crystals
 
+Release 1.7.0
+
+* Added support for NumPy 2, in addition to NumPy 1.
+
 Release 1.6.2
 -------------
 
