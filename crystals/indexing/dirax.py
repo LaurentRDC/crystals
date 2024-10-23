@@ -65,7 +65,7 @@ def index_dirax(reflections, initial=None, length_bounds=(2, 20)):
     A. J. M. Duisenberg, Indexing in Single-Crystal Diffractometry with an Obstinate List of Reflections (1992),
     J. Appl. Cryst vol. 25 pp. 92 - 96
     """
-    reflections = np.asfarray(reflections)
+    reflections = np.asarray(reflections, dtype=float)
 
     length_min, length_max = sorted(length_bounds)
     d_max = 2 * np.pi / length_min

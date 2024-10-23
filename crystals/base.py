@@ -116,6 +116,8 @@ class AtomicStructure:
         Returns an array in which each row represents an :class:`Atom` instance.
         Atoms are ordered by atomic number.
         """
+        # Not all keyword arguments can be passed to 'np.empty'
+        kwargs.pop("copy", None)
         arr = np.empty(shape=(len(self), 4), *args, **kwargs)
         atoms = sorted(self)
         for row, atm in enumerate(atoms):

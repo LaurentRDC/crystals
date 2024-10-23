@@ -63,9 +63,9 @@ def test_cif_writer_writes_version():
 
 def test_supercell_preserved_in_cif():
     """See issue #13."""
-    a = np.asfarray([3, 0.2, 0])
-    b = np.asfarray([0.4, 8, 0])
-    c = np.asfarray([0, 0, 9])
+    a = np.asarray([3, 0.2, 0], dtype=float)
+    b = np.asarray([0.4, 8, 0], dtype=float)
+    c = np.asarray([0, 0, 9], dtype=float)
 
     dimer = Crystal(
         unitcell=[Atom("C", coords=(0.5, 0, 0)), Atom("C", coords=(0, 0, 0))],

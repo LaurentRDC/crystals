@@ -166,10 +166,10 @@ class Atom(Element):
     ):
         super().__init__(element=element)
 
-        self.coords_fractional = np.asfarray(coords)
+        self.coords_fractional = np.asarray(coords, dtype=float)
         self.lattice = lattice or Lattice(np.eye(3))
-        self.displacement = np.asfarray(
-            displacement if displacement is not None else (0, 0, 0)
+        self.displacement = np.asarray(
+            displacement if displacement is not None else (0, 0, 0), dtype=float
         )
         self.magmom = magmom or self.magnetic_moment_ground
         self.occupancy = occupancy
@@ -294,6 +294,8 @@ class Atom(Element):
 
     def __array__(self, *args, **kwargs) -> np.ndarray:
         """Returns an array [Z, x, y, z]"""
+        # Not all keyword arguments can be passed to 'np.empty'
+        kwargs.pop("copy", None)
         arr = np.empty(shape=(4,), *args, **kwargs)
         arr[0] = self.atomic_number
         arr[1::] = self.coords_fractional

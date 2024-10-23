@@ -383,11 +383,11 @@ def lattice_vectors_from_parameters(
     cos_gamma_recip = (cos(alpha) * cos(beta) - cos(gamma)) / (sin(alpha) * sin(beta))
     sin_gamma_recip = sqrt(1 - cos_gamma_recip**2)
 
-    a1 = np.asfarray(
-        [1 / a_recip, -cos_gamma_recip / sin_gamma_recip / a_recip, cos(beta) * a]
+    a1 = np.asarray(
+        [1 / a_recip, -cos_gamma_recip / sin_gamma_recip / a_recip, cos(beta) * a], dtype=float
     )
-    a2 = np.asfarray([0, b * sin(alpha), b * cos(alpha)])
-    a3 = np.asfarray([0, 0, c])
+    a2 = np.asarray([0, b * sin(alpha), b * cos(alpha)], dtype=float)
+    a3 = np.asarray([0, 0, c], dtype=float)
     return a1, a2, a3
 
 
