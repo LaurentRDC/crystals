@@ -45,9 +45,9 @@ The fractional/cartesian distance between two atoms sitting *on the same lattice
     < Atom C  @ (0.00, 0.00, 0.25) >
     >>> carbon2
     < Atom C  @ (0.00, 0.00, 0.75) >
-    >>> distance_fractional(carbon1, carbon2)
+    >>> float(distance_fractional(carbon1, carbon2))
     0.5
-    >>> distance_cartesian(carbon1, carbon2)    # in Angstroms
+    >>> float(distance_cartesian(carbon1, carbon2))    # in Angstroms
     3.3555000000000006
 
 If atoms are not sitting on the same lattice, calculating the distance should not be defined. In this case, an exception is raised:

@@ -317,7 +317,7 @@ super-class. Let's use the built-in example of graphite:
     >>> b1
     array([2.94447949, 0.        , 0.        ])
     >>>
-    >>> np.dot(a1, b1)	# 2 pi
+    >>> float(np.dot(a1, b1))	# 2 pi
     6.283185307179586
 
 The standard `three lengths and angles` description of a lattice is also accessible:
