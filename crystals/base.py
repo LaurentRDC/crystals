@@ -170,6 +170,7 @@ class AtomicStructure:
 
         Example
         -------
+        >>> from crystals import Crystal
         >>> c = Crystal.from_cod(1508819)
         >>> c.chemical_composition # doctest: +SKIP
         OrderedDict([('H',  0.441),
@@ -196,6 +197,7 @@ class AtomicStructure:
 
         Example
         -------
+        >>> from crystals import Crystal
         >>> c = Crystal.from_cod(1508819)
         >>> c.chemical_formula
         'C15 H19 Cl N4 O4'

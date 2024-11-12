@@ -1,0 +1,81 @@
+[build-system]
+requires = ["build", "setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = {attr = "crystals.__version__"}
+
+[project]
+name = "crystals"
+dynamic = ["version"]
+authors = [
+  { name="Laurent P. René de Cotret", email="laurent.decotret@outlook.com" },
+]
+maintainers = [
+  { name="Laurent P. René de Cotret", email="laurent.decotret@outlook.com" },
+]
+description = "Data structures for crystallography"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.7, <4"
+dependencies = [
+    "numpy        >= 1.20, < 3",
+    "spglib       >= 1.15, < 3",
+    "pycifrw      >= 4.4.1, < 5",
+    "requests     >= 2, < 3",
+]
+keywords=["crystallography", "material science", "structural biology"]
+classifiers = [
+    "Environment :: Console",
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+
+[project.optional-dependencies]
+development = [
+    "sphinx >= 3",
+    "sphinx_rtd_theme >= 0.4",
+    "pytest >= 6",
+    "wheel",
+]
+biopython = ["biopython >= 1, <2"]
+ase = ["ase >= 3, <4"]
+
+[project.urls]
+Documentation = "https://crystals.readthedocs.io/"
+Repository = "https://github.com/LaurentRDC/crystals"
+"Bug Tracker" = "https://github.com/LaurentRDC/crystals/issues"
+
+[project.scripts]
+crystals-cli = "crystals.__main__:main"
+
+# See here for an explanation of how to include package data:
+# https://setuptools.pypa.io/en/latest/userguide/datafiles.html#package-data
+[tool.setuptools.package-data]
+crystals = ["cifs/*.cif"]
+
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+log_cli_level = "INFO"
+# Very cool ability for pytest to also run doctests on package contents with `-doctest-modules`
+addopts = [
+    "--doctest-modules", 
+]

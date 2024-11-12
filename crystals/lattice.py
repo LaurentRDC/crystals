@@ -322,6 +322,7 @@ class Lattice:
 
         Examples
         --------
+        >>> from crystals import Crystal
         >>> cryst = Crystal.from_database('C')
         >>> refls = cryst.bounded_reflections(1.5) # 1.5 inverse Angstroms
         >>> list(refls)
@@ -491,7 +492,7 @@ def cyclic(iterable: Iterable[Any]) -> Iterable[Iterable[Any]]:
     Examples
     --------
     >>> list(cyclic((1,2,3)))
-    [(1,2,3), (2,3,1), (3,1,2)]
+    [(1, 2, 3), (3, 1, 2), (2, 3, 1)]
     """
     iterable = tuple(iterable)
     n = len(iterable)

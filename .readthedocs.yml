@@ -15,10 +15,10 @@ build:
     post_checkout:
       - git submodule init
       - git submodule update
-    pre_build:
-      - python setup.py build_ext --inplace
 
 python:
   install:
-    - requirements: requirements.txt
-    - requirements: dev-requirements.txt
+    - method: pip
+      path: .
+      extra_requirements:
+        - development
