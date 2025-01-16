@@ -27,28 +27,9 @@ from the conda-forge channel:
 
 ### From source
 
-`crystals` can also be installed from source:
-
-    git clone https://github.com/LaurentRDC/crystals.git
-    cd crystals
-    
-    # If you want to use crystals, use `install`
-    python setup.py install 
-
-    # If you want to hack crystals, `use develop`
-    python setup.py develop
-
 You can install the latest development version using `pip` as well:
 
     python -m pip install git+git://github.com/LaurentRDC/crystals.git
-
-To build documentation, you will need a few more packages, listed in
-`dev-requirements.txt`. For example, to build documentation from source:
-
-    git clone https://github.com/LaurentRDC/crystals.git
-    cd crystals
-    pip install -r dev-requirements.txt
-    python setup.py build_sphinx
 
 Documentation
 -------------
